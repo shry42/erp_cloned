@@ -1,9 +1,6 @@
-import 'package:awesome_drawer_bar/awesome_drawer_bar.dart';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/controllers/login_controller.dart';
-import 'package:erp_copy/screens/menu_screen.dart';
-import 'package:erp_copy/screens/po_screens/po_log_details.dart';
-import 'package:erp_copy/screens/pr_screens/pr_log.dart';
+import 'package:erp_copy/widget/menu_widget/hidden_main_page_drawer.dart';
 import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -70,7 +67,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty || value == "") {
                       return 'Please enter a valid userName';
                     }
-
                     return null;
                   },
                 ),
@@ -172,22 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                         return;
                       } else {
-                        await Get.offAll(const PoLogDetailsScreen(),
+                        await Get.offAll(const HiddenDrawer(),
                             transition: Transition.rightToLeft);
-                        //     AwesomeDrawerBar(
-                        //   controller: drawerController,
-                        //   menuScreen: MenuScreen(drawerController),
-                        //   mainScreen: PoLogDetailsScreen(
-                        //       drawerController: drawerController),
-                        //   borderRadius: 20.0,
-                        //   showShadow: true,
-                        //   angle: 0.0,
-                        //   // backgroundColor: Colors.grey[300],
-                        //   slideWidth: MediaQuery.of(context).size.width *
-                        //       (isRTL(context) ? 0.45 : 0.105),
-                        //   openCurve: Curves.fastOutSlowIn,
-                        //   closeCurve: Curves.bounceIn,
-                        // ));
+
                         return;
                       }
                     } else {

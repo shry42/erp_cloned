@@ -4,11 +4,11 @@ import 'package:erp_copy/models/user_model.dart';
 import 'package:erp_copy/services/api_service.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class loginController extends GetxController {
   RxString userName = ''.obs;
   RxString password = ''.obs;
-
   String token = "";
   String role = "";
   User? user;
@@ -39,6 +39,8 @@ class loginController extends GetxController {
       token = result['token'];
       print('******$token');
       AppController.setaccessToken(token);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
 
       // role = user!.role;
       // AppController.setRole(role);

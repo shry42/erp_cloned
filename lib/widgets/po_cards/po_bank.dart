@@ -1,217 +1,179 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// class PoBankCard extends StatelessWidget {
-//   const PoBankCard({
-//     Key? key,
-//     this.ht,
-//     this.wd,
-//     this.duration,
-//     this.AccountNo,
-//     // this.PAN,
-//     this.AccountName,
-//     this.BankBranch,
-//     this.BankIFSCCode,
-//     this.BankZipCode,
-//     this.BankStreet,
-//     this.BankCity,
-//     this.BankState,
-//   }) : super(key: key);
+class PoBankCard extends StatelessWidget {
+  const PoBankCard({
+    super.key,
+    this.Street,
+    this.City,
+    this.State,
+    this.Branch,
+    this.ZipCode,
+    this.AccountNo,
+    this.Name,
+    this.IFSCCode,
+  });
 
-//   final double? ht;
-//   final double? wd;
-//   final dynamic duration;
-//   final String? AccountNo;
-//   // final String? PAN;
-//   final String? AccountName;
-//   final String? BankBranch;
-//   final String? BankIFSCCode;
-//   final String? BankZipCode;
-//   final String? BankStreet;
-//   final String? BankCity;
-//   final String? BankState;
+  final String? Street;
+  final String? City;
+  final String? State;
+  final String? Branch;
+  final String? ZipCode;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Card(
-//           margin: const EdgeInsets.symmetric(horizontal: 18),
-//           elevation: 8,
-//           shape: RoundedRectangleBorder(
-//             side: const BorderSide(color: Colors.white),
-//             borderRadius: BorderRadius.circular(25),
-//           ),
-//           //  color: Color.fromARGB(243, 199, 80, 11),
-//           //color: Colors.red,
-//           child: AnimatedContainer(
-//             duration: Duration(milliseconds: duration),
-//             height: ht,
-//             width: wd,
-//             decoration: ColorCards.gradientDecoration,
-//             child: SingleChildScrollView(
-//               physics: const NeverScrollableScrollPhysics(),
-//               child: Column(children: [
-//                 Padding(
-//                   padding: EdgeInsets.only(top: 15, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'AccountNo   :   $AccountNo',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 // Padding(
-//                 //   padding: const EdgeInsets.only(top: 3, left: 18),
-//                 //   child: Row(
-//                 //     children: [
-//                 //       Flexible(
-//                 //         child: Text(
-//                 //           'PAN :  $PAN',
-//                 //           style: const TextStyle(
-//                 //             fontSize: 18,
-//                 //             fontWeight: FontWeight.bold,
-//                 //             color: Colors.white,
-//                 //           ),
-//                 //         ),
-//                 //       ),
-//                 //     ],
-//                 //   ),
-//                 // ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'AccountName :  $AccountName',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankBranch :  $BankBranch',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankIFSCCode :  $BankIFSCCode',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankZipCode :  $BankZipCode',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankStreet :  $BankStreet',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankCity :  $BankCity',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BankState :  $BankState',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 const SizedBox(height: 10),
-//               ]),
-//               //
-//             ),
-//           ),
-//         ),
-//         SizedBox(height: 10),
-//       ],
-//     );
-//   }
-// }
+  final String? AccountNo;
+  final String? Name;
+  final String? IFSCCode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        children: [
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.black,
+                  Colors.grey.shade800,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Text(
+                'BANK DETAILS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Table(
+            border: TableBorder.all(color: Colors.black),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              const TableRow(
+                children: [
+                  TableCell(
+                    child: Text('Street',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('City',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('State',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('Branch',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('ZipCode',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    child: Text('$Street', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$City', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$State', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$Branch', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$ZipCode', textAlign: TextAlign.center),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.black,
+                  Colors.grey.shade800,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Text(
+                'ACCOUNT DETAILS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Table(
+            border: TableBorder.all(color: Colors.black),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              const TableRow(
+                children: [
+                  TableCell(
+                    child: Text('Account No',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('Name',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('IFSC Code',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    child: Text('$AccountNo', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$Name', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$IFSCCode', textAlign: TextAlign.center),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,8 +1,14 @@
+import 'package:erp_copy/controllers/app_controller.dart';
+import 'package:erp_copy/widget/menu_widget/hidden_main_page_drawer.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  AppController.setaccessToken('${prefs.getString('token')}');
   runApp(const MyApp());
 }
 
@@ -19,7 +25,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: LoginScreen(),
+      home: AppController.accessToken == "null"
+          ? LoginScreen()
+          : const HiddenDrawer(),
     );
   }
 }

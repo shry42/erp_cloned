@@ -1,122 +1,98 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// class PoBuyerCard extends StatelessWidget {
-//   const PoBuyerCard({
-//     Key? key,
-//     this.ht,
-//     this.wd,
-//     this.duration,
-//     this.BuyerName,
-//     this.BuyerEmailID,
-//     this.BuyerTel,
-//     this.BuyerMob,
-//   }) : super(key: key);
+class PoBuyerCard extends StatelessWidget {
+  const PoBuyerCard({
+    super.key,
+    this.Name,
+    this.EmailId,
+    this.Tel,
+    this.Mob,
+  });
 
-//   final double? ht;
-//   final double? wd;
-//   final dynamic duration;
-//   final String? BuyerName;
-//   final String? BuyerEmailID;
-//   final String? BuyerTel;
-//   final String? BuyerMob;
+  final String? Name;
+  final String? EmailId;
+  final String? Tel;
+  final String? Mob;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Card(
-//           margin: const EdgeInsets.symmetric(horizontal: 18),
-//           elevation: 8,
-//           shape: RoundedRectangleBorder(
-//             side: const BorderSide(color: Colors.white),
-//             borderRadius: BorderRadius.circular(25),
-//           ),
-//           //  color: Color.fromARGB(243, 199, 80, 11),
-//           //color: Colors.red,
-//           child: AnimatedContainer(
-//             duration: Duration(milliseconds: duration),
-//             height: ht,
-//             width: wd,
-//             decoration: ColorCards.gradientDecoration,
-//             child: SingleChildScrollView(
-//               physics: const NeverScrollableScrollPhysics(),
-//               child: Column(children: [
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 15, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BuyerName   :   $BuyerName',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BuyerEmailID :  $BuyerEmailID',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BuyerTel :  $BuyerTel',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 3, left: 18),
-//                   child: Row(
-//                     children: [
-//                       Flexible(
-//                         child: Text(
-//                           'BuyerMob :  $BuyerMob',
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 const SizedBox(height: 10),
-//               ]),
-//               //
-//             ),
-//           ),
-//         ),
-//         const SizedBox(height: 10),
-//       ],
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        children: [
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.black,
+                  Colors.grey.shade800,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Text(
+                'BUYER DETAILS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Table(
+            border: TableBorder.all(color: Colors.black),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              const TableRow(
+                children: [
+                  TableCell(
+                    child: Text('Name',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('Email ID',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('Tel',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TableCell(
+                    child: Text('Mob',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    child: Text('$Name', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$EmailId', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$Tel', textAlign: TextAlign.center),
+                  ),
+                  TableCell(
+                    child: Text('$Mob', textAlign: TextAlign.center),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

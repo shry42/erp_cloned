@@ -1,146 +1,231 @@
-import 'package:erp_copy/utils/color_for_Cards.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PRItemInfoCard extends StatelessWidget {
   const PRItemInfoCard({
-    Key? key,
+    super.key,
     this.ht,
     this.wd,
     this.duration,
+    this.color,
     this.itemName,
+    this.purchaseUOM,
     this.internalCode,
     this.reqQty,
-    this.purchaseUOM,
     this.remarks,
-  }) : super(key: key);
+    this.poStatus,
+  });
 
   final double? ht;
   final double? wd;
+  final dynamic duration;
   final String? itemName;
+  final String? purchaseUOM;
   final String? internalCode;
   final String? reqQty;
-  final String? purchaseUOM;
   final String? remarks;
-  final dynamic duration;
+  final String? poStatus;
+  final Color? color;
+
+  String truncateWithEllipsis(int cutoff, String myString) {
+    return (myString.length <= cutoff)
+        ? myString
+        : '${myString.substring(0, cutoff)}...';
+  }
+
+  String truncateText(String text, double maxWidth, TextStyle style) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: maxWidth);
+
+    if (textPainter.didExceedMaxLines) {
+      final int endIndex =
+          textPainter.getPositionForOffset(Offset(maxWidth, 0)).offset;
+      return truncateWithEllipsis(endIndex, text);
+    }
+
+    return text;
+  }
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle = GoogleFonts.kameron(
+      textStyle: const TextStyle(
+        fontSize: 11,
+        color: Color.fromARGB(255, 55, 141, 49),
+      ),
+    );
+
     return Column(
       children: [
-        Card(
-          margin: const EdgeInsets.symmetric(horizontal: 18),
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(25),
-          ),
-          //  color: Color.fromARGB(243, 199, 80, 11),
-          //color: Colors.red,
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: duration),
-            height: ht,
-            width: wd,
-            decoration: ColorCards.gradientDecoration,
-            child: SingleChildScrollView(
-              // physics: NeverScrollableScrollPhysics(),
-              // scrollDirection: Axis.horizontal,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        Stack(
+          children: [
+            Container(
+              height: 80,
+              width: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                    width: 1, color: const Color.fromARGB(255, 60, 59, 59)),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Tooltip(
+                              message: itemName,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 80),
+                                child: Text(
+                                  truncateText(itemName ?? '', 80, textStyle),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Tooltip(
+                              message: purchaseUOM,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 80),
+                                child: Text(
+                                  truncateText(
+                                      purchaseUOM ?? '', 80, textStyle),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35),
+                            child: Tooltip(
+                              message: internalCode,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 80),
+                                child: Text(
+                                  truncateText(
+                                      internalCode ?? '', 80, textStyle),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 45, right: 20),
+                            child: Tooltip(
+                              message: reqQty,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 80),
+                                child: Text(
+                                  truncateText(reqQty ?? '', 80, textStyle),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Tooltip(
+                              message: remarks,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 80),
+                                child: Text(
+                                  truncateText(remarks ?? '', 80, textStyle),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.topRight,
+              height: 40,
+              width: 400,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: <Color>[
+                    Color.fromARGB(243, 84, 86, 80),
+                    Color.fromARGB(255, 181, 188, 180),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: const Color.fromARGB(255, 39, 37, 37),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 18),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'ItemName     :    $itemName',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('Item Name',
+                          style: GoogleFonts.kameron(
+                              textStyle: const TextStyle(
+                                  fontSize: 11, color: Colors.white))),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 3, left: 18),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'PurchaseUOM   :  $purchaseUOM',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('Purchase UOM',
+                          style: GoogleFonts.kameron(
+                              textStyle: const TextStyle(
+                                  fontSize: 11, color: Colors.white))),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 3, left: 18),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'InternalCode  :  $internalCode',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('Internal Code',
+                          style: GoogleFonts.kameron(
+                              textStyle: const TextStyle(
+                                  fontSize: 11, color: Colors.white))),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 3, left: 18),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'ReqQty  :  $reqQty',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text('Required Qty',
+                          style: GoogleFonts.kameron(
+                              textStyle: const TextStyle(
+                                  fontSize: 11, color: Colors.white))),
                     ),
-
                     Padding(
-                      padding: const EdgeInsets.only(top: 3, left: 18),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'Remarks  :  $remarks',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.only(right: 10, left: 10),
+                      child: Text('Remarks',
+                          style: GoogleFonts.kameron(
+                              textStyle: const TextStyle(
+                                  fontSize: 11, color: Colors.white))),
                     ),
-                    //////
-                    const SizedBox(height: 6),
-                  ]),
-              //
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
       ],
     );
   }

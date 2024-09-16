@@ -32,7 +32,7 @@ class POLogCards extends StatelessWidget {
         Stack(children: [
           Container(
             height: 80,
-            width: 350,
+            width: 400,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(
@@ -50,7 +50,7 @@ class POLogCards extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.only(left: 30),
                           child: Text('$POTxnID',
                               style: GoogleFonts.kameron(
                                   textStyle: const TextStyle(
@@ -59,7 +59,7 @@ class POLogCards extends StatelessWidget {
                                           Color.fromARGB(255, 55, 141, 49)))),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.only(left: 65),
                           child: Text('$POCode',
                               style: GoogleFonts.kameron(
                                   textStyle: const TextStyle(
@@ -68,7 +68,7 @@ class POLogCards extends StatelessWidget {
                                           Color.fromARGB(255, 55, 141, 49)))),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.only(left: 35),
                           child: Text('$PODate',
                               style: GoogleFonts.kameron(
                                   textStyle: const TextStyle(
@@ -77,7 +77,7 @@ class POLogCards extends StatelessWidget {
                                           Color.fromARGB(255, 55, 141, 49)))),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.only(left: 40),
                           child: Text(
                             '$poStatus',
                             style: GoogleFonts.kameron(
@@ -99,7 +99,7 @@ class POLogCards extends StatelessWidget {
           Container(
             alignment: Alignment.topRight,
             height: 40,
-            width: 350,
+            width: 400,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: <Color>[

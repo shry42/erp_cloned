@@ -1,23 +1,23 @@
-import 'package:awesome_drawer_bar/awesome_drawer_bar.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/po_log_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/vendor_details_controller.dart';
-import 'package:erp_copy/screens/loginscreen.dart';
+import 'package:erp_copy/screens/po_screens/po_vendor_details_screen.dart';
+import 'package:erp_copy/screens/pr_screens/pr_log_details.dart';
+import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:erp_copy/widgets/po_cards/dummy_po_card.dart';
-import 'package:erp_copy/widgets/po_cards/po_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class PoLogDetailsScreen extends StatefulWidget {
   const PoLogDetailsScreen({
     super.key,
+    required this.openDrawer,
   });
+  final VoidCallback openDrawer;
 
   @override
   State<PoLogDetailsScreen> createState() => _PoLogDetailsScreenState();
@@ -26,11 +26,15 @@ class PoLogDetailsScreen extends StatefulWidget {
 class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
   // double _height = 120;
   // double _width = 350;
+  bool isPOSelected = true;
   dynamic? _duration = 500;
   bool animated = false;
   List<dynamic>? dataList;
   List? searchDataList;
   List? mainDataList;
+  double xOffset = 0;
+  double yOffset = 0;
+  double scaleFactor = 0;
 
   bool showApproved = true;
 
@@ -39,6 +43,14 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
   TextEditingController searchController = TextEditingController();
 
   final advancedDrawerController = AdvancedDrawerController();
+
+  void opneDrawer() {
+    setState(() {
+      xOffset = 240;
+      yOffset = 120;
+      scaleFactor = 0.8;
+    });
+  }
 
   @override
   void initState() {
@@ -57,131 +69,59 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
     super.initState();
   }
 
-  void drawerControl() {
-    advancedDrawerController.showDrawer();
-  }
-
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.sizeOf(context).height * 0.18;
     double _width = MediaQuery.sizeOf(context).width * 0.90;
-    // final drawerController = AwesomeDrawerBarController();
 
-    return AdvancedDrawer(
-      backdropColor: Colors.black26,
-      animationDuration: const Duration(milliseconds: 300),
-      rtlOpening: true,
-      animationCurve: Curves.easeInOut,
-      drawer: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                'Menu',
-                style: GoogleFonts.kameron(
-                  textStyle: const TextStyle(color: Colors.white, fontSize: 30),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 68, 168, 71),
+        automaticallyImplyLeading: true,
+        // title: const Text('UnApproved PO selection'),
+
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                  size: 30,
                 ),
               ),
-            ),
-            const SizedBox(height: 40),
-            ListTile(
-              leading: const Icon(Icons.home, color: Colors.white),
-              title: Text(
-                'Home',
-                style: GoogleFonts.kameron(
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
+              const SizedBox(width: 120),
+              const Text(
+                'PO Log Details',
+                style: TextStyle(color: Colors.white),
               ),
-              onTap: () {
-                Get.toNamed('/home');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person, color: Colors.white),
-              title: Text(
-                'Profile',
-                style: GoogleFonts.kameron(
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
+              const SizedBox(width: 95),
+              // GestureDetector(
+              //   onTap: () {
+              //     widget.openDrawer;
+              //   },
+              //   child: const Icon(
+              //     Icons.menu_open_rounded,
+              //     size: 35,
+              //     color: Colors.white,
+              //   ),
+              // ),
+              DrawerMenuWidget(
+                onClicked: widget.openDrawer,
               ),
-              onTap: () {
-                Get.toNamed('/profile');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.white),
-              title: Text(
-                'Settings',
-                style: GoogleFonts.kameron(
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
+              const SizedBox(
+                width: 20,
               ),
-              onTap: () {
-                Get.toNamed('/settings');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.white),
-              title: Text(
-                'Logout',
-                style: GoogleFonts.kameron(
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
-              ),
-              onTap: () {
-                Get.offAllNamed('/login');
-              },
-            ),
-          ],
-        ),
+            ],
+          )
+        ],
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-          automaticallyImplyLeading: true,
-          // title: const Text('UnApproved PO selection'),
-
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(width: 95),
-                const Text(
-                  'Po Log Details',
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(width: 95),
-                GestureDetector(
-                  onTap: () {
-                    drawerControl();
-                  },
-                  child: const Icon(
-                    Icons.menu_open_rounded,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
-          ],
-        ),
-        body: Column(
+      body: Stack(children: [
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -207,6 +147,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                         });
                       },
                       decoration: InputDecoration(
+                        focusColor: Colors.black,
                         filled: true,
                         fillColor: const Color(0xfff1f1f1),
                         border: OutlineInputBorder(
@@ -218,7 +159,8 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                           ),
                         ),
                         hintText: "Search for PoTxnId",
-                        hintStyle: const TextStyle(fontSize: 12),
+                        hintStyle:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
                         suffixIcon: const Icon(Icons.search),
                         // suffixIconColor: Colors.white,
                         prefixIconColor: Colors.black,
@@ -226,10 +168,10 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 20),
                 Container(
                   height: 35,
-                  width: 120,
+                  width: 150,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: <Color>[
@@ -297,9 +239,9 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                           }
                         },
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                            horizontal: 24, vertical: 10),
                         unselectedBackgroundColor:
-                            Color.fromARGB(255, 204, 242, 195),
+                            const Color.fromARGB(255, 204, 242, 195),
                         decoration: const BoxDecoration(
                           // gradient: LinearGradient(
                           //   colors: <Color>[
@@ -358,7 +300,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                             Image.asset(
                                               'assets/images/loaderr.gif',
                                               height: 200,
-                                              width: 250,
+                                              width: 350,
                                             ),
                                             const Text('No records found')
                                           ],
@@ -378,6 +320,16 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                           : Colors.grey;
                                               return GestureDetector(
                                                 onTap: () async {
+                                                  final poStatus =
+                                                      dataList![index]
+                                                          .POStatus
+                                                          .toString();
+                                                  final color = poStatus ==
+                                                          'Rejected'
+                                                      ? Colors.red
+                                                      : poStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
                                                   String PoTxnId =
                                                       dataList![index]
                                                           .POTxnID
@@ -404,9 +356,9 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                     );
                                                     return;
                                                   } else {
-                                                    // Get.to(VendorDetailsScreen(
-                                                    //     POTxnID: PoTxnId,
-                                                    //     VendorID: VendorID));
+                                                    Get.to(VendorDetailsScreen(
+                                                        POTxnID: PoTxnId,
+                                                        VendorID: VendorID));
                                                   }
                                                 },
                                                 // child: POInfoCard(
@@ -468,7 +420,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              'assets/loaderr.gif',
+                                              'assets/images/loaderr.gif',
                                               height: 200,
                                               width: 250,
                                             ),
@@ -481,6 +433,16 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                             itemBuilder: (context, index) {
                                               return GestureDetector(
                                                 onTap: () async {
+                                                  final poStatus =
+                                                      dataList![index]
+                                                          .POStatus
+                                                          .toString();
+                                                  final color = poStatus ==
+                                                          'Rejected'
+                                                      ? Colors.red
+                                                      : poStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
                                                   String PoTxnId =
                                                       dataList![index]
                                                           .POTxnID
@@ -492,6 +454,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                   await vendorCont
                                                       .getVendorById(
                                                           VendorID, PoTxnId);
+
                                                   if (AppController.message !=
                                                       null) {
                                                     Get.defaultDialog(
@@ -507,15 +470,30 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                     );
                                                     return;
                                                   } else {
-                                                    // Get.to(VendorDetailsScreen(
-                                                    //     POTxnID: PoTxnId,
-                                                    //     VendorID: VendorID));
+                                                    Get.to(VendorDetailsScreen(
+                                                        POTxnID: PoTxnId,
+                                                        VendorID: VendorID));
                                                   }
                                                 },
-                                                child: POInfoCard(
-                                                  ht: _height,
-                                                  wd: _width,
-                                                  duration: 500,
+                                                // child: POInfoCard(
+                                                //   ht: _height,
+                                                //   wd: _width,
+                                                //   duration: 500,
+                                                //   POTxnID: dataList![index]
+                                                //       .POTxnID
+                                                //       .toString(),
+                                                //   POCode: dataList![index]
+                                                //       .POCode
+                                                //       .toString(),
+                                                //   PODate: dataList![index]
+                                                //       .PODate
+                                                //       .toString()
+                                                //       .split("T")[0],
+                                                //   poStatus: dataList![index]
+                                                //       .POStatus
+                                                //       .toString(),
+                                                // ),
+                                                child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
                                                       .toString(),
@@ -529,6 +507,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                   poStatus: dataList![index]
                                                       .POStatus
                                                       .toString(),
+                                                  // color: color,
                                                 ),
                                               );
                                             });
@@ -555,7 +534,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              'assets/loaderr.gif',
+                                              'assets/images/loaderr.gif',
                                               height: 200,
                                               width: 250,
                                             ),
@@ -594,15 +573,30 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                     );
                                                     return;
                                                   } else {
-                                                    // Get.to(VendorDetailsScreen(
-                                                    //     POTxnID: PoTxnId,
-                                                    //     VendorID: VendorID));
+                                                    Get.to(VendorDetailsScreen(
+                                                        POTxnID: PoTxnId,
+                                                        VendorID: VendorID));
                                                   }
                                                 },
-                                                child: POInfoCard(
-                                                  ht: _height,
-                                                  wd: _width,
-                                                  duration: 500,
+                                                // child: POInfoCard(
+                                                //   ht: _height,
+                                                //   wd: _width,
+                                                //   duration: 500,
+                                                //   POTxnID: dataList![index]
+                                                //       .POTxnID
+                                                //       .toString(),
+                                                //   POCode: dataList![index]
+                                                //       .POCode
+                                                //       .toString(),
+                                                //   PODate: dataList![index]
+                                                //       .PODate
+                                                //       .toString()
+                                                //       .split("T")[0],
+                                                //   poStatus: dataList![index]
+                                                //       .POStatus
+                                                //       .toString(),
+                                                // ),
+                                                child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
                                                       .toString(),
@@ -616,6 +610,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                   poStatus: dataList![index]
                                                       .POStatus
                                                       .toString(),
+                                                  // color: color,
                                                 ),
                                               );
                                             });
@@ -642,7 +637,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              'assets/loaderr.gif',
+                                              'assets/images/loaderr.gif',
                                               height: 200,
                                               width: 250,
                                             ),
@@ -681,15 +676,30 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                     );
                                                     return;
                                                   } else {
-                                                    // Get.to(VendorDetailsScreen(
-                                                    //     POTxnID: PoTxnId,
-                                                    //     VendorID: VendorID));
+                                                    Get.to(VendorDetailsScreen(
+                                                        POTxnID: PoTxnId,
+                                                        VendorID: VendorID));
                                                   }
                                                 },
-                                                child: POInfoCard(
-                                                  ht: _height,
-                                                  wd: _width,
-                                                  duration: 500,
+                                                // child: POInfoCard(
+                                                //   ht: _height,
+                                                //   wd: _width,
+                                                //   duration: 500,
+                                                //   POTxnID: dataList![index]
+                                                //       .POTxnID
+                                                //       .toString(),
+                                                //   POCode: dataList![index]
+                                                //       .POCode
+                                                //       .toString(),
+                                                //   PODate: dataList![index]
+                                                //       .PODate
+                                                //       .toString()
+                                                //       .split("T")[0],
+                                                //   poStatus: dataList![index]
+                                                //       .POStatus
+                                                //       .toString(),
+                                                // ),
+                                                child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
                                                       .toString(),
@@ -703,6 +713,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                   poStatus: dataList![index]
                                                       .POStatus
                                                       .toString(),
+                                                  // color: color,
                                                 ),
                                               );
                                             });
@@ -722,7 +733,56 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
             ),
           ],
         ),
-      ),
+        Positioned(
+          bottom: 0,
+          left: 10,
+          child: Container(
+            height: 120,
+            width: 430,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      isPOSelected = true;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isPOSelected ? Colors.green : Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "purchase order",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // setState(() {
+                    //   isPOSelected = false;
+                    // });
+                    (PrLogDetailsScreen(openDrawer: opneDrawer));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isPOSelected ? Colors.grey : Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "purchase request",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
