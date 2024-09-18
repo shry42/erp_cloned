@@ -182,6 +182,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                       DrawerItems.allPurchaseOrderList);
                                 },
                               ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('Generate POs'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.generatePurchaseOrder);
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -189,6 +200,129 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     ),
                   ),
                 ),
+
+//GRN
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.gradient_rounded,
+                        color: Colors.white,
+                      ),
+                      title: const Text('GRN'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create GRN'),
+                                onTap: () {
+                                  widget.onSelectedItem(DrawerItems.createGRN);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create service GRN'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createServiceGRN);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('grn acceptance'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.grnAcceptance);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('grn Approval'),
+                                onTap: () {
+                                  widget
+                                      .onSelectedItem(DrawerItems.grnApproval);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('grn list'),
+                                onTap: () {
+                                  widget.onSelectedItem(DrawerItems.grnList);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('grn rejected items'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.grnRejectedItems);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('grn rejected list'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.grenRejectedList);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('srn acceptance'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.srnAcceptance);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+//
+
                 // Item Master Section
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 200),
@@ -341,10 +475,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           child: Column(
                             children: [
                               ListTile(
-                                leading: const Icon(
-                                  Icons.menu,
-                                  color: Colors.white,
-                                ),
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
                                 title: const Text('Create master menu'),
                                 onTap: () {
                                   widget.onSelectedItem(
@@ -352,10 +486,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 },
                               ),
                               ListTile(
-                                leading: const Icon(
-                                  Icons.menu,
-                                  color: Colors.white,
-                                ),
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
                                 title: const Text('Create sub menu'),
                                 onTap: () {
                                   widget.onSelectedItem(
@@ -363,10 +497,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 },
                               ),
                               ListTile(
-                                leading: const Icon(
-                                  Icons.menu,
-                                  color: Colors.white,
-                                ),
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
                                 title: const Text('User menu list'),
                                 onTap: () {
                                   widget
@@ -374,10 +508,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 },
                               ),
                               ListTile(
-                                leading: const Icon(
-                                  Icons.menu,
-                                  color: Colors.white,
-                                ),
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
                                 title: const Text('Assign menu'),
                                 onTap: () {
                                   widget.onSelectedItem(DrawerItems.assignMenu);
@@ -390,6 +524,64 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     ),
                   ),
                 ),
+
+//Gate Entry
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.telegram,
+                        color: Colors.white,
+                      ),
+                      title: const Text('Gate Entry'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create gate entry'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createGateEntry);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('view gate entry'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.viewGateEntry);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+//
 
                 // Employee Section
                 Padding(

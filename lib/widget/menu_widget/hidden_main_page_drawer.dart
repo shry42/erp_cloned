@@ -1,8 +1,19 @@
 import 'package:erp_copy/model/drawer_item.dart';
+import 'package:erp_copy/screens/gate_entry/create_gate_entry_screen.dart';
+import 'package:erp_copy/screens/gate_entry/view_gate_entry_screen.dart';
+import 'package:erp_copy/screens/grn_screens/create_grn_screen.dart';
+import 'package:erp_copy/screens/grn_screens/create_service_grn_screen.dart';
+import 'package:erp_copy/screens/grn_screens/grn_acceptance_screen.dart';
+import 'package:erp_copy/screens/grn_screens/grn_approval_screen.dart';
+import 'package:erp_copy/screens/grn_screens/grn_list_screen.dart';
+import 'package:erp_copy/screens/grn_screens/grn_rejected_items_screen.dart';
+import 'package:erp_copy/screens/grn_screens/grn_rejected_list_screen.dart';
+import 'package:erp_copy/screens/grn_screens/srn_acceptance_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/add_item_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/block_item_list_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/item_master_list_screen.dart';
 import 'package:erp_copy/screens/po_screens/create_po_screen.dart';
+import 'package:erp_copy/screens/po_screens/generate_po_screen.dart';
 import 'package:erp_copy/screens/pr_screens/create_pr_screen.dart';
 import 'package:erp_copy/screens/pr_screens/pr_lists_screen.dart';
 import 'package:erp_copy/screens/vendor_master/add_vendor_master_screen.dart';
@@ -189,6 +200,37 @@ class _MainpageState extends State<Mainpage> {
       case DrawerItems.allPurchaseOrderList:
         return AddItemScreen(openDrawer: opneDrawer);
 
+      case DrawerItems.generatePurchaseOrder:
+        return GeneratePOScreen(openDrawer: opneDrawer);
+
+//GRN
+
+      case DrawerItems.createGRN:
+        return CreateGRNScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.createServiceGRN:
+        return CreateServiceGRNScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.grnAcceptance:
+        return GRNAcceptanceScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.grnApproval:
+        return GRNApprovalScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.grnList:
+        return GRNListScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.grnRejectedItems:
+        return GRNRejectedItemsScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.grenRejectedList:
+        return GRNRejectedListScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.srnAcceptance:
+        return SRNAcceptanceScreen(openDrawer: opneDrawer);
+
+//
+
 //item master
 
       case DrawerItems.addItem:
@@ -205,6 +247,15 @@ class _MainpageState extends State<Mainpage> {
 
       case DrawerItems.blockItemsList:
         return BlockItemListScreen(openDrawer: opneDrawer);
+
+//Gate Entry
+
+      case DrawerItems.createGateEntry:
+        return CreateGateEntryScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.viewGateEntry:
+        return ViewGateEntryScreen(openDrawer: opneDrawer);
+//
 
 //vendor master
 

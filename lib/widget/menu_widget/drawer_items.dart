@@ -29,6 +29,9 @@ class DrawerItems {
   static const allPurchaseOrderList =
       DrawerItem(title: 'allPurchaseOrderList', icon: FontAwesomeIcons.receipt);
 
+  static const generatePurchaseOrder = DrawerItem(
+      title: 'GeneratePurchaseOrder', icon: FontAwesomeIcons.receipt);
+
 //
 //
   static const createDept =
@@ -109,6 +112,47 @@ class DrawerItems {
       DrawerItem(title: 'userMenuList', icon: Icons.delivery_dining);
 
   static const assignMenu = DrawerItem(title: 'assignMenu', icon: Icons.group);
+
+  // Gate Entry
+
+  static const gateEntry =
+      DrawerItem(title: 'gateEntry', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const createGateEntry =
+      DrawerItem(title: 'creategateEntry', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const viewGateEntry =
+      DrawerItem(title: 'viewGateEntry', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
+  // GRN
+
+  static const createGRN =
+      DrawerItem(title: 'createGRN', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const createServiceGRN = DrawerItem(
+      title: 'createServiceGRN', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const grnAcceptance =
+      DrawerItem(title: 'grnAcceptance', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const grnApproval =
+      DrawerItem(title: 'grnApproval', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const grnList =
+      DrawerItem(title: 'grnList', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const grnRejectedItems = DrawerItem(
+      title: 'grnRejectedItems', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const grenRejectedList = DrawerItem(
+      title: 'grenRejectedList', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const srnAcceptance =
+      DrawerItem(title: 'srnAcceptance', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
 
   // Special item to indicate closing the drawer
   static const closeDrawer =

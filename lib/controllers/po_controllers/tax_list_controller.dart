@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class TaxListController extends GetxController {
-  List<TaxListModel> taxList = [];
+  var taxList = <TaxListModel>[].obs; // Use RxList for reactivity
 
   Future getTaxList(int vendorId) async {
     http.Response response = await http.post(
@@ -18,14 +18,15 @@ class TaxListController extends GetxController {
         'Authorization': 'Bearer ${AppController.accessToken}',
       },
       body: json.encode({
-        "VendorID": vendorId, // Dynamically use the selected item group
+        "VendorID": vendorId,
       }),
     );
     if (response.statusCode == 200) {
       Map<String, dynamic> result = json.decode(response.body);
       List<dynamic> data = result['data'];
-      taxList = data.map((e) => TaxListModel.fromJson(e)).toList();
-      return taxList;
+      taxList.value = data
+          .map((e) => TaxListModel.fromJson(e))
+          .toList(); // Update the reactive list
     } else {
       _handleError(response);
     }

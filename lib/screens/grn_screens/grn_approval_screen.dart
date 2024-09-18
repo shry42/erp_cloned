@@ -22,15 +22,16 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class CreatePOScreen extends StatefulWidget {
-  const CreatePOScreen({Key? key, required this.openDrawer}) : super(key: key);
+class GRNApprovalScreen extends StatefulWidget {
+  const GRNApprovalScreen({Key? key, required this.openDrawer})
+      : super(key: key);
   final VoidCallback openDrawer;
 
   @override
-  _CreatePOScreenState createState() => _CreatePOScreenState();
+  _GRNApprovalScreenState createState() => _GRNApprovalScreenState();
 }
 
-class _CreatePOScreenState extends State<CreatePOScreen> {
+class _GRNApprovalScreenState extends State<GRNApprovalScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _searchController = TextEditingController();
   final GetPODistinctStatusDataController _controller =
@@ -154,7 +155,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 245, 245, 245),
       appBar: AppBar(
-        title: const Text('Create PO'),
+        title: const Text('GRN Approval'),
         backgroundColor: const Color.fromARGB(255, 29, 169, 32),
         actions: [
           ElevatedButton(
