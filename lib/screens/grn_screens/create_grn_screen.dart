@@ -477,94 +477,96 @@ class _CreateGRNScreenState extends State<CreateGRNScreen> {
   }
 
   Widget _buildPOListSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Purchase Order List',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Obx(() {
-          // Make sure getApprovedPoList is an observable list
-          final dataToShow = _getPoLogByVendoridController.poLog.toList();
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Purchase Order List',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          const SizedBox(height: 10),
+          Obx(() {
+            // Make sure getApprovedPoList is an observable list
+            final dataToShow = _getPoLogByVendoridController.poLog.toList();
 
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 20,
-                headingRowColor: MaterialStateColor.resolveWith(
-                    (states) => Colors.grey.shade300),
-                dataRowColor:
-                    MaterialStateColor.resolveWith((states) => Colors.white),
-                dividerThickness: 1,
-                columns: const [
-                  DataColumn(
-                      label: Text('SR NO.',
-                          style: TextStyle(color: Colors.black))),
-                  DataColumn(
-                      label: Text('POTxnID',
-                          style: TextStyle(color: Colors.black))),
-                  DataColumn(
-                      label: Text('PO Code',
-                          style: TextStyle(color: Colors.black))),
-                  DataColumn(
-                      label: Text('PO Date',
-                          style: TextStyle(color: Colors.black))),
-                  DataColumn(
-                      label:
-                          Text('Info', style: TextStyle(color: Colors.black))),
-                ],
-                rows: List.generate(dataToShow.length, (index) {
-                  final poData = dataToShow[index];
-                  return DataRow(
-                    cells: [
-                      DataCell(Text((index + 1).toString(),
-                          style: const TextStyle(color: Colors.black))),
-                      DataCell(Text(poData.poTxnID.toString() ?? '',
-                          style: const TextStyle(color: Colors.black))),
-                      DataCell(Text(poData.poCode ?? '',
-                          style: const TextStyle(color: Colors.black))),
-                      DataCell(Text(
-                          poData.poDate != null
-                              ? '${poData.poDate!.month}/${poData.poDate!.day}/${poData.poDate!.year}'
-                              : '',
-                          style: const TextStyle(color: Colors.black))),
-                      DataCell(
-                        IconButton(
-                          icon: const Icon(Icons.info_outline,
-                              color: Colors.blueGrey),
-                          onPressed: () {
-                            // Implement info button functionality here
-
-                            if (poData.poTxnID != null) {
-                              _getPoItemsController
-                                  .getPoItems(poData.poTxnID!.toInt());
-                              Get.defaultDialog(
-                                title: 'Item List',
-                                content: ItemListDialog(),
-                              );
-                            } else {
-                              Get.snackbar(
-                                  'Error', 'PO Transaction ID is missing',
-                                  snackPosition: SnackPosition.BOTTOM);
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
               ),
-            ),
-          );
-        }),
-      ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columnSpacing: 20,
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.grey.shade300),
+                  dataRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.white),
+                  dividerThickness: 1,
+                  columns: const [
+                    DataColumn(
+                        label: Text('SR NO.',
+                            style: TextStyle(color: Colors.black))),
+                    DataColumn(
+                        label: Text('POTxnID',
+                            style: TextStyle(color: Colors.black))),
+                    DataColumn(
+                        label: Text('PO Code',
+                            style: TextStyle(color: Colors.black))),
+                    DataColumn(
+                        label: Text('PO Date',
+                            style: TextStyle(color: Colors.black))),
+                    DataColumn(
+                        label: Text('Info',
+                            style: TextStyle(color: Colors.black))),
+                  ],
+                  rows: List.generate(dataToShow.length, (index) {
+                    final poData = dataToShow[index];
+                    return DataRow(
+                      cells: [
+                        DataCell(Text((index + 1).toString(),
+                            style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(poData.poTxnID.toString() ?? '',
+                            style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(poData.poCode ?? '',
+                            style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(
+                            poData.poDate != null
+                                ? '${poData.poDate!.month}/${poData.poDate!.day}/${poData.poDate!.year}'
+                                : '',
+                            style: const TextStyle(color: Colors.black))),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(Icons.info_outline,
+                                color: Colors.blueGrey),
+                            onPressed: () {
+                              // Implement info button functionality here
+
+                              if (poData.poTxnID != null) {
+                                _getPoItemsController
+                                    .getPoItems(poData.poTxnID!.toInt());
+                                Get.defaultDialog(
+                                  title: 'Item List',
+                                  content: ItemListDialog(),
+                                );
+                              } else {
+                                Get.snackbar(
+                                    'Error', 'PO Transaction ID is missing',
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 

@@ -1,4 +1,4 @@
-class GRNTransactionDetails {
+class GRNTransactionDetailsModel {
   String srNo;
   String poTxnID;
   String sapID;
@@ -17,7 +17,7 @@ class GRNTransactionDetails {
   String remainingQuantity;
   String acceptedQty;
 
-  GRNTransactionDetails({
+  GRNTransactionDetailsModel({
     required this.srNo,
     required this.poTxnID,
     required this.sapID,
@@ -39,22 +39,23 @@ class GRNTransactionDetails {
 
   Map<String, dynamic> toJson() {
     return {
-      'srNo': srNo,
-      'poTxnID': poTxnID,
-      'sapID': sapID,
-      'itemGroup': itemGroup,
-      'itemID': itemID,
-      'itemName': itemName,
-      'batchNo': batchNo,
-      'serialNo': serialNo,
-      'poQty': poQty,
-      'poRate': poRate,
-      'receivedQty': receivedQty,
-      'receivedRate': receivedRate,
-      'purchaseUOM': purchaseUOM,
-      'gateEntryID': gateEntryID,
-      'totalReceivedQuantity': totalReceivedQuantity,
-      'remainingQuantity': remainingQuantity,
+      'SR NO.': srNo,
+      'POTxnID': poTxnID,
+      'SAPID': sapID,
+      'Item_Group': itemGroup,
+      'ItemID': itemID,
+      'ItemName': itemName,
+      'BatchNo': batchNo,
+      'SerialNo': serialNo,
+      'POQty': poQty,
+      'PORate': poRate,
+      'ReceivedQty': receivedQty,
+      'ReceivedRate': receivedRate,
+      'Purchase UOM': purchaseUOM,
+      'GateEntryID': gateEntryID,
+      'Total Received Quantity': totalReceivedQuantity,
+      'Remaining Quantity': remainingQuantity,
+      "RemainingQuantity": "2",
       'acceptedQty': acceptedQty,
     };
   }

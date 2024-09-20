@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/model/grn_models/submit_grn/grn_transac_model.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
@@ -17,7 +16,7 @@ class InsertGRNTransactionController extends GetxController {
     required String invoiceNo,
     required String invoiceDate,
     required String challanNo,
-    required List<GRNTransactionDetails> transactionDetails,
+    required List<GRNTransactionDetailsModel> transactionDetails,
     required List<PlatformFile> files,
   }) async {
     try {
@@ -39,18 +38,16 @@ class InsertGRNTransactionController extends GetxController {
       request.fields['TransactionDetails'] =
           json.encode(transactionDetails.map((e) => e.toJson()).toList());
 
-      // Add files to the request
-      if (files.isNotEmpty) {
-        for (var file in files) {
-          if (file.path != null) {
-            request.files.add(
-              await http.MultipartFile.fromPath(
-                'files[]', // Assuming backend expects 'files[]' for multiple files
-                file.path!,
-                filename: file.name,
-              ),
-            );
-          }
+      // Add files to the request, ensuring they are properly attached
+      for (var file in files) {
+        if (file.path != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'files[]', // Assuming backend expects 'files[]' for multiple files
+              file.path!,
+              filename: file.name, // Optional, adds the file's original name
+            ),
+          );
         }
       }
 

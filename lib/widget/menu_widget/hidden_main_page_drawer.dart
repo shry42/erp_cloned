@@ -215,7 +215,7 @@ class _MainpageState extends State<Mainpage> {
         return GRNAcceptanceScreen(openDrawer: opneDrawer);
 
       case DrawerItems.grnApproval:
-        return GRNApprovalScreen(openDrawer: opneDrawer);
+        return GRNListApprovalScreen(openDrawer: opneDrawer);
 
       case DrawerItems.grnList:
         return GRNListScreen(openDrawer: opneDrawer);

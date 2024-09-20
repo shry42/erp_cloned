@@ -94,9 +94,9 @@ class GRNBasketController extends GetxController {
     print('Submitting GRN with ${basketItems.length} items on date: $grnDate');
 
     // Convert basket items to GRNTransactionDetails model
-    final List<GRNTransactionDetails> transactionDetails =
+    final List<GRNTransactionDetailsModel> transactionDetails =
         basketItems.map((item) {
-      return GRNTransactionDetails(
+      return GRNTransactionDetailsModel(
         srNo: item.srNo.toString(),
         poTxnID: item.poTxnId.toString(),
         sapID: item.venusId.toString(),
@@ -110,8 +110,8 @@ class GRNBasketController extends GetxController {
         receivedQty: item.receivedQuantity.toString(),
         receivedRate: item.receivedRate.toString(),
         purchaseUOM: item.purchaseUOM.toString(),
-        // gateEntryID: item.gateEntryId.toString(),
-        gateEntryID: "1439",
+        gateEntryID: item.gateEntryId.toString(),
+        // gateEntryID: "1359",
         totalReceivedQuantity: item.totalReceivedQuantity.toString(),
         remainingQuantity: item.remainingQuantity.toString(),
         acceptedQty: item.acceptedQuantity.toString(),

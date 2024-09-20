@@ -553,7 +553,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
 
   Widget _buildButtonsTabBarSection() {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Column(
         children: [
           ButtonsTabBar(
@@ -566,6 +566,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
               Tab(text: 'Item Addition'),
               Tab(text: 'Attachments'),
               Tab(text: 'Currency Conversion'),
+              Tab(text: 'Details'),
             ],
           ),
           const SizedBox(height: 10),
@@ -576,6 +577,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                 _buildItemAdditionTab(),
                 _buildAttachmentsTab(),
                 _buildCurrencyConversionTab(),
+                _buildDetailsTab(),
               ],
             ),
           ),
@@ -982,6 +984,64 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
             const SizedBox(height: 10),
             Obx(() => _buildTextField(
                   'Last Update',
+                  TextEditingController(
+                      text: _exchangeRatesController.fetchedOn.value),
+                  readOnly: true,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Details',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Obx(() => _buildTextField(
+                  'Quotation Date',
+                  TextEditingController(
+                      text: _exchangeRatesController.usdInr.value.toString()),
+                  readOnly: true,
+                )),
+            const SizedBox(height: 10),
+            Obx(() => _buildTextField(
+                  'Email ID',
+                  TextEditingController(
+                      text: _exchangeRatesController.eurInr.value.toString()),
+                  readOnly: true,
+                )),
+            const SizedBox(height: 10),
+            Obx(() => _buildTextField(
+                  'Ref no.',
+                  TextEditingController(
+                      text: _exchangeRatesController.cnyInr.value.toString()),
+                  readOnly: true,
+                )),
+            const SizedBox(height: 10),
+            Obx(() => _buildTextField(
+                  'Basic Total',
+                  TextEditingController(
+                      text: _exchangeRatesController.jpyInr.value.toString()),
+                  readOnly: true,
+                )),
+            const SizedBox(height: 10),
+            Obx(() => _buildTextField(
+                  'Tax',
+                  TextEditingController(
+                      text: _exchangeRatesController.fetchedOn.value),
+                  readOnly: true,
+                )),
+            Obx(() => _buildTextField(
+                  'Grand Total',
                   TextEditingController(
                       text: _exchangeRatesController.fetchedOn.value),
                   readOnly: true,
