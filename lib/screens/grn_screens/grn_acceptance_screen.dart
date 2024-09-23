@@ -155,7 +155,9 @@ class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
                         return GestureDetector(
                           onTap: () {
                             ggliac.getGRNList(item.grnTxnID);
-                            Get.to(GRNItemsScreen());
+                            Get.to(GRNItemsScreen(
+                              GRNTxnID: item.grnTxnID,
+                            ));
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

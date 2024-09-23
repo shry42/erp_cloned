@@ -1,6 +1,10 @@
 import 'package:erp_copy/model/drawer_item.dart';
 import 'package:erp_copy/screens/gate_entry/create_gate_entry_screen.dart';
 import 'package:erp_copy/screens/gate_entry/view_gate_entry_screen.dart';
+import 'package:erp_copy/screens/gis_screens/create_gis_screens.dart';
+import 'package:erp_copy/screens/gis_screens/gis_approval_screen.dart';
+import 'package:erp_copy/screens/gis_screens/gis_status_list_screen.dart';
+import 'package:erp_copy/screens/gis_screens/my_gis_approval_screen.dart';
 import 'package:erp_copy/screens/grn_screens/create_grn_screen.dart';
 import 'package:erp_copy/screens/grn_screens/create_service_grn_screen.dart';
 import 'package:erp_copy/screens/grn_screens/grn_acceptance_screen.dart';
@@ -16,6 +20,8 @@ import 'package:erp_copy/screens/po_screens/create_po_screen.dart';
 import 'package:erp_copy/screens/po_screens/generate_po_screen.dart';
 import 'package:erp_copy/screens/pr_screens/create_pr_screen.dart';
 import 'package:erp_copy/screens/pr_screens/pr_lists_screen.dart';
+import 'package:erp_copy/screens/stock_posting/stock_movement_screen.dart';
+import 'package:erp_copy/screens/stock_posting/stock_posting_screen.dart';
 import 'package:erp_copy/screens/vendor_master/add_vendor_master_screen.dart';
 import 'package:erp_copy/screens/vendor_master/pending_vendors_screen_list.dart';
 import 'package:erp_copy/screens/vendor_master/vendor_master_list_screen.dart';
@@ -230,6 +236,28 @@ class _MainpageState extends State<Mainpage> {
         return SRNAcceptanceScreen(openDrawer: opneDrawer);
 
 //
+
+//STOCK POSTING
+
+      case DrawerItems.stockposting:
+        return StockPostingScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.stockMovement:
+        return StockMovementScreen(openDrawer: opneDrawer);
+
+// GIS
+
+      case DrawerItems.CcreateGIS:
+        return CreateGISScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.gisApproval:
+        return GISApprovalScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.gisStatusList:
+        return GISStatusListScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.myGisApproval:
+        return MyGISApprovalScreen(openDrawer: opneDrawer);
 
 //item master
 

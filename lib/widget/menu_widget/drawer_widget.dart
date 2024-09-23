@@ -321,6 +321,144 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
 
+                //
+                //STOCK POSTING
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.travel_explore,
+                        color: Colors.white,
+                      ),
+                      title: const Text('Stock Posting'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('stock posting'),
+                                onTap: () {
+                                  widget
+                                      .onSelectedItem(DrawerItems.stockposting);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('stock movement'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.stockMovement);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                //
+
+                //GIS
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.discord_sharp,
+                        color: Colors.white,
+                      ),
+                      title: const Text('GIS'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create GIS'),
+                                onTap: () {
+                                  widget.onSelectedItem(DrawerItems.CcreateGIS);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('GIS Approval'),
+                                onTap: () {
+                                  widget
+                                      .onSelectedItem(DrawerItems.gisApproval);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('GIS Status list'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.gisStatusList);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('My GIS '),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.myGisApproval);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                //
+
 //
 
                 // Item Master Section

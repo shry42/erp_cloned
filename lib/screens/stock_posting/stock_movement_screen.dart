@@ -1,30 +1,30 @@
-import 'package:erp_copy/controllers/grn_controllers/get_rejected_item_list_controller.dart';
-import 'package:erp_copy/model/grn_models/get_rejected_item_list_model.dart';
-import 'package:erp_copy/screens/grn_screens/grn_rejcted_list_inside_screen.dart';
-import 'package:erp_copy/widget/grn_cards/grn_rejected_list_items_card.dart';
+import 'package:erp_copy/controllers/grn_controllers/get_all_grn_list_controller.dart';
+import 'package:erp_copy/model/grn_models/get_all_grn_list_model.dart';
+import 'package:erp_copy/screens/grn_screens/all_grn_list_inside.dart';
+import 'package:erp_copy/widget/grn_cards/all_grn_list_card.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-class GRNRejectedListScreen extends StatefulWidget {
-  const GRNRejectedListScreen({
+class StockMovementScreen extends StatefulWidget {
+  const StockMovementScreen({
     super.key,
     required this.openDrawer,
   });
   final VoidCallback openDrawer;
 
   @override
-  State<GRNRejectedListScreen> createState() => _GRNRejectedListScreenState();
+  State<StockMovementScreen> createState() => _StockMovementScreenState();
 }
 
-class _GRNRejectedListScreenState extends State<GRNRejectedListScreen> {
+class _StockMovementScreenState extends State<StockMovementScreen> {
   TextEditingController searchController = TextEditingController();
 
-  final GetRejectedItemListController ggrnlc = GetRejectedItemListController();
+  final GetAllGrnListController gaglc = GetAllGrnListController();
 
-  List<GetRejectedItemListModel> itemList = [];
-  List<GetRejectedItemListModel> filteredItemList = [];
+  List<GetAllGRNListModel> itemList = [];
+  List<GetAllGRNListModel> filteredItemList = [];
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _GRNRejectedListScreenState extends State<GRNRejectedListScreen> {
   }
 
   void _loadItemData() async {
-    var data = await ggrnlc.getRejectedItems();
+    var data = await gaglc.getAllGRNList();
     setState(() {
       if (data != null && data.isNotEmpty) {
         itemList = data;
@@ -83,7 +83,7 @@ class _GRNRejectedListScreenState extends State<GRNRejectedListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'GRN Rejected List',
+                'GRN Lists',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               const SizedBox(width: 80),
@@ -151,27 +151,32 @@ class _GRNRejectedListScreenState extends State<GRNRejectedListScreen> {
                         var item = filteredItemList[index];
                         return GestureDetector(
                           onTap: () {
-                            Get.to(GrnRejectedItemsScreen(
-                              grnTxnId: int.parse(item.grnTxnID.toString()),
+                            Get.to(GRNListInsideScreen(
+                              grnTxnID: item.grnTxnID!.toInt(),
                             ));
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
-                            child: GRNRejectedListCard(
+                            child: AllGRNListCard(
                               duration: 1,
                               grnNumber: item.grnTxnID
-                                  .toString(), // Mapping GRN Number to grnTxnID
-                              invoiceNo:
-                                  item.sapID, // Mapping Invoice No to sapID
-                              invoiceDate: item
-                                  .createdAt, // Mapping Invoice Date to createdAt
-                              challanNo: item.itemID
-                                  .toString(), // Mapping Challan No to itemID
-                              status: item
-                                  .itemGroup, // Assuming Status is related to itemGroup
-                              submittedOn: item.qty
-                                  .toString(), // Mapping Submitted On to qty (if applicable)
+                                  .toString(), // Assuming this is GRN Number
+                              invoiceNo: item
+                                  .invoiceNo, // Replace with the actual property for Invoice No.
+                              invoiceDate: item.invoiceDate != null
+                                  ? item.invoiceDate!.toIso8601String()
+                                  : null, // Replace with actual property
+                              challanNo: item
+                                  .challanNo, // Replace with the actual property for Challan No.
+                              grnDate: item.txnDate
+                                  .toIso8601String(), // Assuming createdAt is the GRN Date
+                              createdBy: item
+                                  .username, // Replace with actual property for Created By
+                              vendorName: item
+                                  .vendorName, // Replace with actual property for Vendor Name
+                              status: item.grnApprovalStatus
+                                  .toString(), // Replace with actual property for Status
                             ),
                           ),
                         );

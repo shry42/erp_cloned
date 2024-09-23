@@ -28,7 +28,7 @@ class GetRejectedItemListController extends GetxController {
         Map<String, dynamic> result = json.decode(response.body);
 
         // Print full response to check its structure
-        debugPrint('Full Response: ${result.toString()}');
+        // debugPrint('Full Response: ${result.toString()}');
 
         // Ensure the response has the correct structure
         if (result.containsKey('data') && result['data'] is List) {
@@ -38,7 +38,7 @@ class GetRejectedItemListController extends GetxController {
           if (data.length > 1 && data[1] is List) {
             List<dynamic> secondList = data[1];
 
-            debugPrint('Second List Data: ${secondList.toString()}');
+            // debugPrint('Second List Data: ${secondList.toString()}');
             if (secondList.isNotEmpty) {
               // Map the second list's items to your model
               rejectedList.value = secondList

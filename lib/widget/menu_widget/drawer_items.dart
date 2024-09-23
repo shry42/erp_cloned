@@ -154,6 +154,31 @@ class DrawerItems {
 
   //
 
+  //Sock posting
+
+  static const stockposting =
+      DrawerItem(title: 'stockPosting', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const stockMovement =
+      DrawerItem(title: 'stockMovement', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
+  //GIS
+
+  static const CcreateGIS =
+      DrawerItem(title: 'CcreateGIS', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const gisApproval =
+      DrawerItem(title: 'gisApproval', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const gisStatusList =
+      DrawerItem(title: 'gisStatusList', icon: FontAwesomeIcons.walkieTalkie);
+  static const myGisApproval =
+      DrawerItem(title: 'myGisApproval', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
   // Special item to indicate closing the drawer
   static const closeDrawer =
       DrawerItem(title: 'Close Drawer', icon: Icons.close);

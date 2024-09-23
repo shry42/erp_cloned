@@ -1,10 +1,8 @@
 import 'package:erp_copy/controllers/grn_controllers/get_rejected_item_list_controller.dart';
 import 'package:erp_copy/model/grn_models/get_rejected_item_list_model.dart';
-import 'package:erp_copy/screens/grn_screens/grn_list_in_approval_screen.dart';
 import 'package:erp_copy/widget/grn_cards/grn_rejected_items_card.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class GRNRejectedItemsScreen extends StatefulWidget {
   const GRNRejectedItemsScreen({
