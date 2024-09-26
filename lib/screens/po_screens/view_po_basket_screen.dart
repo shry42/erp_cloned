@@ -1,9 +1,53 @@
 import 'package:erp_copy/controllers/po_controllers/view_po_basket_controller.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ViewPOBasketScreen extends StatefulWidget {
+  final String PODate;
+  final String pRTxnID;
+  final String vendorId;
+  final String quoteDate;
+  final String rev_NO;
+  final String buyerName;
+  final String buyerEmailID;
+  final String buyerTel;
+  final String buyerMob;
+  final String supplierPOCName;
+  final String supplierPOCEmailID;
+  final String supplierPOCTel;
+  final String supplierPOCMob;
+  final String deliveryTerms;
+  final String paymentTerms;
+  final String headerNote;
+  final String approvalStatus;
+  final String revisionNumber;
+  final PlatformFile? filePath;
+
+  const ViewPOBasketScreen({
+    Key? key,
+    required this.PODate,
+    required this.pRTxnID,
+    required this.vendorId,
+    required this.quoteDate,
+    required this.rev_NO,
+    required this.buyerName,
+    required this.buyerEmailID,
+    required this.buyerTel,
+    required this.buyerMob,
+    required this.supplierPOCName,
+    required this.supplierPOCEmailID,
+    required this.supplierPOCTel,
+    required this.supplierPOCMob,
+    required this.deliveryTerms,
+    required this.paymentTerms,
+    required this.headerNote,
+    required this.approvalStatus,
+    required this.revisionNumber,
+    this.filePath,
+  }) : super(key: key);
+
   @override
   State<ViewPOBasketScreen> createState() => _ViewPOBasketScreenState();
 }
@@ -107,7 +151,28 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
                         DateFormat('yyyy-MM-dd').format(DateTime.now());
 
                     // Example code to submit the PO basket items
-                    await poBasketController.submitPOBasket(poDate: poDate);
+                    await poBasketController.submitPOBasket(
+                      poDate: widget.PODate,
+                      pRTxnID: widget.pRTxnID,
+                      vendorId: widget.vendorId,
+                      quoteDate: widget.quoteDate,
+                      rev_NO: widget.rev_NO,
+                      buyerName: widget.buyerName,
+                      buyerEmailID: widget.buyerEmailID,
+                      buyerTel: widget.buyerTel,
+                      buyerMob: widget.buyerMob,
+                      supplierPOCName: widget.supplierPOCName,
+                      supplierPOCEmailID: widget.supplierPOCEmailID,
+                      supplierPOCTel: widget.supplierPOCTel,
+                      supplierPOCMob: widget.supplierPOCEmailID,
+                      deliveryTerms: widget.deliveryTerms,
+                      paymentTerms: widget.paymentTerms,
+                      headerNote: widget.headerNote,
+                      approvalStatus: widget.approvalStatus,
+                      revisionNumber: widget.revisionNumber,
+                      filePath: widget
+                          .filePath, // or provide a PlatformFile if you have one
+                    );
 
                     poBasketController.resetBasket();
                     setState(() {});

@@ -17,7 +17,7 @@ class InsertGRNTransactionController extends GetxController {
     required String invoiceDate,
     required String challanNo,
     required List<GRNTransactionDetailsModel> transactionDetails,
-    required List<PlatformFile> files,
+    required PlatformFile? filePath,
   }) async {
     try {
       // Create multipart request
@@ -39,16 +39,16 @@ class InsertGRNTransactionController extends GetxController {
           json.encode(transactionDetails.map((e) => e.toJson()).toList());
 
       // Add files to the request, ensuring they are properly attached
-      for (var file in files) {
-        if (file.path != null) {
-          request.files.add(
-            await http.MultipartFile.fromPath(
-              'files[]', // Assuming backend expects 'files[]' for multiple files
-              file.path!,
-              filename: file.name, // Optional, adds the file's original name
-            ),
-          );
-        }
+      // Check if filePath is provided and valid
+      if (filePath != null &&
+          filePath.path != null &&
+          filePath.path!.isNotEmpty) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+              'files', filePath.path!), // Use filePath.path
+        );
+      } else {
+        request.fields['files'] = '';
       }
 
       // Add authorization header

@@ -124,6 +124,54 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
 
+//
+//SERVICE PR
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.receipt,
+                        color: Colors.white,
+                      ),
+                      title: const Text('Servie PR'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create service PR'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createServicePR);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+//
+
                 // Purchase Order Section
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 200),

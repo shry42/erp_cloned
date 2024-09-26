@@ -1,55 +1,79 @@
-import 'package:erp_copy/controllers/stock_posting_controllers/allocate_stock_posting_controller.dart';
+import 'package:erp_copy/controllers/gis_controllers/gis_approval_controller.dart';
+import 'package:erp_copy/model/gis_model/gis_approval_model.dart';
+import 'package:erp_copy/screens/gis_screens/gis_approval_inside_screen.dart';
+import 'package:erp_copy/widget/gis_cards/approvals_gis_card.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:erp_copy/controllers/stock_posting_controllers/na_stock_posting_list_controller.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GISApprovalScreen extends StatefulWidget {
-  const GISApprovalScreen({super.key, required this.openDrawer});
-
+  const GISApprovalScreen({
+    super.key,
+    required this.openDrawer,
+  });
   final VoidCallback openDrawer;
 
   @override
-  _GISApprovalScreenState createState() => _GISApprovalScreenState();
+  State<GISApprovalScreen> createState() => _GISApprovalScreenState();
 }
 
 class _GISApprovalScreenState extends State<GISApprovalScreen> {
-  final NaStockPostingListController controller =
-      Get.put(NaStockPostingListController());
+  TextEditingController searchController = TextEditingController();
 
-  final AllocateStockPostingController aspc =
-      Get.put(AllocateStockPostingController());
+  final GisApprovalController gaglc = GisApprovalController();
 
-  List<StockItem> pilotStores = [];
-  List<StockItem> warehouse = [];
-  List<StockItem> rndStores = [];
-  List<StockItem> nonAllocatedPool = []; // State for non-allocated pool
+  List<GISApprovalsModel> itemList = [];
+  List<GISApprovalsModel> filteredItemList = [];
 
   @override
   void initState() {
     super.initState();
-    // Fetch data on initialization
-    controller.getAllGRNList().then((_) {
-      // Update nonAllocatedPool after fetching
-      nonAllocatedPool = controller.naStockList
-          .map((apiItem) => StockItem(
-                apiItem.sapID,
-                apiItem.itemID.toString(),
-                apiItem.batchNo,
-                apiItem.serialNo,
-                apiItem.internalCode,
-                apiItem.naStock,
-                itemGroup: "Anode - Raw materials", // Default value
-                purchaseUOM: "KGS", // Default value
-                id: apiItem.id,
-              ))
-          .toList();
-      setState(() {}); // Update UI
+    // searchController.addListener(_filterItems);
+    _loadItemData();
+  }
+
+  void _loadItemData() async {
+    var data = await gaglc.getApprovalsList();
+    setState(() {
+      if (data != null && data.isNotEmpty) {
+        itemList = data;
+        filteredItemList = data;
+      } else {
+        // Handle the case where no data is returned from API
+        itemList = [];
+        filteredItemList = [];
+      }
     });
+  }
+
+  // void _filterItems() {
+  //   String query =
+  //       searchController.text.toLowerCase().trim(); // Trim whitespace
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       // If the search query is empty, show all items
+  //       filteredItemList = itemList;
+  //     } else {
+  //       filteredItemList = itemList.where((item) {
+  //         return (item.grnTxID?.toString().toLowerCase().contains(query) ??
+  //             false);
+  //       }).toList();
+  //     }
+  //   });
+  // }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    double _height = MediaQuery.sizeOf(context).height * 0.18;
+    double _width = MediaQuery.sizeOf(context).width * 0.90;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 68, 168, 71),
@@ -59,36 +83,10 @@ class _GISApprovalScreenState extends State<GISApprovalScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'Stock Posting',
+                'GIS Approvals List',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  // Ensure UI data is synchronized with controller before posting
-                  aspc.warehouseItems.clear();
-                  aspc.pilotStoreItems.clear();
-                  aspc.rndPoolItems.clear();
-
-                  // Convert StockItems to Maps and assign to controller
-                  aspc.warehouseItems.addAll(warehouse
-                      .map((item) => item.toJsonForAllocation())
-                      .toList());
-                  aspc.pilotStoreItems.addAll(pilotStores
-                      .map((item) => item.toJsonForAllocation())
-                      .toList());
-                  aspc.rndPoolItems.addAll(rndStores
-                      .map((item) => item.toJsonForAllocation())
-                      .toList());
-
-                  await aspc.allocateStockPosting();
-                },
-                child: const Text(
-                  'Allocate',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
+              const SizedBox(width: 80),
               DrawerMenuWidget(
                 onClicked: widget.openDrawer,
               ),
@@ -99,144 +97,90 @@ class _GISApprovalScreenState extends State<GISApprovalScreen> {
           )
         ],
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        if (nonAllocatedPool.isEmpty) {
-          return Center(child: Text("No data available"));
-        }
-
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              buildStockSection('Non Allocated Pool', nonAllocatedPool),
-              buildStockSection('Pilot Stores', pilotStores),
-              buildStockSection('Warehouse', warehouse),
-              buildStockSection('RnD Stores', rndStores),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget buildStockSection(String title, List<StockItem> items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          child: DragTarget<StockItem>(
-            builder: (context, candidateData, rejectedData) {
-              return ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return buildDraggableStockItem(items[index], items);
-                },
-              );
-            },
-            onWillAccept: (data) => data != null && !items.contains(data),
-            onAccept: (StockItem item) {
-              setState(() {
-                items.add(item); // Add to the new section
-                nonAllocatedPool.remove(item); // Remove from Non Allocated Pool
-              });
-            },
-          ),
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget buildDraggableStockItem(StockItem item, List<StockItem> sourceList) {
-    return Draggable<StockItem>(
-      data: item,
-      child: buildStockItemTile(item),
-      feedback: Material(
-        elevation: 4.0,
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 32),
-          child: buildStockItemTile(item),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 20),
+                  child: SizedBox(
+                    height: 35,
+                    width: 390,
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        focusColor: Colors.black,
+                        filled: true,
+                        fillColor: const Color(0xfff1f1f1),
+                        border: OutlineInputBorder(
+                          gapPadding: 20,
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Colors.green,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Colors.grey)),
+                        hintText: "Search by gis numbers",
+                        hintStyle:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
+                        suffixIcon: const Icon(Icons.search),
+                        prefixIconColor: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            filteredItemList.isEmpty
+                ? const Center(
+                    child: Text('No items found'),
+                  )
+                : SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: filteredItemList.length,
+                      itemBuilder: (context, index) {
+                        var item = filteredItemList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(GISApprovalInsideScreen(
+                              GISTxnID: item.gisTxnID!.toInt(),
+                            ));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: GISApprovalCard(
+                              duration: 1,
+                              gisNumber: item.gisTxnID.toString(), // GIS Number
+                              txnDirection: item.txnDirection, // Txn Direction
+                              woTxnID: item.woTxnID.toString(), // WO TxnID
+                              txnDate: item.txnDate != null
+                                  ? item.txnDate!.toString()
+                                  : null, // Txn Date
+                              issueTo: item.issuedTo, // Issue To
+                              projectCode: item.projectCode, // Project Code
+                              department: item.department, // Department
+                              userName: item.username, // User Name
+                              status: item.gisStatus, // Status
+                              type: item.type, // Type
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+          ],
         ),
       ),
-      childWhenDragging: Opacity(
-        opacity: 0.5,
-        child: buildStockItemTile(item),
-      ),
-      onDragCompleted: () {
-        setState(() {
-          sourceList.remove(item); // Remove from the original list
-        });
-      },
     );
-  }
-
-  Widget buildStockItemTile(StockItem item) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: ListTile(
-        tileColor: Color.fromARGB(255, 56, 95, 56),
-        title: Text('${item.internalCode} - Stock: ${item.stock}'),
-        subtitle: Text('Venus ID: ${item.venusId}, Item ID: ${item.itemId}'),
-        dense: true,
-      ),
-    );
-  }
-}
-
-class StockItem {
-  final String venusId;
-  final String itemId;
-  final String batchNo;
-  final String serialNo;
-  final String internalCode;
-  final int stock;
-  final String itemGroup; // New property
-  final String purchaseUOM; // New property
-  final int id; // New property
-
-  StockItem(
-    this.venusId,
-    this.itemId,
-    this.batchNo,
-    this.serialNo,
-    this.internalCode,
-    this.stock, {
-    this.itemGroup = "Anode - Raw materials", // Default value
-    this.purchaseUOM = "KGS", // Default value
-    this.id = 0, // Default placeholder
-  });
-
-  Map<String, dynamic> toJsonForAllocation() {
-    return {
-      'ItemID': int.parse(itemId), // Assuming ItemID is an integer
-      'ItemName': internalCode, // Adjust as necessary
-      'BatchNo': batchNo,
-      'SerialNo': serialNo,
-      'InternalCode': internalCode,
-      'ItemGroup': itemGroup,
-      'PurchaseUOM': purchaseUOM,
-      'NAStock': stock,
-      'PostDate': DateTime.now()
-          .toIso8601String(), // Set it to the correct date if needed
-      'id': id, // Use actual ID if available
-      'SAP_ID': venusId, // Adjust as necessary
-    };
   }
 }

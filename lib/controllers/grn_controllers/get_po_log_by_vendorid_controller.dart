@@ -13,7 +13,7 @@ class GetPoLogByVendoridController extends GetxController {
   var isLoading = false.obs; // Loading state
 
   // Method to fetch "Entry By" users
-  getPoLog(int vendorID) async {
+  getPoLog(int vendorID, String? type) async {
     isLoading(true); // Start loading
     try {
       http.Response response = await http.post(
@@ -24,7 +24,7 @@ class GetPoLogByVendoridController extends GetxController {
         },
         body: jsonEncode({
           'VendorID': vendorID,
-          'type': 'goods',
+          'type': type,
         }),
       );
 

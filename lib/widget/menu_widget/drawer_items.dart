@@ -179,6 +179,16 @@ class DrawerItems {
 
   //
 
+//
+  //Service PR
+
+  static const createServicePR =
+      DrawerItem(title: 'createServicePR', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
+//
+
   // Special item to indicate closing the drawer
   static const closeDrawer =
       DrawerItem(title: 'Close Drawer', icon: Icons.close);

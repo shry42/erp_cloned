@@ -2,6 +2,7 @@ import 'package:erp_copy/controllers/item_master_controller/get_item_master_list
 import 'package:erp_copy/controllers/pr_controllers/add_to_basket_controller.dart';
 import 'package:erp_copy/controllers/pr_controllers/insert_pr_controller.dart';
 import 'package:erp_copy/model/item_master/item_master_list_model.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,27 @@ class _ViewBasketScreenState extends State<ViewBasketScreen> {
       Get.find<GetItemsMastersListcontroller>();
   final InsertPRController insertPRController = Get.put(InsertPRController());
 
+  List<PlatformFile> _selectedFiles = []; // List for selected files
+
+  Future<void> _chooseFiles() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          _selectedFiles = result.files.length > 5
+              ? result.files.sublist(0, 5)
+              : result.files;
+        });
+      }
+    } catch (e) {
+      print("Error picking files: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +51,9 @@ class _ViewBasketScreenState extends State<ViewBasketScreen> {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _chooseFiles();
+              },
               child: const Text('Choose files'),
             ),
             Expanded(
@@ -137,11 +161,11 @@ class _ViewBasketScreenState extends State<ViewBasketScreen> {
 
 // Submit the constructed payload
                     await insertPRController.insertPR(
-                      transactionDate: transactionDate, // 'yyyy-MM-dd' format
-                      requiredDate: requiredDate, // 'yyyy-MM-dd' format
-                      projectCode: projectCode, // String
-                      productArr: productArr, // List<Map<String, dynamic>>
-                    );
+                        transactionDate: transactionDate, // 'yyyy-MM-dd' format
+                        requiredDate: requiredDate, // 'yyyy-MM-dd' format
+                        projectCode: projectCode, // String
+                        productArr: productArr, // List<Map<String, dynamic>>
+                        filePath: _selectedFiles.first);
 
                     basketController.resetBasket();
                     setState(() {});

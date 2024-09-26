@@ -160,7 +160,7 @@ class _SRNAcceptanceScreenState extends State<SRNAcceptanceScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Get.to(() => ViewPOBasketScreen());
+              // Get.to(() => ViewPOBasketScreen());
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,

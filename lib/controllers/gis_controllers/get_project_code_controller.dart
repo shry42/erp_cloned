@@ -8,11 +8,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GetProjectCodeGISController extends GetxController {
-  List<GetProjectCodeGISModel> getProjectCodelist = [];
+  var getProjectCodelist = <GetProjectCodeGISModel>[].obs; // Use RxList
 
   getProjectcodeList() async {
     http.Response response = await http.get(
-      Uri.parse('${ApiService.base}/api/api/getProjectCode'),
+      Uri.parse('${ApiService.base}/api/getProjectCode'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${AppController.accessToken}',
@@ -22,7 +22,7 @@ class GetProjectCodeGISController extends GetxController {
       Map<String, dynamic> result = json.decode(response.body);
       List<dynamic> data = result['data'];
 
-      getProjectCodelist =
+      getProjectCodelist.value =
           data.map((e) => GetProjectCodeGISModel.fromJson(e)).toList();
 
       return getProjectCodelist;

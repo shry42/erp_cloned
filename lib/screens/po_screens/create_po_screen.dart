@@ -58,6 +58,9 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
   final Rx<TaxListModel?> selectedTax =
       Rx<TaxListModel?>(null); // To hold the selected value
 
+  String? _selectedTax;
+  double _taxRate = 0;
+
   var selectedVendor = Rx<VendorModel?>(null); // Reactive vendor variable
   var selectedDeliveryTerm =
       Rx<DeliveryTermsModel?>(null); // Reactive delivery term
@@ -159,7 +162,52 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Get.to(() => ViewPOBasketScreen());
+              // Gather all required data
+              String poDate = currentDate ?? '';
+              String prTxnID = selectedPRTxnID.value.toString();
+              String vendorId =
+                  selectedVendor.value?.vendorID?.toString() ?? '';
+              String quoteDate =
+                  ''; // This needs to be added to the form if required
+              String revNo = '0'; // From the Rev. No. field
+              String buyerName = ''; // This needs to be added to the form
+              String buyerEmailID = ''; // This needs to be added to the form
+              String buyerTel = ''; // This needs to be added to the form
+              String buyerMob = ''; // This needs to be added to the form
+              String supplierPOCName = selectedVendor.value?.vendorName ?? '';
+              String supplierPOCEmailID = selectedVendor.value?.emailID ?? '';
+              String supplierPOCTel = selectedVendor.value?.telephone ?? '';
+              String supplierPOCMob = selectedVendor.value?.mobilePhone ?? '';
+              String deliveryTerms = selectedDeliveryTerm.value?.terms ?? '';
+              String paymentTerms = selectedPaymentTerm.value?.terms ?? '';
+              String headerNote = ''; // This needs to be added to the form
+              String approvalStatus =
+                  ''; // This needs to be determined based on your logic
+              String revisionNumber = '0'; // Same as revNo
+              PlatformFile? filePath =
+                  _selectedFiles.isNotEmpty ? _selectedFiles.first : null;
+
+              Get.to(() => ViewPOBasketScreen(
+                    PODate: poDate,
+                    pRTxnID: prTxnID,
+                    vendorId: vendorId,
+                    quoteDate: quoteDate,
+                    rev_NO: revNo,
+                    buyerName: buyerName,
+                    buyerEmailID: buyerEmailID,
+                    buyerTel: buyerTel,
+                    buyerMob: buyerMob,
+                    supplierPOCName: supplierPOCName,
+                    supplierPOCEmailID: supplierPOCEmailID,
+                    supplierPOCTel: supplierPOCTel,
+                    supplierPOCMob: supplierPOCMob,
+                    deliveryTerms: deliveryTerms,
+                    paymentTerms: paymentTerms,
+                    headerNote: headerNote,
+                    approvalStatus: approvalStatus,
+                    revisionNumber: revisionNumber,
+                    filePath: filePath,
+                  ));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
@@ -741,9 +789,6 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                       hintText: 'Quantity'),
                 ),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: Container(), // Placeholder for alignment
-                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -801,6 +846,10 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                 onChanged: _taxListController.taxList.isNotEmpty
                     ? (value) {
                         selectedTax.value = value; // Update selected tax
+                        setState(() {
+                          _selectedTax = value?.taxName;
+                          _taxRate = value?.taxRate ?? 0;
+                        });
                       }
                     : null, // Disable if there are no tax items
                 validator: (value) {
@@ -880,6 +929,21 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
   void _addToPO() {
     if (_formKey.currentState?.validate() ?? false) {
       // Validation passed, proceed to add item to PO basket
+      // Validation passed, proceed to add item to PO basket
+
+      // Parse the quantity and unit price from text controllers
+      double quantity = double.tryParse(_quantityController.text) ?? 0;
+      double unitPrice = double.tryParse(_unitPriceController.text) ?? 0;
+
+      // Calculate line total
+      double lineTotal = quantity * unitPrice;
+
+      // Calculate tax amount
+      double taxAmount = (lineTotal * _taxRate) / 100;
+
+      // Calculate final amount
+      double finalAmount = lineTotal + taxAmount;
+
       POBasketItem newItem = POBasketItem(
         itemName: selectedItem.value?.itemName ?? '',
         itemGroup: _itemGroupController.text,
@@ -890,12 +954,12 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
         poQuantity: _quantityController.text,
         srNo: '',
         itemId: _itemIdController.text,
-        hsnCode: _hsnController.text.toString(),
-        taxCode: '',
-        taxRate: '',
-        lineTotal: '',
-        taxAmount: '',
-        finalAmount: '',
+        hsnCode: _hsnController.text,
+        taxCode: _selectedTax.toString(),
+        taxRate: _taxRate.toString(),
+        lineTotal: lineTotal.toStringAsFixed(2),
+        taxAmount: taxAmount.toStringAsFixed(2),
+        finalAmount: finalAmount.toStringAsFixed(2),
       );
 
       _poBasketController.addItemToBasket(newItem);

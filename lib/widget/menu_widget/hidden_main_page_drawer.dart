@@ -20,6 +20,7 @@ import 'package:erp_copy/screens/po_screens/create_po_screen.dart';
 import 'package:erp_copy/screens/po_screens/generate_po_screen.dart';
 import 'package:erp_copy/screens/pr_screens/create_pr_screen.dart';
 import 'package:erp_copy/screens/pr_screens/pr_lists_screen.dart';
+import 'package:erp_copy/screens/service_pr_screens/create_service_pr_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_movement_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_posting_screen.dart';
 import 'package:erp_copy/screens/vendor_master/add_vendor_master_screen.dart';
@@ -254,10 +255,14 @@ class _MainpageState extends State<Mainpage> {
         return GISApprovalScreen(openDrawer: opneDrawer);
 
       case DrawerItems.gisStatusList:
-        return GISStatusListScreen(openDrawer: opneDrawer);
+        return GISStatusListcreen(openDrawer: opneDrawer);
 
       case DrawerItems.myGisApproval:
         return MyGISApprovalScreen(openDrawer: opneDrawer);
+
+// Service PR
+      case DrawerItems.createServicePR:
+        return CreateServicePRScreen(openDrawer: opneDrawer);
 
 //item master
 

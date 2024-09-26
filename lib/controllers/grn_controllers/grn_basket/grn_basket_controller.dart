@@ -91,7 +91,7 @@ class GRNBasketController extends GetxController {
     String? remark,
     required List<PlatformFile> files,
   }) async {
-    print('Submitting GRN with ${basketItems.length} items on date: $grnDate');
+    // print('Submitting GRN with ${basketItems.length} items on date: $grnDate');
 
     // Convert basket items to GRNTransactionDetails model
     final List<GRNTransactionDetailsModel> transactionDetails =
@@ -131,11 +131,13 @@ class GRNBasketController extends GetxController {
         invoiceDate: invoiceDate.toString(),
         challanNo: challanNumber.toString(),
         transactionDetails: transactionDetails,
-        files: files, // Add file handling if necessary
+        filePath: files.isNotEmpty
+            ? files.first
+            : null, // Add file handling if necessary
       );
 
       // Reset the basket after successful submission
-      // resetBasket();    *******
+      resetBasket();
     } catch (e) {
       print('Error submitting GRN basket: $e');
     }

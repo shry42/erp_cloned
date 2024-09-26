@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GetGisNumberController extends GetxController {
-  var gisNo = ''.obs;
+  RxString gisNo = ''.obs;
 
   getGISNumber() async {
     try {

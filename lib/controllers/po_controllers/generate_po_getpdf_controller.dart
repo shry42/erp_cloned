@@ -8,7 +8,15 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GeneratePOGetPdfController extends GetxController {
+  var isLoading = false.obs; // Loading variable
+
   Future generatePO(int pOTxniD) async {
+    isLoading.value = true; // Set loading to true before showing the dialog
+    Get.dialog(
+      Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
     http.Response response = await http.post(
       Uri.parse('${ApiService.base}/api/getPdfDetails'),
       headers: {
@@ -26,6 +34,8 @@ class GeneratePOGetPdfController extends GetxController {
       String? pdfUrl = result['data'];
 
       if (status == true) {
+        isLoading.value = false;
+        Get.back(); // Close the loading dialog
         Get.defaultDialog(
           title: "Success",
           middleText: "Pdf generated succesfully",

@@ -1,12 +1,11 @@
 import 'package:erp_copy/controllers/grn_controllers/approve_reject/approve_grn_controller.dart';
 import 'package:erp_copy/controllers/grn_controllers/approve_reject/reject_grn_controllers.dart';
+import 'package:erp_copy/controllers/grn_controllers/genrate_grn_pdf_controller.dart';
 import 'package:erp_copy/controllers/grn_controllers/get_grn_list_in_approval_controller.dart';
 import 'package:erp_copy/model/grn_models/grn_list_in_approval_model.dart';
 import 'package:erp_copy/widget/grn_cards/grn_list_in_approval_card.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GRNListInsideScreen extends StatefulWidget {
   const GRNListInsideScreen({
@@ -42,6 +41,8 @@ class _GRNListInsideScreenState extends State<GRNListInsideScreen> {
   TextEditingController totalRejectedTaxAmountController =
       TextEditingController();
   TextEditingController finalRejectedAmountController = TextEditingController();
+
+  final GenrateGrnPdfController ggrnpdf = Get.put(GenrateGrnPdfController());
 
   @override
   void initState() {
@@ -94,6 +95,13 @@ class _GRNListInsideScreenState extends State<GRNListInsideScreen> {
           'GRN list',
           style: TextStyle(color: Colors.white, fontSize: 15),
         ),
+        actions: [
+          ElevatedButton(
+              onPressed: () async {
+                await ggrnpdf.generateGRNPdf(widget.grnTxnID);
+              },
+              child: const Text('generate')),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

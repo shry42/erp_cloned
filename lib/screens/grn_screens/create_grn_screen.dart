@@ -10,7 +10,6 @@ import 'package:erp_copy/models/po_models/get_item_details_by_pr_txnid_model.dar
 import 'package:erp_copy/screens/grn_screens/basket/view_grn_basket.dart';
 import 'package:erp_copy/screens/grn_screens/default_dialog_screen/dialog_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
-import 'package:erp_copy/models/po_models/po_basket_item_model.dart'; // Import the PO basket item model
 import 'package:file_picker/file_picker.dart'; // Import File Picker
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -351,8 +350,8 @@ class _CreateGRNScreenState extends State<CreateGRNScreen> {
               onChanged: (value) {
                 _grnbasketcont.resetBasket();
                 selectedVendor.value = value;
-                _getPoLogByVendoridController
-                    .getPoLog(selectedVendor.value!.vendorID!.toInt());
+                _getPoLogByVendoridController.getPoLog(
+                    selectedVendor.value!.vendorID!.toInt(), 'goods');
               },
               validator: (value) {
                 if (value == null) {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/model/grn_models/get_po_items_model.dart';
+import 'package:erp_copy/model/grn_models/get_service_po_items.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 class GetPoItemsController extends GetxController {
   var poItems = <GetPOItemsModel>[].obs; // List to store PO items
+  var servicePoItems = <GetServicePOItemsModel>[].obs;
   var isLoading = false.obs; // Loading state
 
   // Method to fetch PO items
@@ -29,9 +31,14 @@ class GetPoItemsController extends GetxController {
       if (response.statusCode == 200) {
         Map<String, dynamic> result = json.decode(response.body);
         List<dynamic> data = result['data'];
+        String? type = result['type'];
 
-        // Mapping response data to GetPOItemsModel list
-        poItems.value = data.map((e) => GetPOItemsModel.fromJson(e)).toList();
+        if (type == 'goods') {
+          poItems.value = data.map((e) => GetPOItemsModel.fromJson(e)).toList();
+        } else {
+          servicePoItems.value =
+              data.map((e) => GetServicePOItemsModel.fromJson(e)).toList();
+        }
       } else {
         handleErrorResponse(response);
       }

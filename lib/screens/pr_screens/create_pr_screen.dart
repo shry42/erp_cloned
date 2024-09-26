@@ -6,6 +6,7 @@ import 'package:erp_copy/model/item_master/item_master_list_model.dart';
 import 'package:erp_copy/model/pr_models_new/view_basket_model.dart';
 import 'package:erp_copy/screens/pr_screens/view_basket_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
@@ -224,7 +225,7 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
                 decoration: _inputDecoration("Required By").copyWith(
                   hintText: "dd/mm/yyyy",
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today),
+                    icon: const Icon(Icons.calendar_today),
                     onPressed: () => _selectDate(context),
                   ),
                 ),
@@ -242,12 +243,15 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
               DropdownButtonFormField<String>(
                 decoration: _inputDecoration("Select Project Code"),
                 value: _selectedProjectCode,
+                dropdownColor:
+                    Colors.white, // Set dropdown background color to white
                 items: projectCodeController.getProjectCodelist
                     .map((project) => DropdownMenuItem(
                           value: project.projectCode,
                           child: Text(
                             project.projectCode ?? '',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(
+                                color: Colors.black), // Set text color to black
                           ),
                         ))
                     .toList(),
@@ -263,6 +267,7 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
 
               // Item Internal Code Dropdown
@@ -270,6 +275,7 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
                 decoration: _inputDecoration("Select Item Internal Code"),
                 isExpanded: true, // Ensures the dropdown takes full width
                 value: _selectedItemCode,
+                dropdownColor: Colors.white,
                 items: itemsMasterController.getItemslist.map((item) {
                   return DropdownMenuItem<String>(
                     value: item.internalCode,
