@@ -1,27 +1,28 @@
-import 'package:erp_copy/controllers/po_controllers/insert_po_controller.dart';
-import 'package:erp_copy/models/po_models/po_basket_item_model.dart';
+import 'package:erp_copy/controllers/service_po_controllers/insert_service_po_controller.dart';
+import 'package:erp_copy/model/service_po_models/basket/service_po_basket_item_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
-class POBasketController extends GetxController {
-  var basketItems = <POBasketItem>[].obs;
-  final InsertNewPOController inpoc = Get.put(InsertNewPOController());
+class ServicePOBasketController extends GetxController {
+  var serviceBasketItems = <ServicePOBasketItem>[].obs;
+  final InsertNewServicePOController inpoc =
+      Get.put(InsertNewServicePOController());
 
   // Add an item to the PO basket
-  void addItemToBasket(POBasketItem item) {
-    basketItems.add(item);
+  void addItemToBasket(ServicePOBasketItem item) {
+    serviceBasketItems.add(item);
   }
 
   // Remove an item from the PO basket at a specific index
   void removeItemFromBasket(int index) {
-    if (index >= 0 && index < basketItems.length) {
-      basketItems.removeAt(index);
+    if (index >= 0 && index < serviceBasketItems.length) {
+      serviceBasketItems.removeAt(index);
     }
   }
 
   // Reset the PO basket by clearing all items
   void resetBasket() {
-    basketItems.clear();
+    serviceBasketItems.clear();
   }
 
   // Example method to simulate the submission of the PO basket items
@@ -48,14 +49,13 @@ class POBasketController extends GetxController {
     PlatformFile? filePath,
   }) async {
     try {
-      // Convert basketItems to the required format for productArr
-      List<Map<String, dynamic>> productArr = basketItems
+      // Convert serviceBasketItems to the required format for productArr
+      List<Map<String, dynamic>> productArr = serviceBasketItems
           .map((item) => {
-                "ItemID": item.itemId,
-                "SAPID": item.venusId,
-                "ItemName": item.itemName,
-                "Item_Group": item.itemGroup,
-                "HSN_Code": item.hsnCode,
+                "ServiceId": item.serviceID,
+                "ServiceName": item.serviceName,
+                "ServiceGroup": item.serviceGroup,
+                "SAC_Code": item.sacCode,
                 "PurchaseUOM": item.uom,
                 "POQty": item.poQuantity,
                 "DeliveryDate": item.deliveryDate,
@@ -68,7 +68,7 @@ class POBasketController extends GetxController {
               })
           .toList();
 
-      await inpoc.insertPO(
+      await inpoc.insertServicePO(
         PODate: poDate,
         pRTxnID: pRTxnID,
         vendorId: vendorId,

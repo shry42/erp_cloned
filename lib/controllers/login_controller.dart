@@ -14,6 +14,8 @@ class loginController extends GetxController {
   User? user;
 
   Future<void> loginUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     // throw Exception();
     http.Response response = await http.post(
       Uri.parse('${ApiService.base}/api/login'),
@@ -32,14 +34,20 @@ class loginController extends GetxController {
       Map<String, dynamic> result = json.decode(response.body);
       user = User.fromJson(result['userDetails']);
       AppController.setmessage(null);
+      AppController.setUsername(user?.fullName);
+      await prefs.setString('userName', '${user?.fullName}');
+      AppController.setEmailID(user?.emailId);
+      await prefs.setString('email', '${user?.emailId}');
+
+      AppController.setMobileNumber(user?.mobileNumber);
+      await prefs.setString('mobNo', '${user?.mobileNumber}');
 
       // // List userValue = result['userDeatils'];
       // // emailId.value = userValue[0]['emailId'];
 
       token = result['token'];
-      print('******$token');
+      // print('******$token');
       AppController.setaccessToken(token);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
 
       // role = user!.role;

@@ -187,6 +187,20 @@ class DrawerItems {
 
   //
 
+  //Service PO
+
+  static const createServicePO =
+      DrawerItem(title: 'createServicePO', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
+  //Sample PO
+
+  static const createSamplePO =
+      DrawerItem(title: 'createSamplePO', icon: FontAwesomeIcons.walkieTalkie);
+
+  //
+
 //
 
   // Special item to indicate closing the drawer

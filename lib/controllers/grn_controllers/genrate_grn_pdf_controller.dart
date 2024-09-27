@@ -13,7 +13,7 @@ class GenrateGrnPdfController extends GetxController {
   Future generateGRNPdf(int GRNTxnID) async {
     isLoading.value = true; // Set loading to true before showing the dialog
     Get.dialog(
-      Center(child: CircularProgressIndicator()),
+      const Center(child: CircularProgressIndicator()),
       barrierDismissible: false,
     );
     try {

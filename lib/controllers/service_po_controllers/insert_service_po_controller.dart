@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class InsertNewPOController extends GetxController {
+class InsertNewServicePOController extends GetxController {
   var isLoading = false;
-
-  Future<void> insertPO({
+  Future<void> insertServicePO({
     required String PODate,
     required String pRTxnID,
     required String vendorId,
@@ -38,7 +37,7 @@ class InsertNewPOController extends GetxController {
         const Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
-      var uri = Uri.parse('${ApiService.base}/api/insertNewPO');
+      var uri = Uri.parse('${ApiService.base}/api/insertNewServicePO');
 
       // Convert productArr to a JSON string
       // String productArrJson = jsonEncode(productArr);
@@ -64,7 +63,7 @@ class InsertNewPOController extends GetxController {
         ..fields['HeaderNote'] = headerNote
         ..fields['ApprovalStatus'] = approvalStatus
         ..fields['RevisionNumber'] = revisionNumber
-        ..fields['POTransactionDetails'] = productArrJson;
+        ..fields['POTransactionServiceDetails'] = productArrJson;
 
       // Check if filePath is provided and valid
       if (filePath != null &&
@@ -81,10 +80,10 @@ class InsertNewPOController extends GetxController {
 
       if (response.statusCode == 200) {
         isLoading = false;
-        Get.back(); // Close the loading dialog
+        Get.back();
         Get.defaultDialog(
           title: "Success",
-          middleText: "Purchase Order submitted successfully!",
+          middleText: "Service Purchase Order submitted successfully!",
           textConfirm: "OK",
           onConfirm: () {
             Get.back();
@@ -93,7 +92,8 @@ class InsertNewPOController extends GetxController {
       } else {
         Get.defaultDialog(
           title: "Error",
-          middleText: "Failed to submit Purchase Order. Please try again.",
+          middleText:
+              "Failed to submit Service Purchase Order. Please try again.",
           textConfirm: "OK",
           onConfirm: () {
             Get.back();

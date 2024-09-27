@@ -1,10 +1,10 @@
-import 'package:erp_copy/controllers/po_controllers/view_po_basket_controller.dart';
+import 'package:erp_copy/controllers/service_po_controllers/service_po_basket_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class ViewPOBasketScreen extends StatefulWidget {
+class ViewServicePOBasketScreen extends StatefulWidget {
   final String PODate;
   final String pRTxnID;
   final String vendorId;
@@ -26,7 +26,7 @@ class ViewPOBasketScreen extends StatefulWidget {
   final String revisionNumber;
   final PlatformFile? filePath;
 
-  const ViewPOBasketScreen({
+  const ViewServicePOBasketScreen({
     Key? key,
     required this.PODate,
     required this.pRTxnID,
@@ -51,18 +51,20 @@ class ViewPOBasketScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ViewPOBasketScreen> createState() => _ViewPOBasketScreenState();
+  State<ViewServicePOBasketScreen> createState() =>
+      _ViewServicePOBasketScreenState();
 }
 
-class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
-  final POBasketController poBasketController = Get.find<POBasketController>();
+class _ViewServicePOBasketScreenState extends State<ViewServicePOBasketScreen> {
+  final ServicePOBasketController poBasketController =
+      Get.find<ServicePOBasketController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
-        title: const Text('View PO Basket'),
+        title: const Text('View Service PO Basket'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,11 +77,10 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
                   columnSpacing: 16.0,
                   columns: const [
                     DataColumn(label: Text('SR NO.')),
-                    DataColumn(label: Text('Item Id')),
-                    DataColumn(label: Text('Venus-ID')),
-                    DataColumn(label: Text('Item Name')),
-                    DataColumn(label: Text('Item Group')),
-                    DataColumn(label: Text('HSN Code')),
+                    DataColumn(label: Text('ServiceId')),
+                    DataColumn(label: Text('ServiceName')),
+                    DataColumn(label: Text('ServiceGroup')),
+                    DataColumn(label: Text('SAC_Code')),
                     DataColumn(label: Text('PO Quantity')),
                     DataColumn(label: Text('Purchase UOM')),
                     DataColumn(label: Text('Delivery Date')),
@@ -91,22 +92,21 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
                     DataColumn(label: Text('Final Amount')),
                     DataColumn(label: Text('Delete')),
                   ],
-                  rows: poBasketController.basketItems.map((item) {
+                  rows: poBasketController.serviceBasketItems.map((item) {
                     return DataRow(cells: [
                       DataCell(Text(item.srNo.toString())),
-                      DataCell(Text(item.itemId.toString())),
-                      DataCell(Text(item.venusId)),
+                      DataCell(Text(item.serviceID.toString())),
                       DataCell(
                         Container(
                           width: 150, // Set a fixed width to avoid overflow
                           child: Text(
-                            item.itemName,
+                            item.serviceName,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
-                      DataCell(Text(item.itemGroup)),
-                      DataCell(Text(item.hsnCode)),
+                      DataCell(Text(item.serviceGroup)),
+                      DataCell(Text(item.sacCode)),
                       DataCell(Text(item.poQuantity.toString())),
                       DataCell(Text(item.uom)),
                       DataCell(Text(item.deliveryDate)),
@@ -120,7 +120,8 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
                         ElevatedButton(
                           onPressed: () {
                             poBasketController.removeItemFromBasket(
-                              poBasketController.basketItems.indexOf(item),
+                              poBasketController.serviceBasketItems
+                                  .indexOf(item),
                             );
                             setState(() {});
                           },
@@ -144,7 +145,7 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    if (poBasketController.basketItems.isEmpty) {
+                    if (poBasketController.serviceBasketItems.isEmpty) {
                       Get.snackbar('Error', 'No items in the PO basket');
                       return;
                     }
@@ -180,12 +181,12 @@ class _ViewPOBasketScreenState extends State<ViewPOBasketScreen> {
                     poBasketController.resetBasket();
                     setState(() {});
                   },
+                  child: const Text('Submit PO'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 12),
                   ),
-                  child: const Text('Submit PO'),
                 ),
                 ElevatedButton(
                   onPressed: () {

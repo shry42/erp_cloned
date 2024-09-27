@@ -9,6 +9,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   AppController.setaccessToken('${prefs.getString('token')}');
+  AppController.setUsername('${prefs.getString('userName')}');
+  AppController.setEmailID('${prefs.getString('email')}');
+  AppController.setMobileNumber('${prefs.getString('mobNo')}');
+
   runApp(const MyApp());
 }
 

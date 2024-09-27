@@ -172,6 +172,100 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
 //
 
+//SERVICE PO
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ),
+                      title: const Text('Servie PO'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create service PO'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createServicePO);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+//
+
+//SERVICE PR
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 200),
+                  child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ),
+                      title: const Text('Sample PO'),
+                      trailing: Icon(
+                        isMenuExpanded
+                            ? Icons.arrow_drop_up
+                            : Icons.arrow_drop_down,
+                      ),
+                      onExpansionChanged: (bool expanded) {
+                        setState(() => isMenuExpanded = expanded);
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create sample PO'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createSamplePO);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+//
+
                 // Purchase Order Section
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 200),
