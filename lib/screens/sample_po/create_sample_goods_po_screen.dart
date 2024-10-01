@@ -3,40 +3,41 @@ import 'package:erp_copy/controllers/payment_terms_controller/get_payment_terms_
 import 'package:erp_copy/controllers/po_controllers/fetch_exchange_rates_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/get_item_details_by_prtxnid_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/get_item_details_from_item_id_controller.dart';
+import 'package:erp_copy/controllers/po_controllers/get_po_distinct_status_data_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/tax_list_controller.dart';
-import 'package:erp_copy/controllers/service_po_controllers/get_approved_service_pr_controller.dart';
-import 'package:erp_copy/controllers/service_po_controllers/service_po_basket_controller.dart';
+import 'package:erp_copy/controllers/po_controllers/view_po_basket_controller.dart';
 import 'package:erp_copy/controllers/vendor_master_controller/vendor_master_list_controller.dart';
 import 'package:erp_copy/controllers/delivery_terms_controller/get_delivery_terms_controller.dart'; // Import delivery terms controller
 import 'package:erp_copy/model/payment_terms/payment_terms_model.dart';
-import 'package:erp_copy/model/service_po_models/basket/service_po_basket_item_model.dart';
-import 'package:erp_copy/model/service_po_models/get_item_details_by_prtxn_id_model.dart';
 import 'package:erp_copy/model/vendor_master/vendor_master_model.dart';
 import 'package:erp_copy/model/delivery_terms/delivery_terms_model.dart'; // Import delivery terms model
+import 'package:erp_copy/models/po_models/get_item_details_by_pr_txnid_model.dart';
 import 'package:erp_copy/models/po_models/get_item_details_from_txn_id_model.dart';
 import 'package:erp_copy/models/po_models/tax_list_model.dart';
-import 'package:erp_copy/screens/service_po/basket/view_service_po_basket_screen.dart';
+import 'package:erp_copy/screens/po_screens/view_po_basket_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:erp_copy/models/po_models/po_basket_item_model.dart'; // Import the PO basket item model
 import 'package:file_picker/file_picker.dart'; // Import File Picker
 import 'package:flutter/material.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class CreateServicePOScreen extends StatefulWidget {
-  const CreateServicePOScreen({Key? key, required this.openDrawer})
+class CreateSampleGoodsPOScreen extends StatefulWidget {
+  const CreateSampleGoodsPOScreen({Key? key, required this.openDrawer})
       : super(key: key);
   final VoidCallback openDrawer;
 
   @override
-  _CreateServicePOScreenState createState() => _CreateServicePOScreenState();
+  _CreateSampleGoodsPOScreenState createState() =>
+      _CreateSampleGoodsPOScreenState();
 }
 
-class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
+class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _searchController = TextEditingController();
-  final GetApprovedServicePrController _controller =
-      Get.put(GetApprovedServicePrController());
+  final GetPODistinctStatusDataController _controller =
+      Get.put(GetPODistinctStatusDataController());
   final GetVendorMastercontroller _vendorController =
       Get.put(GetVendorMastercontroller());
   final GetDeliveryTermsController _deliveryTermsController =
@@ -53,8 +54,8 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
   final FetchExchangeRatesController _exchangeRatesController =
       Get.put(FetchExchangeRatesController()); // Add exchange rates controller
 
-  final ServicePOBasketController _servicePoBasketController =
-      Get.put(ServicePOBasketController()); // Add PO basket controller
+  final POBasketController _poBasketController =
+      Get.put(POBasketController()); // Add PO basket controller
 
   final TaxListController _taxListController = Get.put(TaxListController());
   final Rx<TaxListModel?> selectedTax =
@@ -63,7 +64,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
   String? _selectedTax;
   double _taxRate = 0;
 
-  dynamic _selectedServiceId;
+  dynamic _selectedItemId;
 
   var selectedVendor = Rx<VendorModel?>(null); // Reactive vendor variable
   var selectedDeliveryTerm =
@@ -71,10 +72,10 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
   var selectedPaymentTerm =
       Rx<PaymentTermsModel?>(null); // Reactive payment term
   var selectedPRTxnID = RxInt(-1); // Reactive PR Transaction ID
-  var selectedItems = <GetServiceItemDetailsByPRTxnIDModel>[]
-      .obs; // Reactive list for selected items
+  var selectedItems =
+      <GetItemDetailsByPRTxnIDModel>[].obs; // Reactive list for selected items
   var selectedItem =
-      Rx<GetServiceItemDetailsByPRTxnIDModel?>(null); // Reactive selected item
+      Rx<GetItemDetailsByPRTxnIDModel?>(null); // Reactive selected item
 
   String? currentDate;
 
@@ -82,7 +83,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
 
   // Controllers for populating fields automatically
   final TextEditingController _itemGroupController = TextEditingController();
-  // final TextEditingController _venusIDController = TextEditingController();
+  final TextEditingController _venusIDController = TextEditingController();
   final TextEditingController _uomController = TextEditingController();
   final TextEditingController _remainingQuantityController =
       TextEditingController();
@@ -101,9 +102,10 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
   @override
   void initState() {
     super.initState();
+    _unitPriceController.text = '0';
     currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     _controller
-        .getApprovedServicePR(); // Fetch the data on screen initialization
+        .getPODistinctStatus(); // Fetch the data on screen initialization
     _vendorController.getVednorMaster(); // Fetch the vendor data
     _deliveryTermsController
         .getDeliveryTerms(); // Fetch the delivery terms data
@@ -121,11 +123,11 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
   void _filterData(String query) {
     if (query.isEmpty) {
       // Reset to show the first four items from the initial list
-      _controller.approvedServicePrList.value =
+      _controller.poDistinctDataList.value =
           _controller.initialPoDistinctDataList.take(4).toList();
     } else {
       // Filter based on the query
-      _controller.approvedServicePrList.value = _controller
+      _controller.poDistinctDataList.value = _controller
           .initialPoDistinctDataList
           .where((element) => element.prTxnID.toString().contains(query))
           .toList();
@@ -162,7 +164,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 245, 245, 245),
       appBar: AppBar(
-        title: const Text('Create Service PO'),
+        title: const Text('Create Sample Goods PO'),
         backgroundColor: const Color.fromARGB(255, 29, 169, 32),
         actions: [
           ElevatedButton(
@@ -198,7 +200,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
               PlatformFile? filePath =
                   _selectedFiles.isNotEmpty ? _selectedFiles.first : null;
 
-              Get.to(() => ViewServicePOBasketScreen(
+              Get.to(() => ViewPOBasketScreen(
                     PODate: poDate,
                     pRTxnID: prTxnID,
                     vendorId: vendorId,
@@ -502,7 +504,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
         ),
         const SizedBox(height: 10),
         Obx(() {
-          final dataToShow = _controller.approvedServicePrList.take(4).toList();
+          final dataToShow = _controller.poDistinctDataList.take(4).toList();
           return Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade400),
@@ -566,11 +568,11 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
                                 // Fetch detailed item info for the first item
 
                                 _getItemDetailsFromItemIdController
-                                    .getItemDetails(items.first.serviceId!);
+                                    .getItemDetails(items.first.itemID!);
                                 setState(() {
-                                  _selectedServiceId = items.first.serviceId;
+                                  _selectedItemId = items.first.itemID;
                                 });
-                                print(_selectedServiceId);
+                                print(_selectedItemId);
                               }
                             });
                           } else {
@@ -668,19 +670,20 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
               GetItemDetailsFromItemIdModel itemDetails =
                   _getItemDetailsFromItemIdController.itemDetails.value;
               // Define the default item separately to avoid duplication
-              GetServiceItemDetailsByPRTxnIDModel defaultItem =
-                  GetServiceItemDetailsByPRTxnIDModel(
-                serviceName: 'Freight Cost/ Other Expenses',
-                serviceGroup: '',
+              GetItemDetailsByPRTxnIDModel defaultItem =
+                  GetItemDetailsByPRTxnIDModel(
+                itemName: 'Freight Cost/ Other Expenses',
+                itemGroup: '',
+                sapID: '',
                 purchaseUOM: '',
                 remainingQty: 0,
               );
 
               // Combine the default item with the fetched items
-              List<GetServiceItemDetailsByPRTxnIDModel> dropdownItems = [
+              List<GetItemDetailsByPRTxnIDModel> dropdownItems = [
                 defaultItem,
-                ...selectedItems.where(
-                    (item) => item.serviceName != defaultItem.serviceName)
+                ...selectedItems
+                    .where((item) => item.itemName != defaultItem.itemName)
               ];
 
               // Ensure selectedItem is in dropdownItems
@@ -689,8 +692,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
                     defaultItem; // Set to default if current is not in list
               }
 
-              return DropdownButtonFormField<
-                  GetServiceItemDetailsByPRTxnIDModel>(
+              return DropdownButtonFormField<GetItemDetailsByPRTxnIDModel>(
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: 'PR Items',
@@ -708,12 +710,12 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
                 style: const TextStyle(color: Colors.black),
                 dropdownColor: Colors.white,
                 items: dropdownItems.map((item) {
-                  return DropdownMenuItem<GetServiceItemDetailsByPRTxnIDModel>(
+                  return DropdownMenuItem<GetItemDetailsByPRTxnIDModel>(
                     value: item,
                     child: FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
-                        item.serviceName ?? '',
+                        item.itemName ?? '',
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),
@@ -721,23 +723,23 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
                 }).toList(),
                 onChanged: (value) {
                   selectedItem.value = value;
-                  if (value?.serviceName == 'Freight Cost/ Other Expenses') {
+                  if (value?.itemName == 'Freight Cost/ Other Expenses') {
                     // Set predefined values for specific fields
                     _itemGroupController.text = 'Other Expenses';
-                    // _venusIDController.text = '1111111111';
+                    _venusIDController.text = '1111111111';
                     _remainingQuantityController.text = '1';
                     _uomController.text = '-';
                     _hsnController.text = itemDetails.hsnCode ?? '';
                     _itemIdController.text =
                         itemDetails.itemID?.toString() ?? '';
                     // setState(() {
-                    //   _selectedServiceId = itemDetails.itemID?.toString() ?? '';
+                    //   _selectedItemId = itemDetails.itemID?.toString() ?? '';
                     // });
                     // print('**************${_itemIdController.text}');
                   } else {
                     // Populate the text fields when other PR items are selected
-                    _itemGroupController.text = value?.serviceGroup ?? '';
-                    // _venusIDController.text = value?.s ?? '';
+                    _itemGroupController.text = value?.itemGroup ?? '';
+                    _venusIDController.text = value?.sapID ?? '';
                     _uomController.text = value?.purchaseUOM ?? '';
                     _remainingQuantityController.text =
                         value?.remainingQty.toString() ?? '';
@@ -745,7 +747,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
                     _itemIdController.text =
                         itemDetails.itemID?.toString() ?? '';
                     // setState(() {
-                    //   _selectedServiceId = itemDetails.itemID?.toString() ?? '';
+                    //   _selectedItemId = itemDetails.itemID?.toString() ?? '';
                     // });
                   }
                 },
@@ -762,14 +764,17 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
             const SizedBox(height: 10),
             Row(
               children: [
-                // Expanded(
-                //   child: _buildTextField('Venus-ID', _venusIDController,
-                //       readOnly: true),
-                // ),
-                // const SizedBox(width: 10),
                 Expanded(
-                  child: _buildTextField('Unit Price', _unitPriceController,
-                      hintText: 'Please enter Unit Price'),
+                  child: _buildTextField('Venus-ID', _venusIDController,
+                      readOnly: true),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _buildTextField(
+                    'Unit Price',
+                    _unitPriceController,
+                    readOnly: true,
+                  ),
                 ),
               ],
             ),
@@ -793,7 +798,7 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField('SAC', _hsnController,
+                  child: _buildTextField('HSN', _hsnController,
                       hintText: 'Please enter HSN'),
                 ),
                 const SizedBox(width: 10),
@@ -815,72 +820,72 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
             const SizedBox(height: 20),
             const SizedBox(height: 10),
 
-            // Tax List Dropdown Field
-            Obx(() {
-              // Reset the selected value if the list is updated
-              if (_taxListController.taxList.isEmpty ||
-                  !_taxListController.taxList.contains(selectedTax.value)) {
-                selectedTax.value = null; // Clear the selected value
-              }
-              return DropdownButtonFormField<TaxListModel>(
-                isExpanded: true,
-                decoration: InputDecoration(
-                  labelText: 'Tax List',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                ),
-                value: selectedTax.value,
-                style: TextStyle(
-                  color: _taxListController.taxList.isEmpty
-                      ? Colors.grey
-                      : Colors.black,
-                ),
-                dropdownColor: Colors.white,
-                hint: Text(
-                  _taxListController.taxList.isEmpty
-                      ? 'No taxes available'
-                      : 'Select a tax',
-                  style: TextStyle(
-                    color: _taxListController.taxList.isEmpty
-                        ? Colors.grey
-                        : Colors.black,
-                  ),
-                ),
-                items: _taxListController.taxList.map((tax) {
-                  return DropdownMenuItem<TaxListModel>(
-                    value: tax,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        tax.taxName ?? '',
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  );
-                }).toList(),
-                onChanged: _taxListController.taxList.isNotEmpty
-                    ? (value) {
-                        selectedTax.value = value; // Update selected tax
-                        setState(() {
-                          _selectedTax = value?.taxName;
-                          _taxRate = value?.taxRate ?? 0;
-                        });
-                      }
-                    : null, // Disable if there are no tax items
-                validator: (value) {
-                  if (value == null && _taxListController.taxList.isNotEmpty) {
-                    return 'Please select a tax';
-                  }
-                  return null;
-                },
-              );
-            }),
+            // // Tax List Dropdown Field
+            // Obx(() {
+            //   // Reset the selected value if the list is updated
+            //   if (_taxListController.taxList.isEmpty ||
+            //       !_taxListController.taxList.contains(selectedTax.value)) {
+            //     selectedTax.value = null; // Clear the selected value
+            //   }
+            //   return DropdownButtonFormField<TaxListModel>(
+            //     isExpanded: true,
+            //     decoration: InputDecoration(
+            //       labelText: 'Tax List',
+            //       filled: true,
+            //       fillColor: Colors.white,
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(8),
+            //         borderSide: BorderSide(color: Colors.grey.shade400),
+            //       ),
+            //       contentPadding:
+            //           const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            //     ),
+            //     value: selectedTax.value,
+            //     style: TextStyle(
+            //       color: _taxListController.taxList.isEmpty
+            //           ? Colors.grey
+            //           : Colors.black,
+            //     ),
+            //     dropdownColor: Colors.white,
+            //     hint: Text(
+            //       _taxListController.taxList.isEmpty
+            //           ? 'No taxes available'
+            //           : 'Select a tax',
+            //       style: TextStyle(
+            //         color: _taxListController.taxList.isEmpty
+            //             ? Colors.grey
+            //             : Colors.black,
+            //       ),
+            //     ),
+            //     items: _taxListController.taxList.map((tax) {
+            //       return DropdownMenuItem<TaxListModel>(
+            //         value: tax,
+            //         child: FittedBox(
+            //           fit: BoxFit.contain,
+            //           child: Text(
+            //             tax.taxName ?? '',
+            //             style: const TextStyle(color: Colors.black),
+            //           ),
+            //         ),
+            //       );
+            //     }).toList(),
+            //     onChanged: _taxListController.taxList.isNotEmpty
+            //         ? (value) {
+            //             selectedTax.value = value; // Update selected tax
+            //             setState(() {
+            //               _selectedTax = value?.taxName;
+            //               _taxRate = value?.taxRate ?? 0;
+            //             });
+            //           }
+            //         : null, // Disable if there are no tax items
+            //     validator: (value) {
+            //       if (value == null && _taxListController.taxList.isNotEmpty) {
+            //         return 'Please select a tax';
+            //       }
+            //       return null;
+            //     },
+            //   );
+            // }),
 
             const SizedBox(height: 20),
             Align(
@@ -953,41 +958,42 @@ class _CreateServicePOScreenState extends State<CreateServicePOScreen> {
       // Validation passed, proceed to add item to PO basket
       // Validation passed, proceed to add item to PO basket
 
-      // Parse the quantity and unit price from text controllers
-      double quantity = double.tryParse(_quantityController.text) ?? 0;
-      double unitPrice = double.tryParse(_unitPriceController.text) ?? 0;
+      // // Parse the quantity and unit price from text controllers
+      // double quantity = double.tryParse(_quantityController.text) ?? 0;
+      // double unitPrice = double.tryParse(_unitPriceController.text) ?? 0;
 
-      // Calculate line total
-      double lineTotal = quantity * unitPrice;
+      // // Calculate line total
+      // double lineTotal = quantity * unitPrice;
 
-      // Calculate tax amount
-      double taxAmount = (lineTotal * _taxRate) / 100;
+      // // Calculate tax amount
+      // double taxAmount = (lineTotal * _taxRate) / 100;
 
-      // Calculate final amount
-      double finalAmount = lineTotal + taxAmount;
+      // // Calculate final amount
+      // double finalAmount = lineTotal + taxAmount;
 
-      ServicePOBasketItem newItem = ServicePOBasketItem(
-        serviceName: selectedItem.value?.serviceName ?? '',
-        serviceGroup: _itemGroupController.text,
+      POBasketItem newItem = POBasketItem(
+        itemName: selectedItem.value?.itemName ?? '',
+        itemGroup: _itemGroupController.text,
+        venusId: _venusIDController.text,
         uom: _uomController.text,
-        unitPrice: _unitPriceController.text,
+        unitPrice: '0',
         deliveryDate: _deliveryDateController.text,
         poQuantity: _quantityController.text,
         srNo: '1',
-        serviceID: _selectedServiceId.toString(),
-        sacCode: _hsnController.text,
-        taxCode: _selectedTax.toString(),
-        taxRate: _taxRate.toString(),
-        lineTotal: lineTotal.toStringAsFixed(2),
-        taxAmount: taxAmount.toStringAsFixed(2),
-        finalAmount: finalAmount.toStringAsFixed(2),
+        itemId: _selectedItemId.toString(),
+        hsnCode: _hsnController.text,
+        taxCode: '0',
+        taxRate: '0 %',
+        lineTotal: '0',
+        taxAmount: '0',
+        finalAmount: '0',
       );
 
-      _servicePoBasketController.addItemToBasket(newItem);
+      _poBasketController.addItemToBasket(newItem);
 
       // Clear the fields after adding the item
       _itemGroupController.clear();
-      // _venusIDController.clear();
+      _venusIDController.clear();
       _uomController.clear();
       _remainingQuantityController.clear();
       _unitPriceController.clear();

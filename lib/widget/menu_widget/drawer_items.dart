@@ -196,8 +196,11 @@ class DrawerItems {
 
   //Sample PO
 
-  static const createSamplePO =
-      DrawerItem(title: 'createSamplePO', icon: FontAwesomeIcons.walkieTalkie);
+  static const createSampleGoodsPO = DrawerItem(
+      title: 'createSampleGoodsPO', icon: FontAwesomeIcons.walkieTalkie);
+
+  static const createSampleServicePO = DrawerItem(
+      title: 'createSampleServicePO', icon: FontAwesomeIcons.walkieTalkie);
 
   //
 

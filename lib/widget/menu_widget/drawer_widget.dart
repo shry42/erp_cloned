@@ -250,10 +250,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 //   Icons.menu,
                                 //   color: Colors.white,
                                 // ),
-                                title: const Text('create sample PO'),
+                                title: const Text('create goods PO'),
                                 onTap: () {
                                   widget.onSelectedItem(
-                                      DrawerItems.createSamplePO);
+                                      DrawerItems.createSampleGoodsPO);
+                                },
+                              ),
+                              ListTile(
+                                // leading: const Icon(
+                                //   Icons.menu,
+                                //   color: Colors.white,
+                                // ),
+                                title: const Text('create service PO'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.createSampleServicePO);
                                 },
                               ),
                             ],

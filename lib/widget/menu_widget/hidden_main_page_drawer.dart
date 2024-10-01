@@ -20,7 +20,8 @@ import 'package:erp_copy/screens/po_screens/create_po_screen.dart';
 import 'package:erp_copy/screens/po_screens/generate_po_screen.dart';
 import 'package:erp_copy/screens/pr_screens/create_pr_screen.dart';
 import 'package:erp_copy/screens/pr_screens/pr_lists_screen.dart';
-import 'package:erp_copy/screens/sample_po/create_sample_po_screen.dart';
+import 'package:erp_copy/screens/sample_po/create_sample_goods_po_screen.dart';
+import 'package:erp_copy/screens/sample_po/create_sample_service_po_screen.dart';
 import 'package:erp_copy/screens/service_po/create_service_po_screen.dart';
 import 'package:erp_copy/screens/service_pr_screens/create_service_pr_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_movement_screen.dart';
@@ -271,8 +272,11 @@ class _MainpageState extends State<Mainpage> {
         return CreateServicePOScreen(openDrawer: opneDrawer);
 
 // Service PO
-      case DrawerItems.createSamplePO:
-        return CreateSamplePOScreen(openDrawer: opneDrawer);
+      case DrawerItems.createSampleGoodsPO:
+        return CreateSampleGoodsPOScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.createSampleServicePO:
+        return CreateSampleServicePOScreen(openDrawer: opneDrawer);
 
 //item master
 

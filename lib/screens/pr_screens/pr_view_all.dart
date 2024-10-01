@@ -4,10 +4,7 @@ import 'package:erp_copy/controllers/po_controllers/vendor_details_controller.da
 import 'package:erp_copy/controllers/pr_controllers/pr_details_controller.dart';
 import 'package:erp_copy/controllers/pr_controllers/pr_log_controller.dart';
 import 'package:erp_copy/screens/pr_screens/pr_item_details.dart';
-import 'package:erp_copy/widgets/pr_cards/dummy_pr_card.dart';
 import 'package:erp_copy/widgets/pr_cards/pr_view_all_card.dart';
-import 'package:erp_copy/widgets/pr_cards/pr_viewall_card.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -335,11 +332,11 @@ class _PRViewAllDetailsState extends State<PRViewAllDetails> {
                                                 );
                                                 return;
                                               } else {
-                                                // Get.to(
-                                                //     PrItemDetails(
-                                                //         PrTxnId: PrTxnId),
-                                                //     transition:
-                                                //         Transition.rightToLeft);
+                                                Get.to(
+                                                    PrItemDetails(
+                                                        PrTxnId: PrTxnId),
+                                                    transition:
+                                                        Transition.rightToLeft);
                                               }
                                             },
                                             child: PRViewAllCards(
@@ -420,11 +417,11 @@ class _PRViewAllDetailsState extends State<PRViewAllDetails> {
                                                 );
                                                 return;
                                               } else {
-                                                // Get.to(
-                                                //     PrItemDetails(
-                                                //         PrTxnId: PrTxnId),
-                                                //     transition:
-                                                //         Transition.rightToLeft);
+                                                Get.to(
+                                                    PrItemDetails(
+                                                        PrTxnId: PrTxnId),
+                                                    transition:
+                                                        Transition.rightToLeft);
                                               }
                                             },
                                             child: PRViewAllCards(
@@ -505,11 +502,11 @@ class _PRViewAllDetailsState extends State<PRViewAllDetails> {
                                                 );
                                                 return;
                                               } else {
-                                                // Get.to(
-                                                //     PrItemDetails(
-                                                //         PrTxnId: PrTxnId),
-                                                //     transition:
-                                                //         Transition.rightToLeft);
+                                                Get.to(
+                                                    PrItemDetails(
+                                                        PrTxnId: PrTxnId),
+                                                    transition:
+                                                        Transition.rightToLeft);
                                               }
                                             },
                                             child: PRViewAllCards(
