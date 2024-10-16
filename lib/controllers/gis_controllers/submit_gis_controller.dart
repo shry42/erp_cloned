@@ -43,6 +43,10 @@ class SubmitGisController extends GetxController {
           _showErrorDialog("Error", result['message']);
         }
       } else {
+        if (response.statusCode == 401) {
+          toast('session expired or invalid');
+          Get.offAll(LoginScreen());
+        }
         final result = json.decode(response.body);
         if (result['title'] == 'Validation Failed') {
           _showErrorDialog("Error", result['message']);

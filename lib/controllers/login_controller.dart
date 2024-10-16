@@ -18,11 +18,11 @@ class loginController extends GetxController {
 
     // throw Exception();
     http.Response response = await http.post(
-      Uri.parse('${ApiService.base}/api/login'),
+      Uri.parse('${ApiService.base}/api/loginUserWithOTP'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        "username": userName.value,
-        "password": password.value,
+        "empCode": userName.value,
+        "otp": password.value,
       }),
     );
     if (response.statusCode != 200) {

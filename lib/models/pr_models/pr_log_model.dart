@@ -5,8 +5,10 @@ class PrLogModel {
   String txnDate;
   String reqDate;
   String projectCode;
-  String approvalStatus;
+  bool approvalStatus; // Bool type for ApprovalStatus
   String prStatus;
+  String? department; // Added department field
+  String? approvedAt; // Added approvedAt field
   String? username = "NA";
 
   PrLogModel({
@@ -16,16 +18,23 @@ class PrLogModel {
     required this.projectCode,
     required this.approvalStatus,
     required this.prStatus,
+    this.department,
+    this.approvedAt,
     this.username,
   });
 
   factory PrLogModel.fromJson(Map<String, dynamic> json) => PrLogModel(
         prTxnId: json["PRTxnID"],
-        txnDate: (json["TxnDate"]),
-        reqDate: (json["ReqDate"]),
+        txnDate: json["TxnDate"],
+        reqDate: json["ReqDate"],
         projectCode: json["ProjectCode"],
-        approvalStatus: json["ApprovalStatus"].toString(),
+        // Convert ApprovalStatus to a bool if it's a string
+        approvalStatus: json["ApprovalStatus"] is bool
+            ? json["ApprovalStatus"]
+            : json["ApprovalStatus"].toString().toLowerCase() == 'true',
         prStatus: json["PRStatus"],
+        department: json["Department"], // Added department mapping
+        approvedAt: json["approvedAt"], // Added approvedAt mapping
       );
 
   Map<String, dynamic> toJson() => {
@@ -33,7 +42,9 @@ class PrLogModel {
         "TxnDate": txnDate,
         "ReqDate": reqDate,
         "ProjectCode": projectCode,
-        "ApprovalStatus": approvalStatus.toString(),
+        "ApprovalStatus": approvalStatus, // Keep as bool
         "PRStatus": prStatus,
+        "Department": department, // Include department in JSON output
+        "approvedAt": approvedAt, // Include approvedAt in JSON output
       };
 }

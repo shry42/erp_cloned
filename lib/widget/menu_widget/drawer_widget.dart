@@ -30,7 +30,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       children: [
         // Static Portion
         Padding(
-          padding: const EdgeInsets.only(right: 350, bottom: 40),
+          padding: const EdgeInsets.only(right: 350, bottom: 20),
           child: GestureDetector(
             onTap: () {
               // Trigger the onSelectedItem callback with a special item
@@ -913,13 +913,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                       DrawerItems.employeesList);
                                 },
                               ),
-                              ListTile(
-                                title: const Text('Delete Employee'),
-                                onTap: () {
-                                  widget.onSelectedItem(
-                                      DrawerItems.createDeliverTerms);
-                                },
-                              ),
+                              // ListTile(
+                              //   title: const Text('Delete Employee'),
+                              //   onTap: () {
+                              //     widget.onSelectedItem(
+                              //         DrawerItems.createDeliverTerms);
+                              //   },
+                              // ),
                             ],
                           ),
                         ),
@@ -967,10 +967,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 },
                               ),
                               ListTile(
-                                title: const Text('Delete Users'),
+                                title: const Text('Deleted Users'),
                                 onTap: () {
-                                  widget.onSelectedItem(
-                                      DrawerItems.createDeliverTerms);
+                                  widget
+                                      .onSelectedItem(DrawerItems.deleteUsers);
                                 },
                               ),
                             ],
@@ -1054,7 +1054,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         const SizedBox(height: 30),
         // Logout Button (Static)
         Padding(
-          padding: const EdgeInsets.only(right: 310, bottom: 40),
+          padding: const EdgeInsets.only(right: 200, bottom: 40),
           child: GestureDetector(
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();

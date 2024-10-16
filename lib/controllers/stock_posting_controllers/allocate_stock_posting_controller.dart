@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:erp_copy/screens/loginscreen.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:erp_copy/controllers/app_controller.dart';
@@ -42,7 +43,8 @@ class AllocateStockPostingController extends GetxController {
       if (response.statusCode == 200) {
         Get.snackbar("Success", "Stock allocation successfully posted!");
       } else if (response.statusCode == 401) {
-        Get.to(() => LoginScreen());
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
       } else {
         Get.snackbar("Error",
             "Failed to allocate stock. Status: ${response.statusCode}. Response: ${response.body}");

@@ -6,7 +6,6 @@ import 'package:erp_copy/model/item_master/item_master_list_model.dart';
 import 'package:erp_copy/model/pr_models_new/view_basket_model.dart';
 import 'package:erp_copy/screens/pr_screens/view_basket_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
@@ -192,183 +191,190 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // PR Number & PR Date
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _prNoController,
-                      style: const TextStyle(color: Colors.grey),
-                      decoration: _inputDecoration("PR No."),
-                      enabled: false, // Keep it disabled but with visible text
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      initialValue: _prDate,
-                      style: const TextStyle(color: Colors.grey),
-                      decoration: _inputDecoration("PR Date"),
-                      enabled: false, // Keep it disabled but with visible text
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Required By Date
-              TextFormField(
-                controller: _requiredByController,
-                decoration: _inputDecoration("Required By").copyWith(
-                  hintText: "dd/mm/yyyy",
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context),
-                  ),
-                ),
-                readOnly: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a required by date';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Project Code Dropdown
-              DropdownButtonFormField<String>(
-                decoration: _inputDecoration("Select Project Code"),
-                value: _selectedProjectCode,
-                dropdownColor:
-                    Colors.white, // Set dropdown background color to white
-                items: projectCodeController.getProjectCodelist
-                    .map((project) => DropdownMenuItem(
-                          value: project.projectCode,
-                          child: Text(
-                            project.projectCode ?? '',
-                            style: const TextStyle(
-                                color: Colors.black), // Set text color to black
-                          ),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedProjectCode = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a project code';
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 16),
-
-              // Item Internal Code Dropdown
-              DropdownButtonFormField<String>(
-                decoration: _inputDecoration("Select Item Internal Code"),
-                isExpanded: true, // Ensures the dropdown takes full width
-                value: _selectedItemCode,
-                dropdownColor: Colors.white,
-                items: itemsMasterController.getItemslist.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item.internalCode,
-                    child: Tooltip(
-                      message:
-                          item.internalCode ?? '', // Shows full text on hover
-                      child: Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width - 100),
-                        child: Text(
-                          item.internalCode ?? '',
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.black),
-                        ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // PR Number & PR Date
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _prNoController,
+                        style: const TextStyle(color: Colors.grey),
+                        decoration: _inputDecoration("PR No."),
+                        enabled:
+                            false, // Keep it disabled but with visible text
                       ),
                     ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedItemCode = value;
-                    _updateUOM(value!); // Update UOM based on the selected item
-                  });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select an item internal code';
-                  }
-                  return null;
-                },
-              ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        initialValue: _prDate,
+                        style: const TextStyle(color: Colors.grey),
+                        decoration: _inputDecoration("PR Date"),
+                        enabled:
+                            false, // Keep it disabled but with visible text
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
 
-              const SizedBox(height: 16),
-
-              // Quantity and UOM
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      style: const TextStyle(color: Colors.black),
-                      controller: _quantityController,
-                      decoration: _inputDecoration("Quantity"),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter quantity';
-                        }
-                        return null;
-                      },
+                // Required By Date
+                TextFormField(
+                  controller: _requiredByController,
+                  decoration: _inputDecoration("Required By").copyWith(
+                    hintText: "dd/mm/yyyy",
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _uomController,
-                      style: const TextStyle(color: Colors.grey),
-                      decoration: _inputDecoration("UOM"),
-                      enabled: false,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a required by date';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
 
-              // Remark
-              TextFormField(
-                style: const TextStyle(color: Colors.black),
-                controller: _remarkController,
-                decoration: _inputDecoration("Remark"),
-              ),
-              const SizedBox(height: 16),
+                // Project Code Dropdown
+                DropdownButtonFormField<String>(
+                  decoration: _inputDecoration("Select Project Code"),
+                  value: _selectedProjectCode,
+                  dropdownColor:
+                      Colors.white, // Set dropdown background color to white
+                  items: projectCodeController.getProjectCodelist
+                      .map((project) => DropdownMenuItem(
+                            value: project.projectCode,
+                            child: Text(
+                              project.projectCode ?? '',
+                              style: const TextStyle(
+                                  color:
+                                      Colors.black), // Set text color to black
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedProjectCode = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a project code';
+                    }
+                    return null;
+                  },
+                ),
 
-              // Add to Basket Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: _addToBasket,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Colors.grey),
+                const SizedBox(height: 16),
+
+                // Item Internal Code Dropdown
+                DropdownButtonFormField<String>(
+                  decoration: _inputDecoration("Select Item Internal Code"),
+                  isExpanded: true, // Ensures the dropdown takes full width
+                  value: _selectedItemCode,
+                  dropdownColor: Colors.white,
+                  items: itemsMasterController.getItemslist.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item.internalCode,
+                      child: Tooltip(
+                        message:
+                            item.internalCode ?? '', // Shows full text on hover
+                        child: Container(
+                          constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width - 100),
+                          child: Text(
+                            item.internalCode ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedItemCode = value;
+                      _updateUOM(
+                          value!); // Update UOM based on the selected item
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select an item internal code';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                // Quantity and UOM
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        style: const TextStyle(color: Colors.black),
+                        controller: _quantityController,
+                        decoration: _inputDecoration("Quantity"),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter quantity';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Add to Basket',
-                    style: TextStyle(color: Colors.black),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _uomController,
+                        style: const TextStyle(color: Colors.grey),
+                        decoration: _inputDecoration("UOM"),
+                        enabled: false,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Remark
+                TextFormField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: _remarkController,
+                  decoration: _inputDecoration("Remark"),
+                ),
+                const SizedBox(height: 16),
+
+                // Add to Basket Button
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _addToBasket,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: const BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    child: const Text(
+                      'Add to Basket',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

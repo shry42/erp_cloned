@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/models/po_models/po_vendor_details_model.dart';
+import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +21,10 @@ class VenodorDetailsController extends GetxController {
     );
 
     if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = jsonDecode(response.body);
       String message = result['message'];
       AppController.setmessage(message);

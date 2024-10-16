@@ -71,6 +71,10 @@ class InsertDataController extends GetxController {
         toast(message);
       }
     } else {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = json.decode(response.body);
       String title = result['title'];
       String message = result['message'];

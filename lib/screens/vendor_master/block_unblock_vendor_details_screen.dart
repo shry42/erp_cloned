@@ -53,7 +53,7 @@ class _BlockUnblockVendorDetailsScreenState
               if (widget.selectedItem.vcTxnID != null) {
                 try {
                   int vcTxnID = int.parse(widget.selectedItem.vcTxnID!);
-                  await gvmpc.getVednorMaster(vcTxnID);
+                  await gvmpc.getVednorMaster(vcTxnID, 'VCTxnID');
 
                   if (gvmpc.getVednorPdf.isNotEmpty &&
                       gvmpc.getVednorPdf.first.filePath != null) {

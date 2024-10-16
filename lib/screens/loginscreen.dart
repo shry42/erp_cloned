@@ -59,13 +59,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      labelText: 'Username',
+                      labelText: 'Emp code',
                       labelStyle:
                           GoogleFonts.kameron(textStyle: const TextStyle()),
                       hintText: 'username'),
                   validator: (value) {
                     if (value == null || value.isEmpty || value == "") {
-                      return 'Please enter a valid userName';
+                      return 'Please enter employee code';
                     }
                     return null;
                   },
@@ -88,14 +88,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    labelText: 'Password',
+                    labelText: 'otp',
                     labelStyle:
                         GoogleFonts.kameron(textStyle: const TextStyle()),
-                    hintText: 'Enter secure password',
+                    hintText: 'Enter otp',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty || value == "") {
-                      return 'Please enter a password';
+                      return 'Please enter otp';
                     }
                     return null;
                   },
@@ -103,35 +103,35 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               //checkBox
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Transform.scale(
-                      scale: 0.8,
-                      child: Checkbox(
-                          value: isChecked,
-                          onChanged: (bool) {
-                            setState(() {
-                              isChecked = true;
-                            });
-                          }),
-                    ),
-                    Text('Remember me',
-                        style: GoogleFonts.kameron(
-                            textStyle: const TextStyle(
-                                color: Color.fromARGB(255, 105, 106, 108)))),
-                    const Spacer(),
-                    Text('Forgot Password ?',
-                        // style: TextStyle(color: Color.fromARGB(255, 7, 138, 198)),
-                        style: GoogleFonts.kameron(
-                            textStyle: const TextStyle(
-                                color: Color.fromARGB(255, 57, 139, 206)))),
-                    const SizedBox(width: 12),
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 8),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.start,
+              //     children: [
+              //       Transform.scale(
+              //         scale: 0.8,
+              //         child: Checkbox(
+              //             value: isChecked,
+              //             onChanged: (bool) {
+              //               setState(() {
+              //                 isChecked = true;
+              //               });
+              //             }),
+              //       ),
+              // Text('Remember me',
+              //     style: GoogleFonts.kameron(
+              //         textStyle: const TextStyle(
+              //             color: Color.fromARGB(255, 105, 106, 108)))),
+              // const Spacer(),
+              // Text('Forgot Password ?',
+              //     // style: TextStyle(color: Color.fromARGB(255, 7, 138, 198)),
+              //     style: GoogleFonts.kameron(
+              //         textStyle: const TextStyle(
+              //             color: Color.fromARGB(255, 57, 139, 206)))),
+              // const SizedBox(width: 12),
+              //     ],
+              //   ),
+              // ),
 
               //ElevatedButton
 

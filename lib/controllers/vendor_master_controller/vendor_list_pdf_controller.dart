@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/model/vendor_master/vendor_master_list_pdf_model.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
+import 'package:erp_copy/screens/pdf_view_screen/pdf_view_screen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +12,7 @@ import 'package:http/http.dart' as http;
 class GetVendorMasterPdfController extends GetxController {
   List<VendorMasterListPdfModel> getVednorPdf = [];
 
-  getVednorMaster(int txnid) async {
+  getVednorMaster(int txnid, String IDType) async {
     http.Response response = await http.post(
       Uri.parse('${ApiService.base}/api/getFiles'),
       headers: {
@@ -18,19 +20,34 @@ class GetVendorMasterPdfController extends GetxController {
         'Authorization': 'Bearer ${AppController.accessToken}',
       },
       body: json.encode({
-        "IDType": "VCTxnID",
+        "IDType": IDType,
         "TxnID": txnid,
       }),
     );
     if (response.statusCode == 200) {
       Map<String, dynamic> result = json.decode(response.body);
       List<dynamic> data = result['data'];
+      final fileName = data[0]['StoredFileName'];
+      final filePath = data[0]['FilePath'];
 
       getVednorPdf =
           data.map((e) => VendorMasterListPdfModel.fromJson(e)).toList();
 
+      Get.defaultDialog(
+          title: 'Pdf',
+          middleText: fileName,
+          confirm: ElevatedButton(
+              onPressed: () {
+                Get.to(PdfViewerScreen(filePath: filePath));
+              },
+              child: const Text('view pdf')));
+
       return getVednorPdf;
     } else if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = json.decode(response.body);
       bool? status = result['status'];
       String title = result['title'];

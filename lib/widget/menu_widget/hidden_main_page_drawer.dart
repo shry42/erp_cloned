@@ -16,8 +16,10 @@ import 'package:erp_copy/screens/grn_screens/srn_acceptance_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/add_item_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/block_item_list_screen.dart';
 import 'package:erp_copy/screens/item_master_screens/item_master_list_screen.dart';
+import 'package:erp_copy/screens/menu_screens/assign_menu_screen.dart';
 import 'package:erp_copy/screens/po_screens/create_po_screen.dart';
 import 'package:erp_copy/screens/po_screens/generate_po_screen.dart';
+import 'package:erp_copy/screens/po_screens/po_lists_screen.dart';
 import 'package:erp_copy/screens/pr_screens/create_pr_screen.dart';
 import 'package:erp_copy/screens/pr_screens/pr_lists_screen.dart';
 import 'package:erp_copy/screens/sample_po/create_sample_goods_po_screen.dart';
@@ -26,15 +28,16 @@ import 'package:erp_copy/screens/service_po/create_service_po_screen.dart';
 import 'package:erp_copy/screens/service_pr_screens/create_service_pr_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_movement_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_posting_screen.dart';
+import 'package:erp_copy/screens/users_menu_screens/deleted_users_screen.dart';
 import 'package:erp_copy/screens/vendor_master/add_vendor_master_screen.dart';
 import 'package:erp_copy/screens/vendor_master/pending_vendors_screen_list.dart';
 import 'package:erp_copy/screens/vendor_master/vendor_master_list_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
-import 'package:erp_copy/screens/assign_item_groups_screens/assign_item_group_list_screen.dart';
-import 'package:erp_copy/screens/create_delivery_terms.dart';
-import 'package:erp_copy/screens/create_department.dart';
-import 'package:erp_copy/screens/create_item_groups.dart';
-import 'package:erp_copy/screens/create_payment_terms.dart';
+import 'package:erp_copy/screens/other/assign_item_group_list_screen.dart';
+import 'package:erp_copy/screens/other/create_delivery_terms.dart';
+import 'package:erp_copy/screens/other/create_department.dart';
+import 'package:erp_copy/screens/other/create_item_groups.dart';
+import 'package:erp_copy/screens/other/create_payment_terms.dart';
 import 'package:erp_copy/screens/employe_screens/employees_list_screen.dart';
 import 'package:erp_copy/screens/employe_screens/register_employees.dart';
 import 'package:erp_copy/screens/item_master_screens/block_unblock_item_list_screen.dart';
@@ -205,7 +208,7 @@ class _MainpageState extends State<Mainpage> {
         return CreatePOScreen(openDrawer: opneDrawer);
 
       case DrawerItems.purchaseOrderList:
-        return PRListsScreen(openDrawer: opneDrawer);
+        return POListScreen(openDrawer: opneDrawer);
 
       case DrawerItems.allPurchaseOrderList:
         return AddItemScreen(openDrawer: opneDrawer);
@@ -343,7 +346,7 @@ class _MainpageState extends State<Mainpage> {
         );
 
       case DrawerItems.deleteUsers:
-        return EmployeesListsScreen(
+        return DeletedUsersList(
           openDrawer: opneDrawer,
         );
       //
@@ -363,7 +366,7 @@ class _MainpageState extends State<Mainpage> {
           openDrawer: opneDrawer,
         );
       case DrawerItems.assignMenu:
-        return AssignItemGroupListScreen(
+        return AssignMenuScreen(
           openDrawer: opneDrawer,
         );
 //

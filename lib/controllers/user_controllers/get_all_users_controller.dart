@@ -3,12 +3,14 @@ import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/model/user_models/get_user_list_model.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GetAllUsersController extends GetxController {
   List<UsersListModel> usersList = [];
+  List userList = [].obs;
 
   Future getUsersList() async {
     http.Response response = await http.get(
@@ -27,11 +29,20 @@ class GetAllUsersController extends GetxController {
       // Filter the list to include only users with isActive == 1
       usersList = data
           .map((e) => UsersListModel.fromJson(e))
-          .where((user) => user.isActive == 1)
+          .where((user) => user.isActive == 0)
+          .toList();
+//for reactive state update below code
+      userList = data
+          .map((e) => UsersListModel.fromJson(e))
+          .where((user) => user.isActive == 0)
           .toList();
 
       return usersList;
     } else if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = json.decode(response.body);
       bool? status = result['status'];
       String title = result['title'];

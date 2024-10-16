@@ -1,190 +1,576 @@
-import 'package:erp_copy/controllers/grn_controllers/get_all_grn_list_controller.dart';
-import 'package:erp_copy/model/grn_models/get_all_grn_list_model.dart';
-import 'package:erp_copy/screens/grn_screens/all_grn_list_inside.dart';
-import 'package:erp_copy/widget/grn_cards/all_grn_list_card.dart';
-import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:erp_copy/controllers/stock_posting_controllers/stock_movement_controllers/stock_movement_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'package:erp_copy/controllers/stock_posting_controllers/stock_movement_controllers/get_item_from_master_stock_controller.dart';
+import 'package:erp_copy/controllers/stock_posting_controllers/stock_movement_controllers/get_item_from_stock_breakup_controller.dart';
+import 'package:erp_copy/model/stock_posting/stock_movement/get_items_from_master_stock_model.dart';
+import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 
 class StockMovementScreen extends StatefulWidget {
-  const StockMovementScreen({
-    super.key,
-    required this.openDrawer,
-  });
   final VoidCallback openDrawer;
+
+  StockMovementScreen({Key? key, required this.openDrawer}) : super(key: key);
 
   @override
   State<StockMovementScreen> createState() => _StockMovementScreenState();
 }
 
 class _StockMovementScreenState extends State<StockMovementScreen> {
-  TextEditingController searchController = TextEditingController();
+  final stockMovementController = Get.put(StockMovementController());
 
-  final GetAllGrnListController gaglc = GetAllGrnListController();
+  final GetItemFromStockBreakupController gifsbc =
+      Get.put(GetItemFromStockBreakupController());
 
-  List<GetAllGRNListModel> itemList = [];
-  List<GetAllGRNListModel> filteredItemList = [];
+  final formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-    // searchController.addListener(_filterItems);
-    _loadItemData();
-  }
+  final TextEditingController unRestrictedText = TextEditingController();
 
-  void _loadItemData() async {
-    var data = await gaglc.getAllGRNList();
-    setState(() {
-      if (data != null && data.isNotEmpty) {
-        itemList = data;
-        filteredItemList = data;
-      } else {
-        // Handle the case where no data is returned from API
-        itemList = [];
-        filteredItemList = [];
-      }
-    });
-  }
+  final TextEditingController serialnoText = TextEditingController();
 
-  // void _filterItems() {
-  //   String query =
-  //       searchController.text.toLowerCase().trim(); // Trim whitespace
-  //   setState(() {
-  //     if (query.isEmpty) {
-  //       // If the search query is empty, show all items
-  //       filteredItemList = itemList;
-  //     } else {
-  //       filteredItemList = itemList.where((item) {
-  //         return (item.grnTxID?.toString().toLowerCase().contains(query) ??
-  //             false);
-  //       }).toList();
-  //     }
-  //   });
-  // }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
+  final TextEditingController batchnoText = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.sizeOf(context).height * 0.18;
-    double _width = MediaQuery.sizeOf(context).width * 0.90;
-
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 245, 245, 245),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-        automaticallyImplyLeading: true,
+        title: const Text('Stock Movement'),
+        backgroundColor: const Color.fromARGB(255, 29, 169, 32),
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          DrawerMenuWidget(onClicked: widget.openDrawer),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'GRN Lists',
-                style: TextStyle(color: Colors.white, fontSize: 15),
+              const SizedBox(height: 20),
+              _buildVendorDetailsSection(),
+              const SizedBox(height: 30),
+              _buildMovementFields(),
+              const SizedBox(height: 10),
+              _buildSelectedItemFields(),
+              const SizedBox(height: 10),
+              _buildButtonsTabBarSection(),
+              const SizedBox(height: 20),
+              buildElevatedFormButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVendorDetailsSection() {
+    return GetX<GetItemFromMasterStockController>(
+      builder: (controller) {
+        return Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<GetItemsFromMasterStockModel>(
+                value: stockMovementController.selectedItemName.value,
+                dropdownColor: Colors.white,
+                isDense: true,
+                isExpanded: true,
+                menuMaxHeight: 400,
+                decoration: InputDecoration(
+                  labelText: 'Item Name',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  constraints: const BoxConstraints(maxHeight: 45),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.white),
+                  ),
+                ),
+                items: controller.itemList.map((item) {
+                  return DropdownMenuItem<GetItemsFromMasterStockModel>(
+                    value: item,
+                    child: Text(
+                      item.itemName ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    stockMovementController.selectedItemName.value = value;
+                    stockMovementController
+                        .getItemStockData(value.itemID!.toInt());
+                    setState(() {});
+                  }
+                },
               ),
-              const SizedBox(width: 80),
-              DrawerMenuWidget(
-                onClicked: widget.openDrawer,
+            ),
+            IconButton(
+              icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
+              onPressed: _showItemDetailsDialog,
+              constraints: const BoxConstraints(minWidth: 40),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showItemDetailsDialog() {
+    if (stockMovementController.selectedItemName.value != null) {
+      showDialog(
+        context: Get.context!,
+        builder: (BuildContext context) {
+          return Obx(() {
+            final itemStockController =
+                stockMovementController.itemStockController;
+
+            // Calculate total unrestricted stock
+            double pilotStock = itemStockController.psStockList.isNotEmpty
+                ? double.tryParse(itemStockController
+                        .psStockList[0].unrestrictedStock
+                        .toString()) ??
+                    0.0
+                : 0.0;
+
+            double rndStock = itemStockController.rdStockList.isNotEmpty
+                ? double.tryParse(itemStockController
+                        .rdStockList[0].unrestrictedStock
+                        .toString()) ??
+                    0.0
+                : 0.0;
+
+            double warehouseStock = itemStockController.whStockList.isNotEmpty
+                ? double.tryParse(itemStockController
+                        .whStockList[0].unrestrictedStock
+                        .toString()) ??
+                    0.0
+                : 0.0;
+
+            double totalUnrestrictedStock =
+                pilotStock + rndStock + warehouseStock;
+
+            String uom = itemStockController.itemDetailsList.isNotEmpty
+                ? itemStockController.itemDetailsList[0].purchaseUOM ?? 'N/A'
+                : 'N/A';
+
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: const Text('Item Details',
+                  style: TextStyle(color: Colors.black)),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildDialogTextField('Total Un-Restricted Stock Available',
+                        totalUnrestrictedStock.toString()),
+                    _buildDialogTextField('UOM', uom),
+                    _buildDialogTextField('Pilot Store', pilotStock.toString()),
+                    _buildDialogTextField('RnD Store', rndStock.toString()),
+                    _buildDialogTextField(
+                        'Warehouse', warehouseStock.toString()),
+                  ],
+                ),
               ),
-              const SizedBox(
-                width: 20,
+              actions: [
+                TextButton(
+                  child: const Text('Close',
+                      style: TextStyle(color: Colors.black)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+          });
+        },
+      );
+    }
+  }
+
+  Widget _buildDialogTextField(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        initialValue: value,
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          filled: true,
+          fillColor: Colors.grey[100],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+        ),
+        style: const TextStyle(color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _buildMovementFields() {
+    return Obx(() => Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                style: TextStyle(color: Colors.black),
+                onChanged: (value) =>
+                    stockMovementController.movementQuantityText.value = value,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Movement Quantity',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  constraints: const BoxConstraints(maxHeight: 45),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Please enter movement quantity';
+                  }
+                  final number = double.tryParse(value!);
+                  if (number == null) return 'Please enter a valid number';
+                  if (number <= 0) return 'Quantity must be greater than 0';
+
+                  final availableStock = double.tryParse(stockMovementController
+                          .selectedUnrestrictedStock.value) ??
+                      0;
+                  if (number > availableStock) {
+                    return 'Quantity cannot exceed available stock';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
+                value: stockMovementController.selectedTargetLocation.value,
+                decoration: InputDecoration(
+                  labelText: 'Target Location',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  constraints: const BoxConstraints(maxHeight: 45),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                items: const [
+                  DropdownMenuItem(
+                      value: 'Pilot Store',
+                      child: Text(
+                        'Pilot Store',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                  DropdownMenuItem(
+                      value: 'Rnd Store',
+                      child: Text(
+                        'Rnd Store',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                  DropdownMenuItem(
+                      value: 'WareHouse',
+                      child: Text(
+                        'WareHouse',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                ],
+                onChanged: (String? newValue) =>
+                    stockMovementController.updateTargetLocation(
+                  newValue,
+                  stockMovementController.selectedTab.value,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select target location';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildSelectedItemFields() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Selected Item Details',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: unRestrictedText,
+                  // initialValue:
+                  //     stockMovementController.unrestrictedStockText.value,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Un-Restricted Stock',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: batchnoText,
+                  // initialValue: stockMovementController.batchNoText.value,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Batch No',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: serialnoText,
+                  // initialValue: stockMovementController.serialNoText.value,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Serial No',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
               ),
             ],
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    );
+  }
+
+  Widget _buildButtonsTabBarSection() {
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          ButtonsTabBar(
+            backgroundColor: Colors.blue,
+            unselectedBackgroundColor: Colors.grey[300],
+            unselectedLabelStyle: const TextStyle(color: Colors.black),
+            labelStyle: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+            onTap: (index) {
+              stockMovementController.selectedTab.value = index;
+              stockMovementController.clearSelection();
+            },
+            tabs: const [
+              Tab(text: 'Pilot Stores'),
+              Tab(text: 'RnD Stores'),
+              Tab(text: 'WareHouse'),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 310,
+            child: TabBarView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 20),
-                  child: SizedBox(
-                    height: 35,
-                    width: 390,
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        focusColor: Colors.black,
-                        filled: true,
-                        fillColor: const Color(0xfff1f1f1),
-                        border: OutlineInputBorder(
-                          gapPadding: 20,
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            width: 1,
-                            color: Colors.green,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.grey)),
-                        hintText: "Search for items",
-                        hintStyle:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                        suffixIcon: const Icon(Icons.search),
-                        prefixIconColor: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
+                _buildStockStoreSection(StoreType.pilot),
+                _buildStockStoreSection(StoreType.rnd),
+                _buildStockStoreSection(StoreType.warehouse),
               ],
             ),
-            const SizedBox(height: 10),
-            filteredItemList.isEmpty
-                ? const Center(
-                    child: Text('No items found'),
-                  )
-                : SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: filteredItemList.length,
-                      itemBuilder: (context, index) {
-                        var item = filteredItemList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(GRNListInsideScreen(
-                              grnTxnID: item.grnTxnID!.toInt(),
-                            ));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: AllGRNListCard(
-                              duration: 1,
-                              grnNumber: item.grnTxnID
-                                  .toString(), // Assuming this is GRN Number
-                              invoiceNo: item
-                                  .invoiceNo, // Replace with the actual property for Invoice No.
-                              invoiceDate: item.invoiceDate != null
-                                  ? item.invoiceDate!.toIso8601String()
-                                  : null, // Replace with actual property
-                              challanNo: item
-                                  .challanNo, // Replace with the actual property for Challan No.
-                              grnDate: item.txnDate
-                                  .toIso8601String(), // Assuming createdAt is the GRN Date
-                              createdBy: item
-                                  .username, // Replace with actual property for Created By
-                              vendorName: item
-                                  .vendorName, // Replace with actual property for Vendor Name
-                              status: item.grnApprovalStatus
-                                  .toString(), // Replace with actual property for Status
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStockStoreSection(StoreType storeType) {
+    return GetX<GetItemFromStockBreakupController>(
+      builder: (controller) {
+        final List dataToShow;
+        switch (storeType) {
+          case StoreType.pilot:
+            dataToShow = controller.psStockList;
+            break;
+          case StoreType.rnd:
+            dataToShow = controller.rdStockList;
+            break;
+          case StoreType.warehouse:
+            dataToShow = controller.whStockList;
+            break;
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.white,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 20,
+              headingRowColor: MaterialStateColor.resolveWith(
+                  (states) => Colors.grey.shade300),
+              dataRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.white),
+              dividerThickness: 1,
+              columns: const [
+                DataColumn(
+                    label: Text('Venus ID',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Batch No',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Serial No',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Internal Code',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Item Group',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Unrestricted Stock',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('QA Stock',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Blocked Stock',
+                        style: TextStyle(color: Colors.black))),
+                DataColumn(
+                    label: Text('Purchase UOM',
+                        style: TextStyle(color: Colors.black))),
+              ],
+              rows: dataToShow.map((stockItem) {
+                final rowId =
+                    '${stockItem.serialNo}-${stockItem.batchNo}-${stockItem.internalCode}';
+                return DataRow(
+                  selected:
+                      stockMovementController.selectedRowId.value == rowId,
+                  onSelectChanged: (isSelected) {
+                    if (isSelected ?? false) {
+                      stockMovementController.updateSelectedRow(
+                        rowId,
+                        stockItem.unrestrictedStock?.toString() ?? '',
+                        stockItem.batchNo ?? '',
+                        stockItem.serialNo ?? '',
+                      );
+                      unRestrictedText.text =
+                          stockItem.unrestrictedStock?.toString() ?? '';
+                      batchnoText.text = stockItem.batchNo ?? '';
+                      serialnoText.text = stockItem.serialNo ?? '';
+                    }
+                  },
+                  cells: [
+                    DataCell(Text(
+                      stockMovementController.selectedVenusid.value,
+                      style: const TextStyle(color: Colors.black),
+                    )),
+                    DataCell(Text(stockItem.batchNo ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.serialNo ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.internalCode ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.itemGroup ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.unrestrictedStock?.toString() ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.qaStock?.toString() ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.blockedStock?.toString() ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                    DataCell(Text(stockItem.purchaseUOM ?? '',
+                        style: const TextStyle(color: Colors.black))),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildElevatedFormButton() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          if (gifsbc.isActive != 2) {
+            stockMovementController.submitInternalItemTransfer();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: gifsbc.isActive == 2
+              ? Colors.blue
+              : Colors.red, // Dynamic color change
+          padding: const EdgeInsets.symmetric(
+              horizontal: 25,
+              vertical: 18), // Larger padding for a more prominent button
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                8), // Slightly less round corners for a sharper look
+            side: BorderSide(
+                color: Colors.grey.shade300,
+                width: 2), // Light border to give it depth
+          ),
+          elevation:
+              6, // Slightly higher elevation for a stronger shadow effect
+          shadowColor: Colors.black.withOpacity(0.2), // Light shadow color
         ),
+        child: Obx(() {
+          return Text(
+            gifsbc.isActive == 2
+                ? 'This item is blocked'
+                : 'Transfer this item',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white, // White text for contrast
+              letterSpacing: 1.2, // Slightly spaced-out letters for readability
+            ),
+          );
+        }),
       ),
     );
   }

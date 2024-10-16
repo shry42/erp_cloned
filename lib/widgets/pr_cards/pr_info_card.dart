@@ -1,6 +1,5 @@
 import 'package:erp_copy/utils/color_for_Cards.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class PRInfoCard extends StatelessWidget {
   const PRInfoCard({

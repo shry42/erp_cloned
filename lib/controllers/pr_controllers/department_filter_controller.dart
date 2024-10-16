@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/models/pr_models/department_filter_model.dart';
+import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,6 +33,10 @@ class DepartmentFiterController extends GetxController {
 
       return depFilterList;
     } else {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       // throw Exception('Failed to fetch data');
       return depFilterList = [];
     }

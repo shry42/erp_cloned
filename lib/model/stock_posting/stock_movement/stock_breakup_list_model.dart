@@ -1,6 +1,6 @@
 class StockBreakupListModel {
   String? inventoryName;
-  int? quantity;
+  dynamic? quantity;
 
   StockBreakupListModel({
     this.inventoryName,
@@ -11,7 +11,7 @@ class StockBreakupListModel {
   factory StockBreakupListModel.fromJson(Map<String, dynamic> json) {
     return StockBreakupListModel(
       inventoryName: json['InventoryName'] as String?,
-      quantity: json['Quantity'] as int?,
+      quantity: json['Quantity'] as dynamic?,
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:erp_copy/controllers/assign_item_groups_controller.dart/get_assign_items_user_list_controller.dart';
+import 'package:erp_copy/screens/other/assign_item_group_inside_screen.dart';
+import 'package:erp_copy/screens/other/view_item_group_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
-import 'package:erp_copy/widgets/Tables/item_group_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:get/get.dart';
 
 class AssignItemGroupListScreen extends StatefulWidget {
   const AssignItemGroupListScreen({
@@ -97,80 +99,9 @@ class _AssignItemGroupListScreenState extends State<AssignItemGroupListScreen> {
                     ),
                   ),
                 ),
-                // ElevatedButton(
-                //     onPressed: () {
-                //       showCreateItemGroupDialog(context);
-                //     },
-                //     style: ElevatedButton.styleFrom(
-                //       backgroundColor: Colors.white,
-                //       shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(12),
-                //       ),
-                //       minimumSize: const Size(120, 40),
-                //     ),
-                //     child: const Text(
-                //       'Add item',
-                //       style: TextStyle(color: Colors.black),
-                //     )),
               ],
             ),
             const SizedBox(height: 6),
-            // Form(
-            //   key: _formKey,
-            //   child: Column(
-            //     children: [
-            //       Padding(
-            //         padding:
-            //             const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-            //         child: TextFormField(
-            //           controller: deliveryTermsController,
-            //           decoration: InputDecoration(
-            //             focusedBorder: OutlineInputBorder(
-            //                 borderRadius: BorderRadius.circular(12),
-            //                 borderSide: const BorderSide(color: Colors.grey)),
-            //             contentPadding: const EdgeInsets.symmetric(
-            //                 vertical: 6, horizontal: 8),
-            //             border: OutlineInputBorder(
-            //               borderRadius: BorderRadius.circular(12),
-            //             ),
-            //             labelText: 'Delivery term',
-            //           ),
-            //           style: const TextStyle(
-            //             color: Colors.black,
-            //           ),
-            //           validator: (value) {
-            //             if (value!.isEmpty) {
-            //               return "Please enter delivery term";
-            //             }
-            //             return null;
-            //           },
-            //         ),
-            //       ),
-            //       const SizedBox(height: 20),
-            //       ElevatedButton(
-            //         onPressed: () async {
-            //           // if (_formKey.currentState!.validate()) {
-            //           //   await cdtc
-            //           //       .createDeliveryTerms(deliveryTermsController.text);
-            //           // }
-            //           // setState(() {});
-            //           showCreateItemGroupDialog(context);
-            //         },
-            //         style: ElevatedButton.styleFrom(
-            //           backgroundColor: Colors.white,
-            //           shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(12),
-            //           ),
-            //           minimumSize: const Size(120, 40),
-            //         ),
-            //         child: const Text(
-            //           'Add',
-            //           style: TextStyle(color: Colors.black),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             const SizedBox(height: 10),
             FutureBuilder(
               future: gaiulc.getUserListOfAssignItems(),
@@ -195,14 +126,42 @@ class _AssignItemGroupListScreenState extends State<AssignItemGroupListScreen> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
-                          child: ItemGroupTable(
-                            // ht: 250,
-                            // wd: 400,
-                            duration: 200,
-                            name: snapshot.data[index].username,
-                            // type: snapshot.data[index].itemType,
-                            // prefix: snapshot.data[index].toString(),
-                            // suffix: snapshot.data[index].toString(),
+                          child: GestureDetector(
+                            onTap: () {
+                              showItemGroupDialog(snapshot.data[index].userId);
+                            },
+                            child: Card(
+                              color: const Color.fromARGB(255, 77, 131, 77),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 18),
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 15, left: 18),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            'Name   :  ${snapshot.data[index].username}\n',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -216,4 +175,69 @@ class _AssignItemGroupListScreenState extends State<AssignItemGroupListScreen> {
       ),
     );
   }
+}
+
+void showItemGroupDialog(int userId) {
+  Get.defaultDialog(
+    title: "Item Group",
+    titleStyle: const TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+    content: const Column(
+      children: [
+        Text(
+          "Please choose one of the options below:",
+          style: TextStyle(fontSize: 16, color: Colors.black54),
+        ),
+        SizedBox(height: 20),
+      ],
+    ),
+    radius: 10, // Rounded corners for the dialog
+
+    backgroundColor: Colors.white,
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          // Action for "View Item Group"
+          // Get.back(); // Close the dialog
+          Get.to(ViewItemGroupScreen(
+            userId: userId,
+          ));
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: const Text(
+          "View Item Group",
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          // Action for "Assign Item Group"
+          // Get.back(); // Close the dialog
+          Get.to(AssignItemGroupInsideScreen(
+            userId: userId,
+          ));
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: const Text(
+          "Assign Item Group",
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+      ),
+    ],
+  );
 }

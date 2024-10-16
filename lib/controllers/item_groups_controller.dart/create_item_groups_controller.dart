@@ -28,18 +28,22 @@ class CreateItemGroupsController extends GetxController {
       String message = result['message'];
 
       if (status == true) {
-        toast(message);
-        // Get.defaultDialog(
-        //   title: "Success",
-        //   middleText: message,
-        //   textConfirm: "OK",
-        //   confirmTextColor: Colors.white,
-        //   onConfirm: () {
-        //     Get.back();
-        //   },
-        // );
+        // toast(message);
+        Get.defaultDialog(
+          title: "Success",
+          middleText: message,
+          textConfirm: "OK",
+          confirmTextColor: Colors.white,
+          onConfirm: () {
+            Get.back();
+          },
+        );
       }
     } else if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = json.decode(response.body);
       bool? status = result['status'];
       String title = result['title'];

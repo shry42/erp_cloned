@@ -1,6 +1,7 @@
 import 'package:erp_copy/controllers/grn_controllers/get_grn_list_in_approval_controller.dart';
 import 'package:erp_copy/controllers/grn_controllers/get_grn_remarks_controller.dart';
-import 'package:erp_copy/controllers/grn_controllers/submit_grn_accepted_count.dart';
+import 'package:erp_copy/controllers/grn_controllers/submit_grn/submit_grn_accepted_count.dart';
+import 'package:erp_copy/controllers/vendor_master_controller/vendor_list_pdf_controller.dart';
 import 'package:erp_copy/model/grn_models/grn_list_in_acceptance_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,18 +16,29 @@ class GRNItemsScreen extends StatefulWidget {
 }
 
 class _GRNItemsScreenState extends State<GRNItemsScreen> {
-  final GetGrnListInApprovalController controller = Get.find();
+  final GetGrnListInApprovalController controller =
+      Get.put(GetGrnListInApprovalController());
 
   final GetGrnRemarksController ggrc = Get.put(GetGrnRemarksController());
 
   final SubmitGrnAcceptedCountController sgrnac =
       Get.put(SubmitGrnAcceptedCountController());
 
+  final GetVendorMasterPdfController gvpdfc =
+      Get.put(GetVendorMasterPdfController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('GRN Items'),
+        actions: [
+          ElevatedButton(
+              onPressed: () async {
+                await gvpdfc.getVednorMaster(widget.GRNTxnID, 'GRNTxnID');
+              },
+              child: const Text('view doc'))
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {

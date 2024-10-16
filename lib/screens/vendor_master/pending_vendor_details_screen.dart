@@ -31,7 +31,7 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
                 try {
                   int vcTxnID =
                       int.parse(widget.selectedItem.vCTxnID.toString()!);
-                  await gvmpc.getVednorMaster(vcTxnID);
+                  await gvmpc.getVednorMaster(vcTxnID, 'VCTxnID');
 
                   if (gvmpc.getVednorPdf.isNotEmpty &&
                       gvmpc.getVednorPdf.first.filePath != null) {

@@ -3,12 +3,14 @@ import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/model/item_groups_model/item_groups_model.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class GetItemGroupsController extends GetxController {
   List<ItemGroupModel> itemGroupList = [];
+  RxList itemGroupsList = [].obs;
 
   Future getItemsGroups() async {
     http.Response response = await http.get(
@@ -23,9 +25,15 @@ class GetItemGroupsController extends GetxController {
       List<dynamic> data = result['data'];
 
       itemGroupList = data.map((e) => ItemGroupModel.fromJson(e)).toList();
+      itemGroupsList.value =
+          data.map((e) => ItemGroupModel.fromJson(e)).toList();
 
       return itemGroupList;
     } else if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        toast('session expired or invalid');
+        Get.offAll(LoginScreen());
+      }
       Map<String, dynamic> result = json.decode(response.body);
       bool? status = result['status'];
       String title = result['title'];

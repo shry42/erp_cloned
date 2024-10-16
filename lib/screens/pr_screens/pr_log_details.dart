@@ -21,7 +21,7 @@ class PrLogDetailsScreen extends StatefulWidget {
 
 class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
   double _height = 180;
-  double _width = 400;
+
   dynamic _duration = 500;
   bool animated = false;
   final PrLogController prcont = PrLogController();
@@ -56,6 +56,7 @@ class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.sizeOf(context).height;
+    double _width = MediaQuery.sizeOf(context).width * 0.90;
 
     // _height = h * 0.25;
     return WillPopScope(
@@ -80,132 +81,27 @@ class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-          automaticallyImplyLeading: true,
-          // title: const Text('UnApproved PO selection'),
-
+          title: const Text(
+            'PR Log Details',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          centerTitle: true, // Centers the title
+          leading: GestureDetector(
+            onTap: () {
+              Get.back(); // Navigates back on tap
+            },
+            child: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
           actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: const Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(width: 120),
-                const Text(
-                  'PR Log Details',
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(width: 95),
-                DrawerMenuWidget(
-                  onClicked: widget.openDrawer,
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
+            DrawerMenuWidget(
+              onClicked: widget.openDrawer, // Custom drawer menu action
+            ),
           ],
         ),
-        // backgroundColor: Color.fromARGB(255, 183, 63, 63),
-        // appBar: AppBar(
-        //   title: const Text('  PR Approvals'),
-        //   automaticallyImplyLeading: false,
-        //   actions: [
-        //     // Shimmer(
-        //     //   duration: const Duration(seconds: 2),
-        //     //   // This is NOT the default value. Default value: Duration(seconds: 0)
-        //     //   interval: const Duration(milliseconds: 20),
-        //     //   // This is the default value
-        //     //   color: Colors.white,
-        //     //   // This is the default value
-        //     //   colorOpacity: 1,
-        //     //   // This is the default value
-        //     //   enabled: true,
-        //     //   // This is the default value
-        //     //   direction: const ShimmerDirection.fromLTRB(),
-        //     //   child: GestureDetector(
-        //     //     onTap: () {
-        //     //       // Get.to(const PRViewAllDetails());
-        //     //     },
-        //     //     child: Container(
-        //     //       height: 30,
-        //     //       width: 100,
-        //     //       decoration: BoxDecoration(
-        //     //           border: Border.all(),
-        //     //           color: Colors.white70,
-        //     //           borderRadius: BorderRadius.circular(6)),
-        //     //       child: const Row(
-        //     //         mainAxisAlignment: MainAxisAlignment.center,
-        //     //         crossAxisAlignment: CrossAxisAlignment.center,
-        //     //         children: [
-        //     //           Center(
-        //     //             child: Text(
-        //     //               'View all PR',
-        //     //               style: TextStyle(color: Colors.black, fontSize: 12),
-        //     //             ),
-        //     //           ),
-        //     //         ],
-        //     //       ),
-        //     //     ),
-        //     //   ),
-        //     // ),
-
-        //     const SizedBox(width: 5),
-        //     SizedBox(
-        //       width: 140,
-        //       height: 38,
-        //       child: DropdownButtonFormField<String>(
-        //         value: 'production',
-        //         style: TextStyle(fontSize: 12, color: Colors.black),
-        //         // value: 'Management',
-        //         borderRadius: BorderRadius.circular(20),
-        //         decoration: InputDecoration(
-        //           border: OutlineInputBorder(
-        //             borderRadius: BorderRadius.circular(8.0),
-        //           ),
-        //           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-        //         ),
-        //         onChanged: (String? newValue) {
-        //           setState(() {
-        //             searchController.clear();
-        //             mainDataList = null;
-        //             searchDataList = null;
-        //             dataList = null;
-        //           });
-        //           // Implement department dropdown functionality here
-        //           depFilterCont
-        //               .fetchFilterDepList(newValue.toString())
-        //               .then((List<DepartmentFilterModel>? value) {
-        //             setState(() {
-        //               newDep = newValue.toString();
-        //               mainDataList = value ?? [];
-        //               dataList = value ?? [];
-        //             });
-        //           });
-        //         },
-        //         items: depListCont.depList.map((item) {
-        //           return DropdownMenuItem(
-        //             value: item.depName.toString(),
-        //             child: Text(item.depName.toString()),
-        //           );
-        //         }).toList(),
-        //       ),
-        //     ),
-
-        //     DrawerMenuWidget(
-        //       onClicked: widget.openDrawer,
-        //     ),
-        //     const SizedBox(width: 15),
-        //   ],
-        // ),
-
         body: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -215,8 +111,9 @@ class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
                     const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
                 child: SizedBox(
                   height: 35,
-                  width: 250,
+                  width: _width,
                   child: TextField(
+                    style: const TextStyle(color: Colors.black),
                     controller: searchController,
                     onChanged: (value) {
                       if (value.isEmpty) {
@@ -259,29 +156,29 @@ class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-                child: Container(
-                  height: 35,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: <Color>[
-                        Color.fromARGB(243, 84, 86, 80),
-                        // Color.fromARGB(243, 77, 234, 88),
-                        Color.fromARGB(255, 234, 242, 232),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                      child: Text(
-                    'Search History',
-                    style: TextStyle(color: Colors.white),
-                  )),
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+              //   child: Container(
+              //     height: 35,
+              //     width: 120,
+              //     decoration: BoxDecoration(
+              //       gradient: const LinearGradient(
+              //         colors: <Color>[
+              //           Color.fromARGB(243, 84, 86, 80),
+              //           // Color.fromARGB(243, 77, 234, 88),
+              //           Color.fromARGB(255, 234, 242, 232),
+              //         ],
+              //       ),
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //     child: const Center(
+              //         child: Text(
+              //       'Search History',
+              //       style: TextStyle(color: Colors.white),
+              //     )),
+              //   ),
+              // ),
             ],
           ),
           // const SizedBox(height: 6),
@@ -355,7 +252,7 @@ class _PrLogDetailsScreenState extends State<PrLogDetailsScreen> {
                     child: DropdownButtonFormField<String>(
                       dropdownColor: Colors.white,
                       value: 'production',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: const TextStyle(fontSize: 12, color: Colors.black),
                       // value: 'Management',
                       borderRadius: BorderRadius.circular(20),
                       decoration: InputDecoration(

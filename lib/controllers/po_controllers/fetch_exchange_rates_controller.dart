@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -55,6 +56,10 @@ class FetchExchangeRatesController extends GetxController {
   }
 
   void _handleError(http.Response response) {
+    if (response.statusCode == 401) {
+      toast('session expired or invalid');
+      Get.offAll(LoginScreen());
+    }
     Map<String, dynamic> result = json.decode(response.body);
     String title = result['title'] ?? 'Error';
     String message = result['message'] ?? 'An unexpected error occurred.';

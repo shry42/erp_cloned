@@ -332,7 +332,11 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Vendor Details'),
+            backgroundColor: Colors.white,
+            title: const Text(
+              'Vendor Details',
+              style: TextStyle(color: Colors.black),
+            ),
             content: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,7 +371,10 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
             ),
             actions: [
               TextButton(
-                child: const Text('Close'),
+                child: const Text(
+                  'Close',
+                  style: TextStyle(color: Colors.black),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -1151,6 +1158,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
         readOnly: true,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
           filled: true,
           fillColor: Colors.grey[100],
           border: OutlineInputBorder(

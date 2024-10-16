@@ -3,7 +3,6 @@ import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/po_log_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/vendor_details_controller.dart';
 import 'package:erp_copy/screens/po_screens/po_vendor_details_screen.dart';
-import 'package:erp_copy/screens/pr_screens/pr_log_details.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:erp_copy/widgets/po_cards/dummy_po_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,47 +76,25 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-        automaticallyImplyLeading: true,
-        // title: const Text('UnApproved PO selection'),
-
+        title: const Text(
+          'PO Log Details',
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        centerTitle: true, // Centers the title
+        leading: GestureDetector(
+          onTap: () {
+            Get.back(); // Navigates back on tap
+          },
+          child: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(width: 120),
-              const Text(
-                'PO Log Details',
-                style: TextStyle(color: Colors.white),
-              ),
-              const SizedBox(width: 95),
-              // GestureDetector(
-              //   onTap: () {
-              //     widget.openDrawer;
-              //   },
-              //   child: const Icon(
-              //     Icons.menu_open_rounded,
-              //     size: 35,
-              //     color: Colors.white,
-              //   ),
-              // ),
-              DrawerMenuWidget(
-                onClicked: widget.openDrawer,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-            ],
-          )
+          DrawerMenuWidget(
+            onClicked: widget.openDrawer, // Custom drawer menu action
+          ),
         ],
       ),
       body: Stack(children: [
@@ -131,8 +108,9 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                       horizontal: 15.0, vertical: 20),
                   child: SizedBox(
                     height: 35,
-                    width: 200,
+                    width: _width,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       onChanged: (value) {
                         setState(() {
@@ -168,26 +146,26 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
-                Container(
-                  height: 35,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: <Color>[
-                        Color.fromARGB(243, 84, 86, 80),
-                        // Color.fromARGB(243, 77, 234, 88),
-                        Color.fromARGB(255, 234, 242, 232),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                      child: Text(
-                    'Search History',
-                    style: TextStyle(color: Colors.white),
-                  )),
-                ),
+                // const SizedBox(width: 20),
+                // Container(
+                //   height: 35,
+                //   width: 150,
+                //   decoration: BoxDecoration(
+                //     gradient: const LinearGradient(
+                //       colors: <Color>[
+                //         Color.fromARGB(243, 84, 86, 80),
+                //         // Color.fromARGB(243, 77, 234, 88),
+                //         Color.fromARGB(255, 234, 242, 232),
+                //       ],
+                //     ),
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                //   child: const Center(
+                //       child: Text(
+                //     'Search History',
+                //     style: TextStyle(color: Colors.white),
+                //   )),
+                // ),
               ],
             ),
             const SizedBox(height: 6),
@@ -241,7 +219,7 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 10),
                         unselectedBackgroundColor:
-                            const Color.fromARGB(255, 204, 242, 195),
+                            Color.fromARGB(255, 125, 141, 122),
                         decoration: const BoxDecoration(
                           // gradient: LinearGradient(
                           //   colors: <Color>[
@@ -733,55 +711,55 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
             ),
           ],
         ),
-        Positioned(
-          bottom: 0,
-          left: 10,
-          child: Container(
-            height: 120,
-            width: 430,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      isPOSelected = true;
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isPOSelected ? Colors.green : Colors.grey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  child: const Text(
-                    "purchase order",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // setState(() {
-                    //   isPOSelected = false;
-                    // });
-                    (PrLogDetailsScreen(openDrawer: opneDrawer));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isPOSelected ? Colors.grey : Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  child: const Text(
-                    "purchase request",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // Positioned(
+        //   bottom: 0,
+        //   left: 10,
+        //   child: Container(
+        //     height: 120,
+        //     width: 430,
+        //     color: Colors.white,
+        //     child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //       children: [
+        //         ElevatedButton(
+        //           onPressed: () {
+        //             setState(() {
+        //               isPOSelected = true;
+        //             });
+        //           },
+        //           style: ElevatedButton.styleFrom(
+        //             backgroundColor: isPOSelected ? Colors.green : Colors.grey,
+        //             shape: RoundedRectangleBorder(
+        //               borderRadius: BorderRadius.circular(12.0),
+        //             ),
+        //           ),
+        //           child: const Text(
+        //             "purchase order",
+        //             style: TextStyle(color: Colors.white),
+        //           ),
+        //         ),
+        //         ElevatedButton(
+        //           onPressed: () {
+        //             // setState(() {
+        //             //   isPOSelected = false;
+        //             // });
+        //             (PrLogDetailsScreen(openDrawer: opneDrawer));
+        //           },
+        //           style: ElevatedButton.styleFrom(
+        //             backgroundColor: isPOSelected ? Colors.grey : Colors.green,
+        //             shape: RoundedRectangleBorder(
+        //               borderRadius: BorderRadius.circular(12.0),
+        //             ),
+        //           ),
+        //           child: const Text(
+        //             "purchase request",
+        //             style: TextStyle(color: Colors.white),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ]),
     );
   }

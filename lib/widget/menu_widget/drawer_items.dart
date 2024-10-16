@@ -104,7 +104,7 @@ class DrawerItems {
   static const vendorMasterListScreen = DrawerItem(
       title: 'Vendor master list', icon: FontAwesomeIcons.cartShopping);
 
-//
+//Menu
   static const createSubMenu =
       DrawerItem(title: 'createSubMenu', icon: Icons.assignment);
 

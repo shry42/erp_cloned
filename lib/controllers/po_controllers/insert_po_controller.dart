@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
+import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,6 +93,10 @@ class InsertNewPOController extends GetxController {
           },
         );
       } else {
+        if (response.statusCode == 401) {
+          toast('session expired or invalid');
+          Get.offAll(LoginScreen());
+        }
         Get.defaultDialog(
           title: "Error",
           middleText: "Failed to submit Purchase Order. Please try again.",

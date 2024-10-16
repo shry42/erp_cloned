@@ -4,6 +4,7 @@ import 'package:erp_copy/model/grn_models/get_po_items_model.dart';
 import 'package:erp_copy/model/grn_models/get_service_po_items.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -52,6 +53,10 @@ class GetPoItemsController extends GetxController {
 
   // Handle error responses (e.g., validation, unauthorized)
   void handleErrorResponse(http.Response response) {
+    if (response.statusCode == 401) {
+      toast('session expired or invalid');
+      Get.offAll(LoginScreen());
+    }
     Map<String, dynamic> result = json.decode(response.body);
     String title = result['title'];
     String message = result['message'];
