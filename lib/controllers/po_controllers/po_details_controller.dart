@@ -12,6 +12,9 @@ import 'package:http/http.dart' as http;
 class PoDetailsSelectByItemIdController {
   List<PoDetailsBySelectIdModel> poDetailsById = [];
 
+  final RxList<PoDetailsBySelectIdModel> poDeatilsObj =
+      <PoDetailsBySelectIdModel>[].obs;
+
   Future getPoDetailsById(String PoTxnId) async {
     http.Response response = await http.post(
       Uri.parse("${ApiService.base}/api/getPODetails"),
@@ -27,6 +30,9 @@ class PoDetailsSelectByItemIdController {
       AppController.setmessage(null);
       List data = result['data'];
       poDetailsById =
+          data.map((e) => PoDetailsBySelectIdModel.fromJson(e)).toList();
+
+      poDeatilsObj.value =
           data.map((e) => PoDetailsBySelectIdModel.fromJson(e)).toList();
       return poDetailsById;
     } else {

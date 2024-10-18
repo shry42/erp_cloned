@@ -32,7 +32,7 @@ class InsertDataController extends GetxController {
     required String valuationMethod,
   }) async {
     final response = await http.post(
-      Uri.parse('${ApiService.base}/api/insertData'),
+      Uri.parse('${ApiService.base}/api/insertItem'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${AppController.accessToken}',
@@ -68,7 +68,15 @@ class InsertDataController extends GetxController {
       String message = result['message'];
 
       if (status == true) {
-        toast(message);
+        Get.defaultDialog(
+          title: 'Success',
+          middleText: message,
+          textConfirm: "OK",
+          confirmTextColor: Colors.white,
+          onConfirm: () {
+            Get.back(); // Close the dialog
+          },
+        );
       }
     } else {
       if (response.statusCode == 401) {

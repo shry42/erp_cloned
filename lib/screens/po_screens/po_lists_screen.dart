@@ -391,6 +391,18 @@ class _POListScreenState extends State<POListScreen> {
                                                       dataList![index]
                                                           .VendorID
                                                           .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
+                                                          .toString(),
                                                     );
                                                   }
                                                 },
@@ -505,233 +517,16 @@ class _POListScreenState extends State<POListScreen> {
                                                       dataList![index]
                                                           .POTxnID
                                                           .toString(),
-                                                    );
-                                                  }
-                                                },
-                                                child: POListsNewCard(
-                                                  ht: _height,
-                                                  wd: _width,
-                                                  duration: 500,
-                                                  srNo: (index + 1)
-                                                      .toString(), // SR No based on index
-                                                  poTxnID: dataList![index]
-                                                      .POTxnID
-                                                      .toString(), // PO TxnID from dataList
-                                                  prTxnID: dataList![index]
-                                                      .PRTxnID
-                                                      .toString(), // PR TxnID from dataList
-                                                  poCode: dataList![index]
-                                                      .POCode
-                                                      .toString(), // PO Code from dataList
-                                                  poDate: dataList![index]
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
                                                           .PODate
-                                                          .toString()
-                                                          .split("T")[
-                                                      0], // PO Date from dataList, formatted
-                                                  department: dataList![index]
-                                                      .Department
-                                                      .toString(), // Department from dataList
-                                                  status: dataList![index]
-                                                      .POStatus
-                                                      .toString(), // PO Status from dataList
-                                                ),
-                                              );
-                                            });
-                                      }
-                                    }),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 30),
-                                  Expanded(
-                                    child: Builder(builder: (
-                                      BuildContext context,
-                                    ) {
-                                      if (dataList == null) {
-                                        return Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/loaderr.gif',
-                                              height: 200,
-                                              width: 350,
-                                            ),
-                                            const Text('No records found')
-                                          ],
-                                        ));
-                                      } else {
-                                        return ListView.builder(
-                                            itemCount: dataList!.length,
-                                            itemBuilder: (context, index) {
-                                              final POStatus = dataList![index]
-                                                  .POStatus
-                                                  .toString();
-                                              final color =
-                                                  POStatus == 'Rejected'
-                                                      ? Colors.red
-                                                      : POStatus == 'Approved'
-                                                          ? Colors.green
-                                                          : Colors.grey;
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  final POStatus =
-                                                      dataList![index]
-                                                          .POStatus
-                                                          .toString();
-                                                  final color = POStatus ==
-                                                          'Rejected'
-                                                      ? Colors.red
-                                                      : POStatus == 'Approved'
-                                                          ? Colors.green
-                                                          : Colors.grey;
-                                                  String POTxnID =
-                                                      dataList![index]
-                                                          .POTxnID
-                                                          .toString();
-
-                                                  if (AppController.message !=
-                                                      null) {
-                                                    Get.defaultDialog(
-                                                      title: "Oops!",
-                                                      middleText:
-                                                          "${AppController.message}",
-                                                      textConfirm: "OK",
-                                                      confirmTextColor:
-                                                          Colors.white,
-                                                      onConfirm: () {
-                                                        Get.back(); // Close the dialog
-                                                      },
-                                                    );
-                                                    return;
-                                                  } else {
-                                                    showPODialog(
-                                                      dataList![index]
-                                                          .POTxnID
-                                                          .toString(),
-                                                      dataList![index]
-                                                          .VendorID
-                                                          .toString(),
-                                                    );
-                                                  }
-                                                },
-                                                child: POListsNewCard(
-                                                  ht: _height,
-                                                  wd: _width,
-                                                  duration: 500,
-                                                  srNo: (index + 1)
-                                                      .toString(), // SR No based on index
-                                                  poTxnID: dataList![index]
-                                                      .POTxnID
-                                                      .toString(), // PO TxnID from dataList
-                                                  prTxnID: dataList![index]
-                                                      .PRTxnID
-                                                      .toString(), // PR TxnID from dataList
-                                                  poCode: dataList![index]
-                                                      .POCode
-                                                      .toString(), // PO Code from dataList
-                                                  poDate: dataList![index]
-                                                          .PODate
-                                                          .toString()
-                                                          .split("T")[
-                                                      0], // PO Date from dataList, formatted
-                                                  department: dataList![index]
-                                                      .Department
-                                                      .toString(), // Department from dataList
-                                                  status: dataList![index]
-                                                      .POStatus
-                                                      .toString(), // PO Status from dataList
-                                                ),
-                                              );
-                                            });
-                                      }
-                                    }),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 30),
-                                  Expanded(
-                                    child: Builder(builder: (
-                                      BuildContext context,
-                                    ) {
-                                      if (dataList == null) {
-                                        return Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/loaderr.gif',
-                                              height: 200,
-                                              width: 350,
-                                            ),
-                                            const Text('No records found')
-                                          ],
-                                        ));
-                                      } else {
-                                        return ListView.builder(
-                                            itemCount: dataList!.length,
-                                            itemBuilder: (context, index) {
-                                              final POStatus = dataList![index]
-                                                  .POStatus
-                                                  .toString();
-                                              final color =
-                                                  POStatus == 'Rejected'
-                                                      ? Colors.red
-                                                      : POStatus == 'Approved'
-                                                          ? Colors.green
-                                                          : Colors.grey;
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  final POStatus =
-                                                      dataList![index]
-                                                          .POStatus
-                                                          .toString();
-                                                  final color = POStatus ==
-                                                          'Rejected'
-                                                      ? Colors.red
-                                                      : POStatus == 'Approved'
-                                                          ? Colors.green
-                                                          : Colors.grey;
-                                                  String POTxnID =
-                                                      dataList![index]
-                                                          .POTxnID
-                                                          .toString();
-
-                                                  if (AppController.message !=
-                                                      null) {
-                                                    Get.defaultDialog(
-                                                      title: "Oops!",
-                                                      middleText:
-                                                          "${AppController.message}",
-                                                      textConfirm: "OK",
-                                                      confirmTextColor:
-                                                          Colors.white,
-                                                      onConfirm: () {
-                                                        Get.back(); // Close the dialog
-                                                      },
-                                                    );
-                                                    return;
-                                                  } else {
-                                                    showPODialog(
-                                                      dataList![index]
-                                                          .POTxnID
-                                                          .toString(),
-                                                      dataList![index]
-                                                          .VendorID
                                                           .toString(),
                                                     );
                                                   }
@@ -847,6 +642,17 @@ class _POListScreenState extends State<POListScreen> {
                                                       dataList![index]
                                                           .VendorID
                                                           .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
+                                                          .toString(),
                                                     );
                                                   }
                                                 },
@@ -961,6 +767,17 @@ class _POListScreenState extends State<POListScreen> {
                                                       dataList![index]
                                                           .VendorID
                                                           .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
+                                                          .toString(),
                                                     );
                                                   }
                                                 },
@@ -1074,6 +891,267 @@ class _POListScreenState extends State<POListScreen> {
                                                           .toString(),
                                                       dataList![index]
                                                           .VendorID
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
+                                                          .toString(),
+                                                    );
+                                                  }
+                                                },
+                                                child: POListsNewCard(
+                                                  ht: _height,
+                                                  wd: _width,
+                                                  duration: 500,
+                                                  srNo: (index + 1)
+                                                      .toString(), // SR No based on index
+                                                  poTxnID: dataList![index]
+                                                      .POTxnID
+                                                      .toString(), // PO TxnID from dataList
+                                                  prTxnID: dataList![index]
+                                                      .PRTxnID
+                                                      .toString(), // PR TxnID from dataList
+                                                  poCode: dataList![index]
+                                                      .POCode
+                                                      .toString(), // PO Code from dataList
+                                                  poDate: dataList![index]
+                                                          .PODate
+                                                          .toString()
+                                                          .split("T")[
+                                                      0], // PO Date from dataList, formatted
+                                                  department: dataList![index]
+                                                      .Department
+                                                      .toString(), // Department from dataList
+                                                  status: dataList![index]
+                                                      .POStatus
+                                                      .toString(), // PO Status from dataList
+                                                ),
+                                              );
+                                            });
+                                      }
+                                    }),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Center(
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 30),
+                                  Expanded(
+                                    child: Builder(builder: (
+                                      BuildContext context,
+                                    ) {
+                                      if (dataList == null) {
+                                        return Center(
+                                            child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/loaderr.gif',
+                                              height: 200,
+                                              width: 350,
+                                            ),
+                                            const Text('No records found')
+                                          ],
+                                        ));
+                                      } else {
+                                        return ListView.builder(
+                                            itemCount: dataList!.length,
+                                            itemBuilder: (context, index) {
+                                              final POStatus = dataList![index]
+                                                  .POStatus
+                                                  .toString();
+                                              final color =
+                                                  POStatus == 'Rejected'
+                                                      ? Colors.red
+                                                      : POStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  final POStatus =
+                                                      dataList![index]
+                                                          .POStatus
+                                                          .toString();
+                                                  final color = POStatus ==
+                                                          'Rejected'
+                                                      ? Colors.red
+                                                      : POStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
+                                                  String POTxnID =
+                                                      dataList![index]
+                                                          .POTxnID
+                                                          .toString();
+
+                                                  if (AppController.message !=
+                                                      null) {
+                                                    Get.defaultDialog(
+                                                      title: "Oops!",
+                                                      middleText:
+                                                          "${AppController.message}",
+                                                      textConfirm: "OK",
+                                                      confirmTextColor:
+                                                          Colors.white,
+                                                      onConfirm: () {
+                                                        Get.back(); // Close the dialog
+                                                      },
+                                                    );
+                                                    return;
+                                                  } else {
+                                                    showPODialog(
+                                                      dataList![index]
+                                                          .POTxnID
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .VendorID
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
+                                                          .toString(),
+                                                    );
+                                                  }
+                                                },
+                                                child: POListsNewCard(
+                                                  ht: _height,
+                                                  wd: _width,
+                                                  duration: 500,
+                                                  srNo: (index + 1)
+                                                      .toString(), // SR No based on index
+                                                  poTxnID: dataList![index]
+                                                      .POTxnID
+                                                      .toString(), // PO TxnID from dataList
+                                                  prTxnID: dataList![index]
+                                                      .PRTxnID
+                                                      .toString(), // PR TxnID from dataList
+                                                  poCode: dataList![index]
+                                                      .POCode
+                                                      .toString(), // PO Code from dataList
+                                                  poDate: dataList![index]
+                                                          .PODate
+                                                          .toString()
+                                                          .split("T")[
+                                                      0], // PO Date from dataList, formatted
+                                                  department: dataList![index]
+                                                      .Department
+                                                      .toString(), // Department from dataList
+                                                  status: dataList![index]
+                                                      .POStatus
+                                                      .toString(), // PO Status from dataList
+                                                ),
+                                              );
+                                            });
+                                      }
+                                    }),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Center(
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 30),
+                                  Expanded(
+                                    child: Builder(builder: (
+                                      BuildContext context,
+                                    ) {
+                                      if (dataList == null) {
+                                        return Center(
+                                            child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/loaderr.gif',
+                                              height: 200,
+                                              width: 350,
+                                            ),
+                                            const Text('No records found')
+                                          ],
+                                        ));
+                                      } else {
+                                        return ListView.builder(
+                                            itemCount: dataList!.length,
+                                            itemBuilder: (context, index) {
+                                              final POStatus = dataList![index]
+                                                  .POStatus
+                                                  .toString();
+                                              final color =
+                                                  POStatus == 'Rejected'
+                                                      ? Colors.red
+                                                      : POStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  final POStatus =
+                                                      dataList![index]
+                                                          .POStatus
+                                                          .toString();
+                                                  final color = POStatus ==
+                                                          'Rejected'
+                                                      ? Colors.red
+                                                      : POStatus == 'Approved'
+                                                          ? Colors.green
+                                                          : Colors.grey;
+                                                  String POTxnID =
+                                                      dataList![index]
+                                                          .POTxnID
+                                                          .toString();
+
+                                                  if (AppController.message !=
+                                                      null) {
+                                                    Get.defaultDialog(
+                                                      title: "Oops!",
+                                                      middleText:
+                                                          "${AppController.message}",
+                                                      textConfirm: "OK",
+                                                      confirmTextColor:
+                                                          Colors.white,
+                                                      onConfirm: () {
+                                                        Get.back(); // Close the dialog
+                                                      },
+                                                    );
+                                                    return;
+                                                  } else {
+                                                    showPODialog(
+                                                      dataList![index]
+                                                          .POTxnID
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .VendorID
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .HeaderNote
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .SupplierPOCName,
+                                                      dataList![index]
+                                                          .POCode
+                                                          .toString(),
+                                                      dataList![index]
+                                                          .PODate
                                                           .toString(),
                                                     );
                                                   }
@@ -1128,7 +1206,8 @@ class _POListScreenState extends State<POListScreen> {
   }
 }
 
-void showPODialog(String poTxnId, String vendorId) {
+void showPODialog(
+    String poTxnId, String vendorId, headerNote, supPocName, poCode, poDate) {
   final GetVendorMasterPdfController gvmpdfc =
       Get.put(GetVendorMasterPdfController());
   Get.defaultDialog(
@@ -1196,6 +1275,10 @@ void showPODialog(String poTxnId, String vendorId) {
           Get.to(POAmendmentScreen(
             vendorID: vendorId,
             poTxnid: int.parse(poTxnId),
+            headerNote: headerNote,
+            supplierPOCName: supPocName,
+            poCode: poCode,
+            poDate: poDate,
           ));
         },
         style: ElevatedButton.styleFrom(

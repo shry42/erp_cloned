@@ -103,10 +103,7 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
     currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     _controller
         .getPODistinctStatus(); // Fetch the data on screen initialization
-    _vendorController.getVednorMaster(); // Fetch the vendor data
-    _deliveryTermsController
-        .getDeliveryTerms(); // Fetch the delivery terms data
-    _paymentTermsController.getPaymentTerms(); // Fetch the payment terms data
+    loadData();
 
     // Fetch the exchange rates when the screen is initialized
     _exchangeRatesController.fetchExchangeRates();
@@ -115,6 +112,14 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
     _searchController.addListener(() {
       _filterData(_searchController.text);
     });
+  }
+
+  loadData() async {
+    await _vendorController.getVednorMaster(); // Fetch the vendor data
+    _deliveryTermsController
+        .getDeliveryTerms(); // Fetch the delivery terms data
+    await _paymentTermsController
+        .getPaymentTerms(); // Fetch the payment terms data
   }
 
   void _filterData(String query) {
@@ -390,48 +395,68 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
     return Column(
       children: [
         Obx(() {
-          return DropdownButtonFormField<DeliveryTermsModel>(
-            decoration: InputDecoration(
-              labelText: 'Delivery Terms',
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey.shade400),
-              ),
-            ),
-            value: selectedDeliveryTerm.value,
-            dropdownColor: Colors.white,
-            style: const TextStyle(color: Colors.black),
-            items: _deliveryTermsController.deliveryTermsList.map((term) {
-              return DropdownMenuItem<DeliveryTermsModel>(
-                value: term,
-                child: Text(term.terms ?? '',
-                    style: const TextStyle(color: Colors.black)),
-              );
-            }).toList(),
-            onChanged: (value) {
-              selectedDeliveryTerm.value = value;
-            },
-            validator: (value) {
-              if (value == null) {
-                return 'Please select a delivery term';
-              }
-              return null;
-            },
-          );
-        }),
-        const SizedBox(height: 10),
-        Obx(() {
           return Container(
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context)
                   .size
                   .width, // Use full width of the screen
             ),
-            child: DropdownButtonFormField<PaymentTermsModel>(
+            child: DropdownButtonFormField<DeliveryTermsModel>(
               isExpanded:
                   true, // Ensures dropdown button expands within its container
+              decoration: InputDecoration(
+                labelText: 'Delivery Terms',
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey.shade400),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 16,
+                ),
+              ),
+              value: selectedDeliveryTerm.value,
+              dropdownColor: Colors.white,
+              style: const TextStyle(color: Colors.black),
+              items: _deliveryTermsController.deliveryTermsList.map((term) {
+                return DropdownMenuItem<DeliveryTermsModel>(
+                  value: term,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
+                    ),
+                    child: Text(
+                      term.terms ?? '',
+                      style: const TextStyle(color: Colors.black),
+                      overflow:
+                          TextOverflow.ellipsis, // Add ellipsis for long text
+                      maxLines: 1, // Ensure single line
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                selectedDeliveryTerm.value = value;
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a delivery term';
+                }
+                return null;
+              },
+            ),
+          );
+        }),
+        const SizedBox(height: 10),
+        Obx(() {
+          return Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width,
+            ),
+            child: DropdownButtonFormField<PaymentTermsModel>(
+              isExpanded: true,
               decoration: InputDecoration(
                 labelText: 'Payment Terms',
                 filled: true,
@@ -441,7 +466,9 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                   borderSide: BorderSide(color: Colors.grey.shade400),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 16), // Adjust padding for height
+                  horizontal: 12,
+                  vertical: 16,
+                ),
               ),
               value: selectedPaymentTerm.value,
               dropdownColor: Colors.white,
@@ -451,12 +478,13 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                   value: term,
                   child: Container(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width *
-                          0.8, // Limit width of text to avoid overflow
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
                     ),
                     child: Text(
                       term.terms ?? '',
                       style: const TextStyle(color: Colors.black),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                 );

@@ -591,17 +591,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                       DrawerItems.gisStatusList);
                                 },
                               ),
-                              ListTile(
-                                // leading: const Icon(
-                                //   Icons.menu,
-                                //   color: Colors.white,
-                                // ),
-                                title: const Text('My GIS '),
-                                onTap: () {
-                                  widget.onSelectedItem(
-                                      DrawerItems.myGisApproval);
-                                },
-                              ),
+                              // ListTile(
+                              //   // leading: const Icon(
+                              //   //   Icons.menu,
+                              //   //   color: Colors.white,
+                              //   // ),
+                              //   title: const Text('My GIS '),
+                              //   onTap: () {
+                              //     widget.onSelectedItem(
+                              //         DrawerItems.myGisApproval);
+                              //   },
+                              // ),
                             ],
                           ),
                         ),

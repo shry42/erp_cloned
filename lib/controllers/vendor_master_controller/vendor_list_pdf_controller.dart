@@ -11,8 +11,10 @@ import 'package:http/http.dart' as http;
 
 class GetVendorMasterPdfController extends GetxController {
   List<VendorMasterListPdfModel> getVednorPdf = [];
+  final RxList<VendorMasterListPdfModel> vendorPdfList =
+      <VendorMasterListPdfModel>[].obs;
 
-  getVednorMaster(int txnid, String IDType) async {
+  getVednorMaster(int txnid, String IDType, {bool? showPdf = false}) async {
     http.Response response = await http.post(
       Uri.parse('${ApiService.base}/api/getFiles'),
       headers: {
@@ -33,14 +35,18 @@ class GetVendorMasterPdfController extends GetxController {
       getVednorPdf =
           data.map((e) => VendorMasterListPdfModel.fromJson(e)).toList();
 
-      Get.defaultDialog(
-          title: 'Pdf',
-          middleText: fileName,
-          confirm: ElevatedButton(
-              onPressed: () {
-                Get.to(PdfViewerScreen(filePath: filePath));
-              },
-              child: const Text('view pdf')));
+      vendorPdfList.value =
+          data.map((e) => VendorMasterListPdfModel.fromJson(e)).toList();
+      if (showPdf == false) {
+        Get.defaultDialog(
+            title: 'Pdf',
+            middleText: fileName,
+            confirm: ElevatedButton(
+                onPressed: () {
+                  Get.to(PdfViewerScreen(filePath: filePath));
+                },
+                child: const Text('view pdf')));
+      }
 
       return getVednorPdf;
     } else if (response.statusCode != 200) {
