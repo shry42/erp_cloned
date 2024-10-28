@@ -6,7 +6,7 @@ class GetAllGRNListModel {
   final bool grnRejected;
   final String? vendorName;
   final String? invoiceNo;
-  final DateTime? invoiceDate;
+  final String? invoiceDate;
   final String? challanNo;
 
   GetAllGRNListModel({
@@ -30,9 +30,7 @@ class GetAllGRNListModel {
       grnRejected: json['GRNRejected'],
       vendorName: json['VendorName'],
       invoiceNo: json['invoiceNo'],
-      invoiceDate: json['invoiceDate'] != null
-          ? DateTime.parse(json['invoiceDate'])
-          : null,
+      invoiceDate: json['invoiceDate'].toString(),
       challanNo: json['challanNo'],
     );
   }
@@ -40,13 +38,13 @@ class GetAllGRNListModel {
   Map<String, dynamic> toJson() {
     return {
       'GRNTxnID': grnTxnID,
-      'TxnDate': txnDate.toIso8601String(),
+      'TxnDate': txnDate,
       'Username': username,
       'GRNApprovalStatus': grnApprovalStatus,
       'GRNRejected': grnRejected,
       'VendorName': vendorName,
       'invoiceNo': invoiceNo,
-      'invoiceDate': invoiceDate?.toIso8601String(),
+      'invoiceDate': invoiceDate,
       'challanNo': challanNo,
     };
   }

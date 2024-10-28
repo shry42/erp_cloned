@@ -79,6 +79,7 @@ class _CreatePaymentTermsScreenState extends State<CreatePaymentTermsScreen> {
                     height: 35,
                     width: 400,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

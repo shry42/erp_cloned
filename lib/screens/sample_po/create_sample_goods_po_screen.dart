@@ -387,6 +387,7 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
       children: [
         Obx(() {
           return DropdownButtonFormField<DeliveryTermsModel>(
+            isExpanded: true,
             decoration: InputDecoration(
               labelText: 'Delivery Terms',
               filled: true,
@@ -395,6 +396,8 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: Colors.grey.shade400),
               ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             ),
             value: selectedDeliveryTerm.value,
             dropdownColor: Colors.white,
@@ -403,6 +406,7 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
               return DropdownMenuItem<DeliveryTermsModel>(
                 value: term,
                 child: Text(term.terms ?? '',
+                    // overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.black)),
               );
             }).toList(),
@@ -631,9 +635,9 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
                 color: Colors.white, fontWeight: FontWeight.bold),
             tabs: const [
               Tab(text: 'Item Addition'),
+              Tab(text: 'Details'),
               Tab(text: 'Attachments'),
               Tab(text: 'Currency Conversion'),
-              Tab(text: 'Details'),
             ],
           ),
           const SizedBox(height: 10),
@@ -642,9 +646,9 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
             child: TabBarView(
               children: [
                 _buildItemAdditionTab(),
+                _buildDetailsTab(),
                 _buildAttachmentsTab(),
                 _buildCurrencyConversionTab(),
-                _buildDetailsTab(),
               ],
             ),
           ),
@@ -955,6 +959,34 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
 
   void _addToPO() {
     if (_formKey.currentState?.validate() ?? false) {
+      if ((double.tryParse(_remainingQuantityController.text))! <
+          (double.tryParse(_quantityController.text)!.toInt())) {
+        Get.snackbar('Validation error',
+            'Quantity should be less than or equal to remaining quantity',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 216, 36, 23));
+        return;
+      }
+
+      if (_quotationDateController.text.isEmpty ||
+          _quotationDateController.text == '' ||
+          _quotationDateController.text == null) {
+        Get.snackbar(
+            'Validation error', 'Please select Quotation date in details tab',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 224, 36, 22));
+        return;
+      }
+
+      if (_selectedFiles.isEmpty ||
+          _selectedFiles == '' ||
+          _selectedFiles == []) {
+        Get.snackbar(
+            'Validation error', 'Please select Files in Attachments tab',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 224, 36, 22));
+        return;
+      }
       // Validation passed, proceed to add item to PO basket
       // Validation passed, proceed to add item to PO basket
 
@@ -1107,25 +1139,23 @@ class _CreateSampleGoodsPOScreenState extends State<CreateSampleGoodsPOScreen> {
             ),
             const SizedBox(height: 10),
             const SizedBox(height: 10),
-            Obx(() => _buildTextField(
-                  'Basic Total',
-                  TextEditingController(
-                      text: _exchangeRatesController.jpyInr.value.toString()),
-                  readOnly: true,
-                )),
+            _buildTextField(
+              'Basic Total',
+              TextEditingController(text: '0'),
+              readOnly: true,
+            ),
             const SizedBox(height: 10),
-            Obx(() => _buildTextField(
-                  'Tax',
-                  TextEditingController(
-                      text: _exchangeRatesController.fetchedOn.value),
-                  readOnly: true,
-                )),
-            Obx(() => _buildTextField(
-                  'Grand Total',
-                  TextEditingController(
-                      text: _exchangeRatesController.fetchedOn.value),
-                  readOnly: true,
-                )),
+            _buildTextField(
+              'Tax',
+              TextEditingController(text: '0'),
+              readOnly: true,
+            ),
+            const SizedBox(height: 10),
+            _buildTextField(
+              'Grand Total',
+              TextEditingController(text: '0'),
+              readOnly: true,
+            ),
           ],
         ),
       ),

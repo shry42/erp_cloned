@@ -28,23 +28,62 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
       Get.put(GetReceivingByUserController());
   final GetEntryNumberController _getEntryNumberController =
       Get.put(GetEntryNumberController());
-
   final GetPoGeneratedDataController _getPoGeneratedDataController =
       Get.put(GetPoGeneratedDataController());
 
   final TextEditingController _gateEntryNumberController =
       TextEditingController();
-
   final TextEditingController _quantityController = TextEditingController();
-
   final TextEditingController _challanNoController = TextEditingController();
-
   final TextEditingController _remarksController = TextEditingController();
 
   String? _entryBy;
   String? _receivedBy;
   String? _isPOItem = 'Yes';
   String? _selectedPO;
+
+  // Validation helpers
+  bool _isNumeric(String? str) {
+    if (str == null) return false;
+    return double.tryParse(str) != null;
+  }
+
+  String? _validateRequired(String? value, String fieldName) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  String? _validateQuantity(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Quantity is required';
+    }
+    if (!_isNumeric(value)) {
+      return 'Please enter a valid number';
+    }
+    if (double.parse(value) <= 0) {
+      return 'Quantity must be greater than 0';
+    }
+    return null;
+  }
+
+  String? _validateChallanNo(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Challan/Invoice number is required';
+    }
+    if (value.length < 3) {
+      return 'Challan/Invoice number must be at least 3 characters';
+    }
+    return null;
+  }
+
+  String? _validateDropdown(String? value, String fieldName) {
+    if (value == null || value.isEmpty) {
+      return 'Please select $fieldName';
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -54,7 +93,6 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
     _getEntryNumberController.fetchEntryNumber();
     _getPoGeneratedDataController.getPOGeneratedData();
 
-    // Listen to changes in gateEntryNumber and update the controller
     _getEntryNumberController.gateEntryNumber.listen((entryNumber) {
       _gateEntryNumberController.text = entryNumber ?? '';
     });
@@ -63,14 +101,77 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
   @override
   void dispose() {
     _gateEntryNumberController.dispose();
+    _quantityController.dispose();
+    _challanNoController.dispose();
+    _remarksController.dispose();
     super.dispose();
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _submitForm() {
+    if (!_formKey.currentState!.validate()) {
+      _showErrorSnackbar('Please fill all required fields correctly');
+      return;
+    }
+
+    try {
+      final entryByUser = _getEntryByUserController.entryByUsers
+          .firstWhere((user) => user.fullName == _entryBy);
+      final receivingUser = _getReceivingByUserController.approvedPoList
+          .firstWhere((user) => user.fullName == _receivedBy);
+      final poData = _getPoGeneratedDataController.getPOData
+          .firstWhere((po) => po.poCode == _selectedPO);
+
+      InsertGateEntryController().insertGateEntry(
+        authorizerUserID: entryByUser.userID,
+        authorizerUserName: _entryBy ?? '',
+        challanDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        challanNo: _challanNoController.text,
+        isPOLinked: _isPOItem == 'Yes' ? '1' : '0',
+        itemCount: _quantityController.text,
+        poCode: _selectedPO ?? '',
+        poID: poData.potxnID,
+        rcvdByUser: _receivedBy ?? '',
+        rcvdByUserID: receivingUser.userID,
+        rcvdDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        remarks: _remarksController.text,
+      );
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gate entry submitted successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Clear form
+      _formKey.currentState!.reset();
+      _quantityController.clear();
+      _challanNoController.clear();
+      _remarksController.clear();
+      setState(() {
+        _entryBy = null;
+        _receivedBy = null;
+        _isPOItem = 'Yes';
+        _selectedPO = null;
+      });
+    } catch (e) {
+      _showErrorSnackbar('Error submitting form: ${e.toString()}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.sizeOf(context).height * 0.18;
-    double _width = MediaQuery.sizeOf(context).width * 0.90;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 68, 168, 71),
@@ -87,9 +188,7 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                     fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 80),
-              DrawerMenuWidget(
-                onClicked: widget.openDrawer,
-              ),
+              DrawerMenuWidget(onClicked: widget.openDrawer),
               const SizedBox(width: 20),
             ],
           )
@@ -140,6 +239,8 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                               .toList(),
                           onChanged: (value) =>
                               setState(() => _entryBy = value),
+                          validator: (value) =>
+                              _validateDropdown(value, 'Entry By'),
                         );
                       } else {
                         return const Text('No data available');
@@ -161,6 +262,8 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                               .toList(),
                           onChanged: (value) =>
                               setState(() => _receivedBy = value),
+                          validator: (value) =>
+                              _validateDropdown(value, 'Received By'),
                         );
                       } else {
                         return const Text('No data available');
@@ -176,11 +279,9 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                     child: _buildDropdown(
                       label: 'Is it a PO Item?',
                       value: _isPOItem,
-                      items: [
-                        'Yes',
-                        'No',
-                      ],
+                      items: ['Yes', 'No'],
                       onChanged: (value) => setState(() => _isPOItem = value),
+                      validator: (value) => _validateDropdown(value, 'PO Item'),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -198,6 +299,9 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                               .toList(),
                           onChanged: (value) =>
                               setState(() => _selectedPO = value),
+                          validator: _isPOItem == 'Yes'
+                              ? (value) => _validateDropdown(value, 'PO')
+                              : null,
                         );
                       } else {
                         return const Text('No data available');
@@ -213,6 +317,7 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                     child: _buildTextField(
                       controller: _challanNoController,
                       label: 'Challan/Invoice No.',
+                      validator: _validateChallanNo,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -230,6 +335,7 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                       controller: _quantityController,
                       label: 'Quantity/Packages',
                       keyboardType: TextInputType.number,
+                      validator: _validateQuantity,
                     ),
                   ),
                 ],
@@ -239,61 +345,26 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
                 controller: _remarksController,
                 label: 'Remarks',
                 maxLines: 3,
+                validator: (value) => _validateRequired(value, 'Remarks'),
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    int authorizerUserID = _getEntryByUserController
-                        .entryByUsers
-                        .firstWhere((user) => user.fullName == _entryBy)
-                        .userID;
-                    int rcvdByUserID = _getReceivingByUserController
-                        .approvedPoList
-                        .firstWhere((user) => user.fullName == _receivedBy)
-                        .userID;
-                    int poID = _getPoGeneratedDataController.getPOData
-                        .firstWhere((po) => po.poCode == _selectedPO)
-                        .potxnID;
-                    String isPOLinked = _isPOItem == 'Yes' ? '1' : '0';
-                    String itemCount = _quantityController
-                        .text; // Assuming you have a TextEditingController for quantity
-
-                    InsertGateEntryController().insertGateEntry(
-                      authorizerUserID: authorizerUserID,
-                      authorizerUserName: _entryBy ?? '',
-                      challanDate: DateFormat('yyyy-MM-dd')
-                          .format(DateTime.now()), // Format the date as needed
-                      challanNo: _challanNoController
-                          .text, // Assuming you have a TextEditingController for Challan/Invoice No.
-                      isPOLinked: isPOLinked,
-                      itemCount: itemCount,
-                      poCode: _selectedPO ?? '',
-                      poID: poID,
-                      rcvdByUser: _receivedBy ?? '',
-                      rcvdByUserID: rcvdByUserID,
-                      rcvdDate: DateFormat('yyyy-MM-dd')
-                          .format(DateTime.now()), // Format the date as needed
-                      remarks: _remarksController
-                          .text, // Assuming you have a TextEditingController for Remarks
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 44, 165, 54),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 44, 165, 54),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                ),
-                child: const Center(
-                  child: Text(
+                  child: const Text(
                     'Submit',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -308,6 +379,7 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
     bool readOnly = false,
     int maxLines = 1,
     TextInputType? keyboardType,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -315,38 +387,7 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
       readOnly: readOnly,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(fontSize: 16, color: Colors.black87),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        filled: true,
-        fillColor: Colors.grey[200],
-      ),
-      style: TextStyle(fontSize: 16, color: Colors.black26),
-    );
-  }
-
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      items: items.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(
-            item,
-            style: const TextStyle(
-                fontSize: 16, color: Colors.black), // Set text color to black
-          ),
-        );
-      }).toList(),
-      onChanged: onChanged,
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, color: Colors.black87),
@@ -355,11 +396,42 @@ class _CreateGateEntryScreenState extends State<CreateGateEntryScreen> {
         ),
         filled: true,
         fillColor: Colors.grey[200],
+        errorStyle: const TextStyle(color: Colors.red),
       ),
-      style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black), // Set dropdown selected text color to black
-      dropdownColor: Colors.white, // Set dropdown background color to white
+      style: const TextStyle(fontSize: 16, color: Colors.black),
     );
+  }
+
+  Widget _buildDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+    String? Function(String?)? validator,
+  }) {
+    return DropdownButtonFormField<String>(
+        dropdownColor: Colors.white,
+        value: value,
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(
+              item,
+              style: const TextStyle(fontSize: 16, color: Colors.black),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        validator: validator,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(fontSize: 16, color: Colors.black87),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          filled: true,
+          fillColor: Colors.grey[200],
+          errorStyle: const TextStyle(color: Colors.red),
+        ));
   }
 }

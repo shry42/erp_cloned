@@ -32,7 +32,7 @@ class _SRNAcceptanceScreenState extends State<SRNAcceptanceScreen> {
   @override
   void initState() {
     super.initState();
-    // searchController.addListener(_filterItems);
+    searchController.addListener(_filterItems);
     _loadItemData();
   }
 
@@ -50,21 +50,21 @@ class _SRNAcceptanceScreenState extends State<SRNAcceptanceScreen> {
     });
   }
 
-  // void _filterItems() {
-  //   String query =
-  //       searchController.text.toLowerCase().trim(); // Trim whitespace
-  //   setState(() {
-  //     if (query.isEmpty) {
-  //       // If the search query is empty, show all items
-  //       filteredItemList = itemList;
-  //     } else {
-  //       filteredItemList = itemList.where((item) {
-  //         return (item.grnTxID?.toString().toLowerCase().contains(query) ??
-  //             false);
-  //       }).toList();
-  //     }
-  //   });
-  // }
+  void _filterItems() {
+    String query =
+        searchController.text.toLowerCase().trim(); // Trim whitespace
+    setState(() {
+      if (query.isEmpty) {
+        // If the search query is empty, show all items
+        filteredItemList = itemList;
+      } else {
+        filteredItemList = itemList.where((item) {
+          return (item.grnTxnID?.toString().toLowerCase().contains(query) ??
+              false);
+        }).toList();
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -113,6 +113,7 @@ class _SRNAcceptanceScreenState extends State<SRNAcceptanceScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

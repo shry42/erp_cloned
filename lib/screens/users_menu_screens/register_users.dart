@@ -200,8 +200,9 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                       controller: mobileController,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.grey)),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.grey),
+                        ),
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 6, horizontal: 8),
                         border: OutlineInputBorder(
@@ -215,6 +216,10 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please enter mobile number";
+                        }
+                        // Check if the input is exactly 10 digits
+                        if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                          return "Please enter a valid 10-digit mobile number";
                         }
                         return null;
                       },
@@ -281,6 +286,7 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                     child: DropdownButtonFormField<String>(
+                      dropdownColor: Colors.white,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -297,7 +303,10 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                       items: departmentList.map((department) {
                         return DropdownMenuItem<String>(
                           value: department,
-                          child: Text(department),
+                          child: Text(
+                            department,
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
@@ -318,6 +327,7 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                     child: DropdownButtonFormField<String>(
+                      dropdownColor: Colors.white,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -334,7 +344,8 @@ class _RegisterUsersScreenState extends State<RegisterUsersScreen> {
                       items: role.map((String location) {
                         return DropdownMenuItem<String>(
                           value: location,
-                          child: Text(location),
+                          child: Text(location,
+                              style: const TextStyle(color: Colors.black)),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {

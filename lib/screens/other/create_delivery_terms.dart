@@ -51,7 +51,7 @@ class _CreateDeliveryTermsScreenState extends State<CreateDeliveryTermsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'Payment',
+                'Delivery terms',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               const SizedBox(width: 95),
@@ -78,6 +78,7 @@ class _CreateDeliveryTermsScreenState extends State<CreateDeliveryTermsScreen> {
                     height: 35,
                     width: 400,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

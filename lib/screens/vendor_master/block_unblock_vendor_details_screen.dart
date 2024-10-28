@@ -1,5 +1,4 @@
 import 'package:erp_copy/controllers/vendor_master_controller/vendor_list_pdf_controller.dart';
-import 'package:erp_copy/model/vendor_master/vendor_master_model.dart';
 import 'package:erp_copy/screens/pdf_view_screen/pdf_view_screen.dart';
 import 'package:erp_copy/widget/vendor_cards/vendor_master_details_card.dart';
 import 'package:erp_copy/widgets/remark_dilaogs/block_vendor_remark.dart';
@@ -10,7 +9,7 @@ class BlockUnblockVendorDetailsScreen extends StatefulWidget {
   const BlockUnblockVendorDetailsScreen(
       {super.key, required this.selectedItem});
 
-  final VendorModel selectedItem;
+  final dynamic selectedItem;
 
   @override
   State<BlockUnblockVendorDetailsScreen> createState() =>

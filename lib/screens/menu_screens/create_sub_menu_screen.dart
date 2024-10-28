@@ -100,6 +100,7 @@ class _CreateSubMenuScreenState extends State<CreateSubMenuScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,
@@ -136,6 +137,7 @@ class _CreateSubMenuScreenState extends State<CreateSubMenuScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                     child: DropdownButtonFormField<String>(
+                      dropdownColor: Colors.white,
                       value: selectedMasterMenu,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
@@ -152,7 +154,10 @@ class _CreateSubMenuScreenState extends State<CreateSubMenuScreen> {
                       items: masterMenuList.map((menu) {
                         return DropdownMenuItem<String>(
                           value: menu.menuName,
-                          child: Text(menu.menuName),
+                          child: Text(
+                            menu.menuName,
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {

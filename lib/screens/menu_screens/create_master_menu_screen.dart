@@ -2,6 +2,7 @@ import 'package:erp_copy/controllers/menu_controllers/create_master_menu_control
 import 'package:erp_copy/controllers/menu_controllers/delete_master_menu_controller.dart';
 import 'package:erp_copy/controllers/menu_controllers/get_master_menu_list_controller.dart';
 import 'package:erp_copy/screens/menu_screens/update_master_menu_screen.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -104,6 +105,7 @@ class _CreateMasterMenuScreenState extends State<CreateMasterMenuScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,
@@ -156,7 +158,7 @@ class _CreateMasterMenuScreenState extends State<CreateMasterMenuScreen> {
                         color: Colors.black,
                       ),
                       validator: (value) {
-                        if ('value'!.isEmpty) {
+                        if (value!.isEmpty) {
                           return "Please enter menu name";
                         }
                         return null;
@@ -176,12 +178,16 @@ class _CreateMasterMenuScreenState extends State<CreateMasterMenuScreen> {
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
+                          dropdownColor: Colors.white,
                           value: selectedLabel,
                           hint: const Text('Select an icon'),
                           items: iconNames.map((icon) {
                             return DropdownMenuItem<String>(
                               value: icon['label'],
-                              child: Text(icon['label']!),
+                              child: Text(
+                                icon['label']!,
+                                style: const TextStyle(color: Colors.black),
+                              ),
                             );
                           }).toList(),
                           onChanged: (String? newValue) {
@@ -198,6 +204,10 @@ class _CreateMasterMenuScreenState extends State<CreateMasterMenuScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        if (selectedLabel == '' || selectedLabel == null) {
+                          toast('please select an icon');
+                          return;
+                        }
                         // await cdc.createDepartment(deptNameController.text);
                         await cmmc.createMasterMenu(
                             selectedLabel.toString(), menuController.text);

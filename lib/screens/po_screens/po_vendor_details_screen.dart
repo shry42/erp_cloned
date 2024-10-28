@@ -5,7 +5,9 @@ import 'package:erp_copy/controllers/po_controllers/po_details_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/po_log_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/reject_po_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/vendor_details_controller.dart';
+import 'package:erp_copy/model/drawer_item.dart';
 import 'package:erp_copy/screens/po_screens/po_item_details.dart';
+import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:erp_copy/widgets/po_cards/po_bank.dart';
 import 'package:erp_copy/widgets/po_cards/po_buyer.dart';
 import 'package:erp_copy/widgets/po_cards/supplier_details_card.dart';
@@ -46,6 +48,13 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
   final PoLogDetailsController poLogCont = PoLogDetailsController();
   final PoDetailsSelectByItemIdController poDetailsCont =
       PoDetailsSelectByItemIdController();
+
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+
+  void navigateToScreen(DrawerItem screen) {
+    navigationController.directNavigateToScreen(screen);
+  }
 
   @override
   Widget build(BuildContext context) {

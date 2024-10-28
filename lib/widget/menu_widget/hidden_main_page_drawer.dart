@@ -30,7 +30,10 @@ import 'package:erp_copy/screens/stock_posting/stock_movement_screen.dart';
 import 'package:erp_copy/screens/stock_posting/stock_posting_screen.dart';
 import 'package:erp_copy/screens/users_menu_screens/deleted_users_screen.dart';
 import 'package:erp_copy/screens/vendor_master/add_vendor_master_screen.dart';
+import 'package:erp_copy/screens/vendor_master/allocate_vendor_screen.dart';
+import 'package:erp_copy/screens/vendor_master/blocked_vendors_screen.dart';
 import 'package:erp_copy/screens/vendor_master/pending_vendors_screen_list.dart';
+import 'package:erp_copy/screens/vendor_master/revert_vendor_screen.dart';
 import 'package:erp_copy/screens/vendor_master/vendor_master_list_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
 import 'package:erp_copy/screens/other/assign_item_group_list_screen.dart';
@@ -51,13 +54,16 @@ import 'package:erp_copy/screens/users_menu_screens/register_users.dart';
 import 'package:erp_copy/screens/users_menu_screens/user_list_screens.dart';
 import 'package:erp_copy/screens/vendor_master/block_unblock_vendor_list_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_widget.dart';
+import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HiddenDrawer extends StatelessWidget {
   const HiddenDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.put(NavigationController());
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -82,10 +88,13 @@ class Mainpage extends StatefulWidget {
 }
 
 class _MainpageState extends State<Mainpage> {
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
   late double xOffset;
   late double yOffset;
   late double scaleFactor;
   DrawerItem item = DrawerItems.purchaseOrder;
+  bool isDrawerOpen = false;
 
   @override
   void initState() {
@@ -140,7 +149,8 @@ class _MainpageState extends State<Mainpage> {
               closeDrawer(); // Close the drawer
             } else {
               setState(() {
-                this.item = item;
+                // this.item = item;
+                navigationController.navigateToScreen(item);
                 closeDrawer();
               });
             }
@@ -154,19 +164,22 @@ class _MainpageState extends State<Mainpage> {
     return GestureDetector(
       onTap: closeDrawer,
       child: AnimatedContainer(
-          duration: const Duration(milliseconds: 450),
-          transform: Matrix4.translationValues(
-            xOffset,
-            yOffset,
-            200,
-          )..scale(scaleFactor),
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(child: getDrawerPage()))),
+        duration: const Duration(milliseconds: 450),
+        transform: Matrix4.translationValues(
+          xOffset,
+          yOffset,
+          200,
+        )..scale(scaleFactor),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child:
+              Obx(() => getDrawerPage(navigationController.currentItem.value)),
+        ),
+      ),
     );
   }
 
-  Widget getDrawerPage() {
+  Widget getDrawerPage(DrawerItem item) {
     switch (item) {
       case DrawerItems.purchaseRequest:
         return PrLogDetailsScreen(openDrawer: opneDrawer);
@@ -320,6 +333,15 @@ class _MainpageState extends State<Mainpage> {
 
       case DrawerItems.vendorMasterListScreen:
         return VendorMasterListScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.blockedVendors:
+        return BlockedVendorScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.revertVendor:
+        return RevertVendorScreen(openDrawer: opneDrawer);
+
+      case DrawerItems.allocateVendor:
+        return AllocateVendorScreen(openDrawer: opneDrawer);
 
       //
 //Employees  menu

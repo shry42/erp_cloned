@@ -1,42 +1,43 @@
-import 'package:erp_copy/controllers/vendor_master_controller/approve_vendor_controller.dart';
-import 'package:erp_copy/controllers/vendor_master_controller/reject_vendor_controller.dart';
+import 'package:erp_copy/controllers/vendor_master_controller/approve_reject_blocked_vendor_controller.dart';
 import 'package:erp_copy/controllers/vendor_master_controller/vendor_list_pdf_controller.dart';
-import 'package:erp_copy/model/vendor_master/pending_vendor_model.dart';
+import 'package:erp_copy/model/vendor_master/get_blocked_list_vendors_model.dart';
 import 'package:erp_copy/screens/pdf_view_screen/pdf_view_screen.dart';
 import 'package:erp_copy/widget/vendor_cards/vendor_master_details_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-class PendingVendorsDetails extends StatefulWidget {
-  const PendingVendorsDetails({super.key, required this.selectedItem});
+class InsideBlockedVendorsScreen extends StatefulWidget {
+  const InsideBlockedVendorsScreen({super.key, required this.selectedItem});
 
-  final PendingVendorModel selectedItem;
+  final GetBlockedVendorListModel selectedItem;
 
   @override
-  State<PendingVendorsDetails> createState() => _PendingVendorsDetailsState();
+  State<InsideBlockedVendorsScreen> createState() =>
+      _InsideBlockedVendorsScreenState();
 }
 
-class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
+class _InsideBlockedVendorsScreenState
+    extends State<InsideBlockedVendorsScreen> {
   final GetVendorMasterPdfController gvmpc = GetVendorMasterPdfController();
-  final ApproveVendorController approveVc = ApproveVendorController();
-  final RejectVendorController rejectVc = RejectVendorController();
+
+  final ApproveRejectBlockedVendorController arbvc =
+      Get.put(ApproveRejectBlockedVendorController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-        title: const Text('Pending Vendor details',
+        title: const Text('Vendor details',
             style: TextStyle(color: Colors.white, fontSize: 15)),
-        centerTitle: true,
         actions: [
-          const SizedBox(width: 10),
           ElevatedButton(
             onPressed: () async {
-              if (widget.selectedItem.vCTxnID != null) {
+              if (widget.selectedItem.vcTxnID != null) {
                 try {
                   int vcTxnID =
-                      int.parse(widget.selectedItem.vCTxnID.toString()!);
+                      int.parse(widget.selectedItem.vcTxnID.toString()!);
                   await gvmpc.getVednorMaster(vcTxnID, 'VCTxnID');
 
                   if (gvmpc.getVednorPdf.isNotEmpty &&
@@ -69,9 +70,9 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
           const SizedBox(width: 20),
         ],
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
+      body: Stack(children: [
+        SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               children: [
@@ -107,80 +108,80 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
               ],
             ),
           ),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Shimmer(
-                  duration: const Duration(seconds: 2),
-                  interval: const Duration(seconds: 1),
-                  color: Colors.white,
-                  colorOpacity: 1,
-                  enabled: true,
-                  direction: const ShimmerDirection.fromLTRB(),
-                  child: Container(
-                    height: 50,
-                    width: 118,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+        ),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          right: 20,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Shimmer(
+                duration: const Duration(seconds: 2),
+                interval: const Duration(seconds: 1),
+                color: Colors.white,
+                colorOpacity: 1,
+                enabled: true,
+                direction: const ShimmerDirection.fromLTRB(),
+                child: Container(
+                  height: 50,
+                  width: 118,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
                     ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                      ),
-                      onPressed: () async {
-                        await approveVc
-                            .approve(widget.selectedItem.vCTxnID!.toInt());
-                      },
-                      child: const Text(
-                        'Approve',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
+                    onPressed: () async {
+                      await arbvc.approve(
+                          widget.selectedItem.vendorID!.toInt(), 1);
+                    },
+                    child: const Text(
+                      'Approve',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
                       ),
                     ),
                   ),
                 ),
-                Shimmer(
-                  duration: const Duration(seconds: 2),
-                  interval: const Duration(seconds: 1),
-                  color: Colors.white,
-                  colorOpacity: 1,
-                  enabled: true,
-                  direction: const ShimmerDirection.fromLTRB(),
-                  child: Container(
-                    height: 50,
-                    width: 118,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+              ),
+              Shimmer(
+                duration: const Duration(seconds: 2),
+                interval: const Duration(seconds: 1),
+                color: Colors.white,
+                colorOpacity: 1,
+                enabled: true,
+                direction: const ShimmerDirection.fromLTRB(),
+                child: Container(
+                  height: 50,
+                  width: 118,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
                     ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                      ),
-                      onPressed: () async {
-                        await rejectVc
-                            .reject(widget.selectedItem.vCTxnID!.toInt());
-                      },
-                      child: const Text(
-                        'Reject',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
+                    onPressed: () async {
+                      await arbvc.approve(
+                          widget.selectedItem.vendorID!.toInt(), 2);
+                    },
+                    child: const Text(
+                      'Reject',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }

@@ -1,25 +1,28 @@
 import 'package:erp_copy/controllers/vendor_master_controller/approve_vendor_controller.dart';
 import 'package:erp_copy/controllers/vendor_master_controller/reject_vendor_controller.dart';
+import 'package:erp_copy/controllers/vendor_master_controller/revert_hit_controller.dart';
 import 'package:erp_copy/controllers/vendor_master_controller/vendor_list_pdf_controller.dart';
-import 'package:erp_copy/model/vendor_master/pending_vendor_model.dart';
+import 'package:erp_copy/model/vendor_master/revert_vendor_model.dart';
 import 'package:erp_copy/screens/pdf_view_screen/pdf_view_screen.dart';
 import 'package:erp_copy/widget/vendor_cards/vendor_master_details_card.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-class PendingVendorsDetails extends StatefulWidget {
-  const PendingVendorsDetails({super.key, required this.selectedItem});
+class RevertVendorDetailsScreenInside extends StatefulWidget {
+  const RevertVendorDetailsScreenInside(
+      {super.key, required this.selectedItem});
 
-  final PendingVendorModel selectedItem;
+  final RevertVendorListModel selectedItem;
 
   @override
-  State<PendingVendorsDetails> createState() => _PendingVendorsDetailsState();
+  State<RevertVendorDetailsScreenInside> createState() =>
+      _RevertVendorDetailsScreenInsideState();
 }
 
-class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
+class _RevertVendorDetailsScreenInsideState
+    extends State<RevertVendorDetailsScreenInside> {
   final GetVendorMasterPdfController gvmpc = GetVendorMasterPdfController();
-  final ApproveVendorController approveVc = ApproveVendorController();
-  final RejectVendorController rejectVc = RejectVendorController();
+  final RevertHitController revertVc = RevertHitController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +36,10 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
           const SizedBox(width: 10),
           ElevatedButton(
             onPressed: () async {
-              if (widget.selectedItem.vCTxnID != null) {
+              if (widget.selectedItem.vcTxnID != null) {
                 try {
                   int vcTxnID =
-                      int.parse(widget.selectedItem.vCTxnID.toString()!);
+                      int.parse(widget.selectedItem.vcTxnID.toString()!);
                   await gvmpc.getVednorMaster(vcTxnID, 'VCTxnID');
 
                   if (gvmpc.getVednorPdf.isNotEmpty &&
@@ -123,7 +126,7 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
                   direction: const ShimmerDirection.fromLTRB(),
                   child: Container(
                     height: 50,
-                    width: 118,
+                    width: 200,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -132,45 +135,14 @@ class _PendingVendorsDetailsState extends State<PendingVendorsDetails> {
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () async {
-                        await approveVc
-                            .approve(widget.selectedItem.vCTxnID!.toInt());
+                        await revertVc
+                            .revert(widget.selectedItem.vcTxnID!.toInt());
                       },
                       child: const Text(
-                        'Approve',
+                        'Revert',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Shimmer(
-                  duration: const Duration(seconds: 2),
-                  interval: const Duration(seconds: 1),
-                  color: Colors.white,
-                  colorOpacity: 1,
-                  enabled: true,
-                  direction: const ShimmerDirection.fromLTRB(),
-                  child: Container(
-                    height: 50,
-                    width: 118,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                      ),
-                      onPressed: () async {
-                        await rejectVc
-                            .reject(widget.selectedItem.vCTxnID!.toInt());
-                      },
-                      child: const Text(
-                        'Reject',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
                         ),
                       ),
                     ),

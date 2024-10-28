@@ -79,6 +79,12 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
 
   List<PlatformFile> _selectedFiles = []; // List for selected files
 
+  double lineTotal = 0;
+
+  double taxAmount = 0;
+
+  double finalAmount = 0;
+
   // Controllers for populating fields automatically
   final TextEditingController _itemGroupController = TextEditingController();
   final TextEditingController _venusIDController = TextEditingController();
@@ -663,9 +669,9 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
                 color: Colors.white, fontWeight: FontWeight.bold),
             tabs: const [
               Tab(text: 'Item Addition'),
+              Tab(text: 'Details'),
               Tab(text: 'Attachments'),
               Tab(text: 'Currency Conversion'),
-              Tab(text: 'Details'),
             ],
           ),
           const SizedBox(height: 10),
@@ -674,9 +680,9 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
             child: TabBarView(
               children: [
                 _buildItemAdditionTab(),
+                _buildDetailsTab(),
                 _buildAttachmentsTab(),
                 _buildCurrencyConversionTab(),
-                _buildDetailsTab(),
               ],
             ),
           ),
@@ -920,7 +926,10 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                onPressed: _addToPO,
+                onPressed: () {
+                  _addToPO();
+                  setState(() {});
+                },
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
@@ -984,6 +993,34 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
 
   void _addToPO() {
     if (_formKey.currentState?.validate() ?? false) {
+      if ((double.tryParse(_remainingQuantityController.text))! <
+          (double.tryParse(_quantityController.text)!.toInt())) {
+        Get.snackbar('Validation error',
+            'Quantity should be less than or equal to remaining quantity',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 216, 36, 23));
+        return;
+      }
+
+      if (_quotationDateController.text.isEmpty ||
+          _quotationDateController.text == '' ||
+          _quotationDateController.text == null) {
+        Get.snackbar(
+            'Validation error', 'Please select Quotation date in details tab',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 224, 36, 22));
+        return;
+      }
+
+      if (_selectedFiles.isEmpty ||
+          _selectedFiles == '' ||
+          _selectedFiles == []) {
+        Get.snackbar(
+            'Validation error', 'Please select Files in Attachments tab',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: const Color.fromARGB(255, 224, 36, 22));
+        return;
+      }
       // Validation passed, proceed to add item to PO basket
       // Validation passed, proceed to add item to PO basket
 
@@ -992,13 +1029,13 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
       double unitPrice = double.tryParse(_unitPriceController.text) ?? 0;
 
       // Calculate line total
-      double lineTotal = quantity * unitPrice;
+      lineTotal = quantity * unitPrice;
 
       // Calculate tax amount
-      double taxAmount = (lineTotal * _taxRate) / 100;
+      taxAmount = (lineTotal * _taxRate) / 100;
 
       // Calculate final amount
-      double finalAmount = lineTotal + taxAmount;
+      finalAmount = lineTotal + taxAmount;
 
       POBasketItem newItem = POBasketItem(
         itemName: selectedItem.value?.itemName ?? '',
@@ -1131,30 +1168,28 @@ class _CreatePOScreenState extends State<CreatePOScreen> {
             const SizedBox(height: 10),
             _buildTextField(
               'Email ID',
-              TextEditingController(text: AppController.EmailID),
+              TextEditingController(text: selectedVendor.value?.emailID),
               readOnly: true,
             ),
             const SizedBox(height: 10),
             const SizedBox(height: 10),
-            Obx(() => _buildTextField(
-                  'Basic Total',
-                  TextEditingController(
-                      text: _exchangeRatesController.jpyInr.value.toString()),
-                  readOnly: true,
-                )),
+            _buildTextField(
+              'Basic Total',
+              TextEditingController(text: lineTotal.toString()),
+              readOnly: true,
+            ),
             const SizedBox(height: 10),
-            Obx(() => _buildTextField(
-                  'Tax',
-                  TextEditingController(
-                      text: _exchangeRatesController.fetchedOn.value),
-                  readOnly: true,
-                )),
-            Obx(() => _buildTextField(
-                  'Grand Total',
-                  TextEditingController(
-                      text: _exchangeRatesController.fetchedOn.value),
-                  readOnly: true,
-                )),
+            _buildTextField(
+              'Tax',
+              TextEditingController(text: taxAmount.toString()),
+              readOnly: true,
+            ),
+            const SizedBox(height: 10),
+            _buildTextField(
+              'Grand Total',
+              TextEditingController(text: finalAmount.toString()),
+              readOnly: true,
+            ),
           ],
         ),
       ),

@@ -74,6 +74,7 @@ class _AssignItemGroupListScreenState extends State<AssignItemGroupListScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

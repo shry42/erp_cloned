@@ -419,11 +419,17 @@ class _AddVendorMasterScreenState extends State<AddVendorMasterScreen> {
                       'MSME Number',
                       'Please enter MSME Number',
                       controller: msmeController,
+                      // validator: (value) {
+                      //   String pattern = r'^UDYAM-[A-Z]{2}-\d{2}-\d{7}$';
+                      //   RegExp regex = RegExp(pattern);
+                      //   if (!regex.hasMatch(value ?? '')) {
+                      //     return 'Invalid MSME format';
+                      //   }
+                      //   return null;
+                      // },
                       validator: (value) {
-                        String pattern = r'^UDYAM-[A-Z]{2}-\d{2}-\d{7}$';
-                        RegExp regex = RegExp(pattern);
-                        if (!regex.hasMatch(value ?? '')) {
-                          return 'Invalid MSME format';
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter msme number';
                         }
                         return null;
                       },

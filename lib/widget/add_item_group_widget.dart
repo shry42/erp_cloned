@@ -17,7 +17,11 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
-            title: const Text('Create Item Group'),
+            backgroundColor: Colors.white,
+            title: const Text(
+              'Create Item Group',
+              style: TextStyle(color: Colors.black),
+            ),
             content: SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -27,6 +31,7 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
                       controller: itemGroupController,
                       decoration: InputDecoration(
                         labelText: 'Item Group',
+                        labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -43,6 +48,7 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
                       controller: prefixController,
                       decoration: InputDecoration(
                         labelText: 'Prefix',
+                        labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -60,6 +66,7 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
                       controller: suffixController,
                       decoration: InputDecoration(
                         labelText: 'Suffix',
+                        labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -73,9 +80,15 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
                       },
                     ),
                     const SizedBox(height: 10),
-                    const Text('Item Type'),
+                    const Text(
+                      'Item Type',
+                      style: TextStyle(color: Colors.black),
+                    ),
                     ListTile(
-                      title: const Text('Goods'),
+                      title: const Text(
+                        'Goods',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       leading: Radio<String>(
                         value: 'Goods',
                         groupValue: itemType,
@@ -87,7 +100,10 @@ Future<void> showCreateItemGroupDialog(BuildContext context) async {
                       ),
                     ),
                     ListTile(
-                      title: const Text('Services'),
+                      title: const Text(
+                        'Services',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       leading: Radio<String>(
                         value: 'Services',
                         groupValue: itemType,

@@ -72,6 +72,7 @@ class _DeletedUsersListState extends State<DeletedUsersList> {
                     height: 35,
                     width: 400,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,
@@ -122,7 +123,7 @@ class _DeletedUsersListState extends State<DeletedUsersList> {
                         return GestureDetector(
                           onTap: () {
                             Get.defaultDialog(
-                              middleText: 'Are you sure?',
+                              middleText: 'Are you sure want to delete?',
                               cancel: ElevatedButton(
                                 onPressed: () {
                                   // Handle "No" action here

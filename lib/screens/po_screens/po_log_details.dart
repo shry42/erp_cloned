@@ -2,8 +2,11 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/po_log_controller.dart';
 import 'package:erp_copy/controllers/po_controllers/vendor_details_controller.dart';
+import 'package:erp_copy/model/drawer_item.dart';
 import 'package:erp_copy/screens/po_screens/po_vendor_details_screen.dart';
+import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:erp_copy/widgets/po_cards/dummy_po_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +54,13 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
     });
   }
 
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+
+  void navigateToScreen(DrawerItem screen) {
+    navigationController.directNavigateToScreen(screen);
+  }
+
   @override
   void initState() {
     dataList; //Initialize as empty or else data will not be displayed until tapped on searchbar
@@ -91,7 +101,14 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
             size: 30,
           ),
         ),
+
         actions: [
+          // ElevatedButton(
+          //   onPressed: () {
+          //     navigationController.directNavigateToScreen(DrawerItems.grnList);
+          //   },
+          //   child: const Text('Go to GRN List'),
+          // ),
           DrawerMenuWidget(
             onClicked: widget.openDrawer, // Custom drawer menu action
           ),
@@ -146,26 +163,6 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                     ),
                   ),
                 ),
-                // const SizedBox(width: 20),
-                // Container(
-                //   height: 35,
-                //   width: 150,
-                //   decoration: BoxDecoration(
-                //     gradient: const LinearGradient(
-                //       colors: <Color>[
-                //         Color.fromARGB(243, 84, 86, 80),
-                //         // Color.fromARGB(243, 77, 234, 88),
-                //         Color.fromARGB(255, 234, 242, 232),
-                //       ],
-                //     ),
-                //     borderRadius: BorderRadius.circular(10),
-                //   ),
-                //   child: const Center(
-                //       child: Text(
-                //     'Search History',
-                //     style: TextStyle(color: Colors.white),
-                //   )),
-                // ),
               ],
             ),
             const SizedBox(height: 6),
@@ -453,24 +450,6 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                         VendorID: VendorID));
                                                   }
                                                 },
-                                                // child: POInfoCard(
-                                                //   ht: _height,
-                                                //   wd: _width,
-                                                //   duration: 500,
-                                                //   POTxnID: dataList![index]
-                                                //       .POTxnID
-                                                //       .toString(),
-                                                //   POCode: dataList![index]
-                                                //       .POCode
-                                                //       .toString(),
-                                                //   PODate: dataList![index]
-                                                //       .PODate
-                                                //       .toString()
-                                                //       .split("T")[0],
-                                                //   poStatus: dataList![index]
-                                                //       .POStatus
-                                                //       .toString(),
-                                                // ),
                                                 child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
@@ -556,24 +535,6 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                         VendorID: VendorID));
                                                   }
                                                 },
-                                                // child: POInfoCard(
-                                                //   ht: _height,
-                                                //   wd: _width,
-                                                //   duration: 500,
-                                                //   POTxnID: dataList![index]
-                                                //       .POTxnID
-                                                //       .toString(),
-                                                //   POCode: dataList![index]
-                                                //       .POCode
-                                                //       .toString(),
-                                                //   PODate: dataList![index]
-                                                //       .PODate
-                                                //       .toString()
-                                                //       .split("T")[0],
-                                                //   poStatus: dataList![index]
-                                                //       .POStatus
-                                                //       .toString(),
-                                                // ),
                                                 child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
@@ -659,24 +620,6 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
                                                         VendorID: VendorID));
                                                   }
                                                 },
-                                                // child: POInfoCard(
-                                                //   ht: _height,
-                                                //   wd: _width,
-                                                //   duration: 500,
-                                                //   POTxnID: dataList![index]
-                                                //       .POTxnID
-                                                //       .toString(),
-                                                //   POCode: dataList![index]
-                                                //       .POCode
-                                                //       .toString(),
-                                                //   PODate: dataList![index]
-                                                //       .PODate
-                                                //       .toString()
-                                                //       .split("T")[0],
-                                                //   poStatus: dataList![index]
-                                                //       .POStatus
-                                                //       .toString(),
-                                                // ),
                                                 child: POLogCards(
                                                   POTxnID: dataList![index]
                                                       .POTxnID
@@ -711,55 +654,6 @@ class _PoLogDetailsScreenState extends State<PoLogDetailsScreen> {
             ),
           ],
         ),
-        // Positioned(
-        //   bottom: 0,
-        //   left: 10,
-        //   child: Container(
-        //     height: 120,
-        //     width: 430,
-        //     color: Colors.white,
-        //     child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       children: [
-        //         ElevatedButton(
-        //           onPressed: () {
-        //             setState(() {
-        //               isPOSelected = true;
-        //             });
-        //           },
-        //           style: ElevatedButton.styleFrom(
-        //             backgroundColor: isPOSelected ? Colors.green : Colors.grey,
-        //             shape: RoundedRectangleBorder(
-        //               borderRadius: BorderRadius.circular(12.0),
-        //             ),
-        //           ),
-        //           child: const Text(
-        //             "purchase order",
-        //             style: TextStyle(color: Colors.white),
-        //           ),
-        //         ),
-        //         ElevatedButton(
-        //           onPressed: () {
-        //             // setState(() {
-        //             //   isPOSelected = false;
-        //             // });
-        //             (PrLogDetailsScreen(openDrawer: opneDrawer));
-        //           },
-        //           style: ElevatedButton.styleFrom(
-        //             backgroundColor: isPOSelected ? Colors.grey : Colors.green,
-        //             shape: RoundedRectangleBorder(
-        //               borderRadius: BorderRadius.circular(12.0),
-        //             ),
-        //           ),
-        //           child: const Text(
-        //             "purchase request",
-        //             style: TextStyle(color: Colors.white),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
       ]),
     );
   }

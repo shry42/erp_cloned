@@ -96,6 +96,15 @@ class DrawerItems {
   static const blockItemsList =
       DrawerItem(title: 'blockItemList', icon: Icons.collections);
 
+  static const blockedVendors =
+      DrawerItem(title: 'blockedVendors', icon: Icons.collections);
+
+  static const revertVendor =
+      DrawerItem(title: 'revertVendor', icon: Icons.collections);
+
+  static const allocateVendor =
+      DrawerItem(title: 'allocateVendor', icon: Icons.collections);
+
 //
 //
   static const createMasterMenu = DrawerItem(

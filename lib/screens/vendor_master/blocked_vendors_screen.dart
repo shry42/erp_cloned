@@ -1,68 +1,55 @@
-import 'package:erp_copy/controllers/grn_controllers/get_grn_list_in_approval_controller.dart';
-import 'package:erp_copy/controllers/grn_controllers/grn_acceptance_controller.dart';
-import 'package:erp_copy/model/grn_models/grn_acceptance_model.dart';
-import 'package:erp_copy/screens/grn_screens/grn_acceptance_inside_screen.dart';
-import 'package:erp_copy/widget/grn_cards/grn_acceptance_card.dart';
+import 'package:erp_copy/controllers/vendor_master_controller/get_blocked_vendor_list_controller.dart';
+import 'package:erp_copy/model/vendor_master/get_blocked_list_vendors_model.dart';
+import 'package:erp_copy/screens/vendor_master/inside_blocked_vendors/inside_blocked_vendors_screen.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:erp_copy/widget/vendor_cards/vendor_master_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class GRNAcceptanceScreen extends StatefulWidget {
-  const GRNAcceptanceScreen({
+class BlockedVendorScreen extends StatefulWidget {
+  const BlockedVendorScreen({
     super.key,
     required this.openDrawer,
   });
   final VoidCallback openDrawer;
 
   @override
-  State<GRNAcceptanceScreen> createState() => _GRNAcceptanceScreenState();
+  State<BlockedVendorScreen> createState() => _BlockedVendorScreenState();
 }
 
-class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
+class _BlockedVendorScreenState extends State<BlockedVendorScreen> {
   TextEditingController searchController = TextEditingController();
+  final GetBlockedVendorListController gvmc = GetBlockedVendorListController();
+  final _formKey = GlobalKey<FormState>();
 
-  final GrnAcceptanceController ggrnlc = GrnAcceptanceController();
-
-  final GetGrnListInApprovalController ggliac =
-      Get.put(GetGrnListInApprovalController());
-
-  List<GRNAcceptanceModel> itemList = [];
-  List<GRNAcceptanceModel> filteredItemList = [];
+  List<GetBlockedVendorListModel> vendorList = [];
+  List<GetBlockedVendorListModel> filteredVendorList = [];
 
   @override
   void initState() {
     super.initState();
-    searchController.addListener(_filterItems);
-    _loadItemData();
+    searchController.addListener(_filterVendors);
+    _loadVendorData();
   }
 
-  void _loadItemData() async {
-    var data = await ggrnlc.getGRNList();
+  void _loadVendorData() async {
+    var data = await gvmc.getBlcokedVednors();
     setState(() {
-      if (data != null && data.isNotEmpty) {
-        itemList = data;
-        filteredItemList = data;
-      } else {
-        // Handle the case where no data is returned from API
-        itemList = [];
-        filteredItemList = [];
-      }
+      vendorList = data;
+      filteredVendorList = data;
     });
   }
 
-  void _filterItems() {
-    String query =
-        searchController.text.toLowerCase().trim(); // Trim whitespace
+  void _filterVendors() {
+    String query = searchController.text.toLowerCase();
     setState(() {
-      if (query.isEmpty) {
-        // If the search query is empty, show all items
-        filteredItemList = itemList;
-      } else {
-        filteredItemList = itemList.where((item) {
-          return (item.grnTxnID?.toString().toLowerCase().contains(query) ??
-              false);
-        }).toList();
-      }
+      filteredVendorList = vendorList.where((vendor) {
+        return vendor.vendorID.toString().toLowerCase().contains(query) ||
+            vendor.vendorName!.toLowerCase().contains(query) ||
+            vendor.vendorGroup!.toLowerCase().contains(query) ||
+            vendor.paymentTerms!.toLowerCase().contains(query) ||
+            vendor.vendorCurrency!.toLowerCase().contains(query);
+      }).toList();
     });
   }
 
@@ -74,9 +61,6 @@ class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.sizeOf(context).height * 0.18;
-    double _width = MediaQuery.sizeOf(context).width * 0.90;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 68, 168, 71),
@@ -86,10 +70,10 @@ class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'GRN Acceptance',
+                'Blocked Vendor list',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-              const SizedBox(width: 80),
+              const SizedBox(width: 50),
               DrawerMenuWidget(
                 onClicked: widget.openDrawer,
               ),
@@ -130,7 +114,7 @@ class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(color: Colors.grey)),
-                        hintText: "Search for items",
+                        hintText: "Search for vendor",
                         hintStyle:
                             const TextStyle(fontSize: 12, color: Colors.grey),
                         suffixIcon: const Icon(Icons.search),
@@ -142,32 +126,35 @@ class _GRNAcceptanceScreenState extends State<GRNAcceptanceScreen> {
               ],
             ),
             const SizedBox(height: 10),
-            filteredItemList.isEmpty
+            filteredVendorList.isEmpty
                 ? const Center(
-                    child: Text('No items found'),
+                    child: Text('No vendors found'),
                   )
                 : SizedBox(
                     height: MediaQuery.of(context).size.height * 0.75,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: filteredItemList.length,
+                      itemCount: filteredVendorList.length,
                       itemBuilder: (context, index) {
-                        var item = filteredItemList[index];
+                        var vendor = filteredVendorList[index];
                         return GestureDetector(
                           onTap: () {
-                            ggliac.getGRNList(item.grnTxnID);
-                            Get.to(GRNItemsScreen(
-                              GRNTxnID: item.grnTxnID,
+                            Get.to(InsideBlockedVendorsScreen(
+                              selectedItem: vendor,
                             ));
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
-                            child: GRNAcceptanceCard(
+                            child: VendorMasterCard(
                               duration: 1,
-                              grnNumber: item.grnTxnID.toString(),
-                              submittedOn: item.txnDate.toString(),
-                              createdBy: item.username,
+                              vendorId: vendor.vendorID.toString(),
+                              vendorName: vendor.vendorName,
+                              Group: vendor.vendorGroup,
+                              PaymentTerm: vendor.paymentTerms,
+                              Currency: vendor.vendorCurrency,
+                              Telephone: vendor.telephone,
+                              mobile: vendor.mobilePhone,
                             ),
                           ),
                         );

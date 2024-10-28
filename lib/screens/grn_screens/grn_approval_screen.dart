@@ -109,6 +109,7 @@ class _GRNListApprovalScreenState extends State<GRNListApprovalScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

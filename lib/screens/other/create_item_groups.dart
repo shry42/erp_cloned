@@ -80,6 +80,7 @@ class _CreateItemGroupsScreenState extends State<CreateItemGroupsScreen> {
                     height: 35,
                     width: 230,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,

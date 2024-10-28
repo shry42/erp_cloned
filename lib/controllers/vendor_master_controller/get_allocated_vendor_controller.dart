@@ -1,57 +1,37 @@
 import 'dart:convert';
 import 'package:erp_copy/controllers/app_controller.dart';
-import 'package:erp_copy/model/drawer_item.dart';
-import 'package:erp_copy/screens/item_master_screens/block_unblock_item_list_screen.dart';
+import 'package:erp_copy/model/vendor_master/get_vendor_allocation_details_model.dart';
 import 'package:erp_copy/screens/loginscreen.dart';
 import 'package:erp_copy/services/api_service.dart';
 import 'package:erp_copy/utils/toast_notify.dart';
-import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
-import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class BlockUnblockItemController extends GetxController {
-  final NavigationController navigationController =
-      Get.put(NavigationController());
+class GetAllocatedVendorController extends GetxController {
+  List<GetVendorAllocationDetailsModel> getVednorlist = [];
+  var getAllocatedVendorList = <GetVendorAllocationDetailsModel>[].obs;
 
-  void navigateToScreen(DrawerItem screen) {
-    navigationController.directNavigateToScreen(screen);
-  }
-
-  Future blockUnblockItem(String remarks, status, int ItemId) async {
+  getAllocatedVednors(String date) async {
     http.Response response = await http.post(
-      Uri.parse('${ApiService.base}/api/blockUnblockItem'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${AppController.accessToken}',
-      },
-      body: json.encode({
-        "itemId": ItemId,
-        "remarks": remarks,
-        "status": status,
-      }),
-    );
+        Uri.parse('${ApiService.base}/api/getVendorAllocationDetails'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${AppController.accessToken}',
+        },
+        body: jsonEncode({
+          "date": date,
+        }));
     if (response.statusCode == 200) {
       Map<String, dynamic> result = json.decode(response.body);
-      bool? status = result['status'];
-      String message = result['message'];
+      List<dynamic> data = result['data'];
 
-      if (status == true) {
-        Get.defaultDialog(
-            title: "Success",
-            middleText: message,
-            textConfirm: "OK",
-            confirmTextColor: Colors.white,
-            onConfirm: () {
-              navigationController
-                  .directNavigateToScreen(DrawerItems.blockUnblockItemsList);
-              // refresh();
-              Get.back();
-              Get.back();
-              // Get.offAll(BlockUnblockItemsListScreen(openDrawer: () {}));
-            });
-      }
+      getVednorlist =
+          data.map((e) => GetVendorAllocationDetailsModel.fromJson(e)).toList();
+      getAllocatedVendorList.value =
+          data.map((e) => GetVendorAllocationDetailsModel.fromJson(e)).toList();
+
+      return getVednorlist;
     } else if (response.statusCode != 200) {
       if (response.statusCode == 401) {
         toast('session expired or invalid');

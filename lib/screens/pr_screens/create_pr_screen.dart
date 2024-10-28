@@ -223,9 +223,11 @@ class _CreatePRScreenState extends State<CreatePRScreen> {
 
                 // Required By Date
                 TextFormField(
+                  style: const TextStyle(color: Colors.black),
                   controller: _requiredByController,
                   decoration: _inputDecoration("Required By").copyWith(
                     hintText: "dd/mm/yyyy",
+                    hintStyle: const TextStyle(color: Colors.black),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.calendar_today),
                       onPressed: () => _selectDate(context),

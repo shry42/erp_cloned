@@ -23,12 +23,12 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
   bool isWastage = false;
   bool isWorkOrder = false;
   String? projectCode;
-  String? woList;
+  String? woList = '0';
   String? itemName;
   String? userName;
   String? department;
   int? itemId;
-  var selectedBatch = RxString(''); // Changed from RxInt to RxString
+  var selectedBatch = RxString('');
 
   List<String> allProjectCodes = [];
 
@@ -81,50 +81,43 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
     }
   }
 
-//
-
   void _addToBasket() {
-    final newItem = GISBasketItem(
-      venusId:
-          'V${ggnc.gisNo.value}', // Assuming this is how you want to generate Venus-Id
-      itemId: itemId ?? 0,
-      internalCode: itemName ?? '',
-      batchNo: batchNoController.text,
-      serialNo: serialNoController.text,
-      reqQuantity: double.tryParse(_reqQtyController.text) ?? 0,
-      issuedQuantity: double.tryParse(_issuedQtyController.text) ?? 0,
-      uom: uomController.text,
-      remarks: _remarksController.text,
-    );
+    if (_formKey.currentState!.validate()) {
+      final newItem = GISBasketItem(
+        venusId: 'V${ggnc.gisNo.value}',
+        itemId: itemId ?? 0,
+        internalCode: itemName ?? '',
+        batchNo: batchNoController.text,
+        serialNo: serialNoController.text,
+        reqQuantity: double.tryParse(_reqQtyController.text) ?? 0,
+        issuedQuantity: double.tryParse(_issuedQtyController.text) ?? 0,
+        uom: uomController.text,
+        remarks: _remarksController.text,
+      );
 
-    basketController.addToBasket(newItem);
-    Get.snackbar('Success', 'Item added to basket');
+      basketController.addToBasket(newItem);
+      Get.snackbar('Success', 'Item added to basket');
 
-    // Clear the form or reset fields as needed
-    _clearForm();
+      _clearForm();
+    }
   }
 
   void _clearForm() {
-    // Reset all the form fields here
     batchNoController.clear();
     serialNoController.clear();
     _reqQtyController.clear();
     _issuedQtyController.clear();
     uomController.clear();
     _remarksController.clear();
-    // ... clear other fields as necessary
   }
-
-//
 
   @override
   void initState() {
     super.initState();
     ggnc.getGISNumber();
-    _issueToController.text = 'Wastage'; // Initialize with 'Wastage'
-    gpcgc.getProjectcodeList(); // Fetch project code list
+    _issueToController.text = 'W astage';
+    gpcgc.getProjectcodeList();
     gpcgc.getProjectcodeList().then((_) {
-      // Store all project codes when they are initially fetched
       setState(() {
         allProjectCodes = gpcgc.getProjectCodelist
             .map((project) => project.projectCode)
@@ -141,8 +134,6 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
     serialNoController.dispose();
     super.dispose();
   }
-
-  //
 
   Widget buildProductionOrderField() {
     if (isWorkOrder) {
@@ -166,9 +157,7 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
       );
     }
   }
-  //
 
-  //
   Widget buildIssueToField() {
     if (isWastage) {
       return _buildReadOnlyTextField(
@@ -200,29 +189,22 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
     }
   }
 
-  //
-
-  //
   Widget buildProjectCodeDropdown() {
     return Obx(() {
       if (gpcgc.getProjectCodelist.isEmpty) {
         return const CircularProgressIndicator();
       }
 
-      // Filter the list if isWorkOrder is true
       final filteredList = isWorkOrder
           ? gpcgc.getProjectCodelist
               .where((project) => project.projectDepartment == "Production")
               .toList()
           : gpcgc.getProjectCodelist;
 
-      // Get the list of project codes from the filtered list
       final projectCodes =
           filteredList.map((project) => project.projectCode).toList();
 
-      // Check if the currently selected projectCode is in the filtered list
       if (projectCode != null && !projectCodes.contains(projectCode)) {
-        // If not, reset the projectCode
         projectCode = null;
       }
 
@@ -232,11 +214,9 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
         (newValue) {
           setState(() {
             projectCode = newValue;
-            // Fetch the department based on the selected project code
             final selectedProject = filteredList.firstWhere(
               (project) => project.projectCode == projectCode,
-              orElse: () => gpcgc.getProjectCodelist
-                  .first, // Fallback to first item if not found
+              orElse: () => gpcgc.getProjectCodelist.first,
             );
             department = selectedProject.projectDepartment;
             departmentController.text = department.toString();
@@ -247,16 +227,9 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
       );
     });
   }
-  //
 
-  //
   Widget _buildDropdownField(String label, String? value,
       ValueChanged<String?> onChanged, List<String> items) {
-    // Ensure that the current value is in the list of items
-    if (value != null && !items.contains(value)) {
-      value = null; // Reset the value if it's not in the list
-    }
-
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
@@ -291,205 +264,8 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
     );
   }
 
-  //
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 68, 168, 71),
-        automaticallyImplyLeading: true,
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Text(
-                'Goods Issue Slip',
-                style: TextStyle(color: Colors.white, fontSize: 15),
-              ),
-              const SizedBox(width: 90),
-              DrawerMenuWidget(
-                onClicked: widget.openDrawer,
-              ),
-              const SizedBox(width: 20),
-            ],
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                _buildSwitchListTile('Is Wastage?', isWastage, (value) {
-                  setState(() {
-                    isWastage = value;
-                    if (isWastage) {
-                      _issueToController.text = 'Wastage';
-                      userName = null; // Reset userName when toggling on
-                    } else {
-                      _issueToController.text = userName ?? '';
-                    }
-                  });
-                }),
-                _buildSwitchListTile('Is Work Order?', isWorkOrder, (value) {
-                  setState(() {
-                    isWorkOrder = value;
-                    if (isWorkOrder) {
-                      gwodslc.getWOStatusList();
-                    } else {
-                      woList = null; // Reset woList when toggling off
-                    }
-                  });
-                }),
-              ]),
-              const SizedBox(height: 10),
-              // GIS Number and Date
-              // GIS Number TextField
-              Obx(() {
-                if (ggnc.gisNo.isEmpty) {
-                  return const CircularProgressIndicator(); // Show loading if value is not yet loaded
-                }
-                return _buildReadOnlyTextField('GIS No.', ggnc.gisNo.value);
-              }),
-
-              const SizedBox(height: 10),
-              _buildDateTextField('GIS Date', () => _selectDate(context, true),
-                  "${gisDate.toLocal()}".split(' ')[0]),
-              const SizedBox(height: 10),
-              // Project Code Dropdown
-              // Project Code Dropdown
-              buildProjectCodeDropdown(),
-              const SizedBox(height: 10),
-              // Department (Read-only)
-              _buildReadOnlyTextField(
-                'department',
-                departmentController.text,
-              ), // Show department based on project code
-              const SizedBox(height: 10),
-              // Production Order
-              buildProductionOrderField(),
-              const SizedBox(height: 10),
-              // Good Issue To
-              buildIssueToField(),
-
-              const SizedBox(height: 10),
-              // Issue Date
-              _buildDateTextField(
-                  'Issue Date',
-                  () => _selectDate(context, false),
-                  "${issueDate.toLocal()}".split(' ')[0]),
-              const SizedBox(height: 10),
-              const Divider(),
-              const SizedBox(height: 10),
-
-              // Item Name Dropdown
-              Obx(() {
-                return _buildDropdownField(
-                  'select item name',
-                  itemName,
-                  (newValue) {
-                    setState(() {
-                      itemName = newValue;
-                      final selectedItemID = gifpc.itemlist.firstWhere(
-                        (i) => i.internalCode == itemName,
-                      );
-                      itemId = selectedItemID
-                          .itemId; // Update department based on selection
-
-                      getItemFromItemAndPcodeController.getItemList(
-                          projectCode.toString(), itemId!.toInt());
-                    });
-                  },
-                  gifpc.itemlist
-                      .map((item) => item.internalCode)
-                      .toList(), // Using project codes from the controller
-                );
-              }),
-
-              const SizedBox(height: 10),
-              _buildListSection(),
-              const SizedBox(height: 10),
-              // Switches for Wastage and Work Order
-
-              // Additional Fields: Batch, Serial, Req Qty, Issued Qty, UOM
-              _buildTextField('Batch No.', controller: batchNoController),
-              const SizedBox(height: 10),
-              _buildTextField('Serial No.', controller: serialNoController),
-              const SizedBox(height: 10),
-              _buildTextField('Req Qty', controller: _reqQtyController),
-              const SizedBox(height: 10),
-              _buildTextField('Issued Qty', controller: _issuedQtyController),
-              const SizedBox(height: 10),
-              _buildTextField('UOM', controller: uomController),
-              const SizedBox(height: 10),
-              _buildTextField('Remarks', controller: _remarksController),
-              const SizedBox(height: 20),
-              // Buttons
-              Obx(() {
-                if (getItemFromItemAndPcodeController.isBlocked == 2) {
-                  // Show only one grey button when the item is blocked
-                  return ElevatedButton(
-                    onPressed: null, // Disabled button, no action
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black26,
-                    ),
-                    child: const Text(
-                      'This item is blocked',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  );
-                } else if (getItemFromItemAndPcodeController.isBlocked == 1) {
-                  // Show the row with "Add to Basket" and "View Basket" buttons when the item is not blocked
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _addToBasket();
-                          }
-                        },
-                        child: const Text('Add to Basket'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to Basket screen
-                          Get.to(() => ViewBasketGISScreen(
-                                // department: departmentController.text,
-                                department: isWorkOrder
-                                    ? ''
-                                    : departmentController.text,
-                                issuedTo: isWastage
-                                    ? 'Wastage'
-                                    : (_issueToController.text ?? ''),
-                                projectCode: projectCode.toString(),
-                                gisDate: gisDate,
-                                isWorkOrder: isWorkOrder,
-                                workOrderId: int.parse(woList.toString()),
-                              ));
-                        },
-                        child: const Text('View Basket'),
-                      ),
-                    ],
-                  );
-                } else {
-                  // Optionally, return an empty container or some other UI for other cases
-                  return Container();
-                }
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildTextField(String label,
-      {int maxLines = 1, TextEditingController? controller}) {
+      {int maxLines = 1, required TextEditingController controller}) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -505,23 +281,21 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
           borderSide: const BorderSide(color: Color.fromARGB(255, 68, 168, 71)),
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        return null;
+      },
     );
   }
 
   Widget _buildReadOnlyTextField(String label, String initialValue,
       {TextEditingController? controller}) {
-    // If the controller is null, create a new one using the initialValue
-    final textController =
-        controller ?? TextEditingController(text: initialValue);
-
-    // Ensure to dispose of the controller if it was created here
-    // You should handle the controller's lifecycle appropriately
-    // This implementation assumes you will manage the controller lifecycle outside this widget
-
     return TextFormField(
       readOnly: true,
-      controller: textController, // Use the provided or new controller
-      style: const TextStyle(color: Colors.black), // Set text color to black
+      controller: controller ?? TextEditingController(text: initialValue),
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(
@@ -540,62 +314,25 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
       String label, VoidCallback onPressed, String initialValue) {
     return TextFormField(
       readOnly: true,
-      style: TextStyle(color: Colors.black), // Set text color to black
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: label,
         suffixIcon: IconButton(
-          icon: Icon(Icons.calendar_today),
+          icon: const Icon(Icons.calendar_today),
           onPressed: onPressed,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: Color.fromARGB(255, 68, 168, 71)),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 68, 168, 71)),
         ),
       ),
       controller: TextEditingController(text: initialValue),
     );
   }
-
-  // Widget _buildDropdownField(String label, String? value,
-  //     ValueChanged<String?> onChanged, List<String> items) {
-  //   return DropdownButtonFormField<String>(
-  //     decoration: InputDecoration(
-  //       labelText: label,
-  //       filled: true,
-  //       fillColor: Colors.white,
-  //       border: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(5),
-  //         borderSide: const BorderSide(color: Colors.grey),
-  //       ),
-  //       focusedBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(5),
-  //         borderSide: const BorderSide(color: Color.fromARGB(255, 68, 168, 71)),
-  //       ),
-  //     ),
-  //     dropdownColor: Colors.white,
-  //     value: value,
-  //     onChanged: onChanged,
-  //     items: items.toSet().map((String item) {
-  //       // Convert to Set to remove duplicates
-  //       return DropdownMenuItem<String>(
-  //         value: item,
-  //         child: SizedBox(
-  //           width: 300,
-  //           child: Text(
-  //             item,
-  //             style: const TextStyle(color: Colors.black),
-  //             overflow: TextOverflow.ellipsis,
-  //             maxLines: 1,
-  //           ),
-  //         ),
-  //       );
-  //     }).toList(),
-  //   );
-  // }
 
   Widget _buildSwitchListTile(
       String title, bool value, ValueChanged<bool> onChanged) {
@@ -621,19 +358,6 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         const SizedBox(height: 8),
-        // TextField(
-        //   controller: _searchController,
-        //   style: const TextStyle(color: Colors.black),
-        //   decoration: InputDecoration(
-        //     labelText: 'Search by Batch No',
-        //     prefixIcon: const Icon(Icons.search, color: Colors.grey),
-        //     border: OutlineInputBorder(
-        //       borderRadius: BorderRadius.circular(8),
-        //       borderSide: BorderSide(color: Colors.grey.shade400),
-        //     ),
-        //   ),
-        // ),
-        const SizedBox(height: 10),
         Obx(() {
           final dataToShow =
               getItemFromItemAndPcodeController.itemlist.toList();
@@ -687,7 +411,6 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
                                 items.serialNo?.toString() ?? '';
                             uomController.text = items.inventoryUOM.toString();
                           } else {
-                            // Only clear if this checkbox was previously selected
                             if (selectedBatch.value ==
                                 items.batchNo.toString()) {
                               selectedBatch.value = '';
@@ -717,6 +440,187 @@ class _CreateGISScreenState extends State<CreateGISScreen> {
           );
         }),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 68, 168, 71),
+        automaticallyImplyLeading: true,
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text(
+                'Goods Issue Slip',
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+              const SizedBox(width: 90),
+              DrawerMenuWidget(
+                onClicked: widget.openDrawer,
+              ),
+              const SizedBox(width: 20),
+            ],
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                _buildSwitchListTile('Is Wastage?', isWastage, (value) {
+                  setState(() {
+                    isWastage = value;
+                    if (isWastage) {
+                      _issueToController.text = 'Wastage';
+                      userName = null;
+                    } else {
+                      _issueToController.text = userName ?? '';
+                    }
+                  });
+                }),
+                _buildSwitchListTile('Is Work Order?', isWorkOrder, (value) {
+                  setState(() {
+                    isWorkOrder = value;
+                    if (isWorkOrder) {
+                      gwodslc.getWOStatusList();
+                    } else {
+                      woList = null;
+                    }
+                  });
+                }),
+              ]),
+              const SizedBox(height: 10),
+              Obx(() {
+                if (ggnc.gisNo.isEmpty) {
+                  return const CircularProgressIndicator();
+                }
+                return _buildReadOnlyTextField('GIS No.', ggnc.gisNo.value);
+              }),
+              const SizedBox(height: 10),
+              _buildDateTextField('GIS Date', () => _selectDate(context, true),
+                  "${gisDate.toLocal()}".split(' ')[0]),
+              const SizedBox(height: 10),
+              buildProjectCodeDropdown(),
+              const SizedBox(height: 10),
+              _buildReadOnlyTextField(
+                'department',
+                departmentController.text,
+              ),
+              const SizedBox(height: 10),
+              buildProductionOrderField(),
+              const SizedBox(height: 10),
+              buildIssueToField(),
+              const SizedBox(height: 10),
+              _buildDateTextField(
+                  'Issue Date',
+                  () => _selectDate(context, false),
+                  "${issueDate.toLocal()}".split(' ')[0]),
+              const SizedBox(height: 10),
+              const Divider(),
+              const SizedBox(height: 10),
+              Obx(() {
+                return _buildDropdownField(
+                  'select item name',
+                  itemName,
+                  (newValue) {
+                    setState(() {
+                      itemName = newValue;
+                      final selectedItemID = gifpc.itemlist.firstWhere(
+                        (i) => i.internalCode == itemName,
+                      );
+                      itemId = selectedItemID.itemId;
+                      getItemFromItemAndPcodeController.getItemList(
+                          projectCode.toString(), itemId!.toInt());
+                    });
+                  },
+                  gifpc.itemlist.map((item) => item.internalCode).toList(),
+                );
+              }),
+              const SizedBox(height: 10),
+              _buildListSection(),
+              const SizedBox(height: 10),
+              _buildTextField('Batch No.', controller: batchNoController),
+              const SizedBox(height: 10),
+              _buildTextField('Serial No.', controller: serialNoController),
+              const SizedBox(height: 10),
+              _buildTextField('Req Qty', controller: _reqQtyController),
+              const SizedBox(height: 10),
+              _buildTextField('Issued Qty', controller: _issuedQtyController),
+              const SizedBox(height: 10),
+              _buildTextField('UOM', controller: uomController),
+              const SizedBox(height: 10),
+              _buildTextField('Remarks', controller: _remarksController),
+              const SizedBox(height: 20),
+              Obx(() {
+                if (getItemFromItemAndPcodeController.isBlocked == 2) {
+                  return ElevatedButton(
+                    onPressed: null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black26,
+                    ),
+                    child: const Text(
+                      'This item is blocked',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  );
+                } else if (getItemFromItemAndPcodeController.isBlocked == 1) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white),
+                          onPressed: _addToBasket,
+                          child: const Text(
+                            'Add to Basket',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white),
+                          onPressed: () {
+                            Get.to(() => ViewBasketGISScreen(
+                                  department: isWorkOrder
+                                      ? ''
+                                      : departmentController.text,
+                                  issuedTo: isWastage
+                                      ? 'Wastage'
+                                      : (_issueToController.text ?? ''),
+                                  projectCode: projectCode.toString(),
+                                  gisDate: gisDate,
+                                  isWorkOrder: isWorkOrder,
+                                  workOrderId:
+                                      int.parse(woList.toString()) ?? 0,
+                                ));
+                          },
+                          child: const Text(
+                            'View Basket',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:erp_copy/controllers/item_master_controller/get_items_controller.dart';
 import 'package:erp_copy/model/item_master/item_master_model.dart';
 import 'package:erp_copy/widget/item_master_cards/block_unblock_details_card.dart';
-import 'package:erp_copy/widgets/remark_dilaogs/block_item_remark_dialog.dart';
 import 'package:flutter/material.dart';
 
 class WithoutBlockUnblockItemMasterDetailsScreen extends StatefulWidget {

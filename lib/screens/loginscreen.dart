@@ -1,3 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:erp_copy/controllers/app_controller.dart';
+import 'package:erp_copy/controllers/login_controller.dart';
+import 'package:erp_copy/controllers/otp_controller.dart';
+import 'package:erp_copy/widget/menu_widget/hidden_main_page_drawer.dart';
+import 'package:erp_copy/utils/toast_notify.dart';
+
 import 'package:erp_copy/controllers/app_controller.dart';
 import 'package:erp_copy/controllers/login_controller.dart';
 import 'package:erp_copy/widget/menu_widget/hidden_main_page_drawer.dart';
@@ -6,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+//*****FOR DEVELOPMENT */
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -18,7 +29,7 @@ TextEditingController emailController = TextEditingController();
 
 TextEditingController passController = TextEditingController();
 
-final loginController c = Get.put(loginController());
+final LoginController c = Get.put(LoginController());
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -51,10 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextFormField(
                   controller: emailController,
-                  onChanged: (value) {
-                    AppController.setEmailID(emailController.text);
-                    c.userName.value = emailController.text;
-                  },
+                  // onChanged: (value) {
+                  //   AppController.setEmailID(emailController.text);
+                  //   c.userName.value = emailController.text;
+                  // },
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -80,9 +91,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 //padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextFormField(
                   controller: passController,
-                  onChanged: (value) {
-                    c.password.value = passController.text;
-                  },
+                  // onChanged: (value) {
+                  //   c.password.value = passController.text;
+                  // },
                   obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -154,7 +165,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      await c.loginUser();
+                      await c.loginUser(
+                        empCode: emailController.text.toString(),
+                        otp: passController.text.toString(),
+                      );
                       if (AppController.message != null) {
                         Get.defaultDialog(
                           title: "Unauthorized!",
@@ -189,3 +203,199 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+//*****FOR LIVE */
+
+// class LoginScreen extends StatefulWidget {
+//   const LoginScreen({super.key});
+
+//   @override
+//   State<LoginScreen> createState() => _LoginScreenState();
+// }
+
+// class _LoginScreenState extends State<LoginScreen> {
+//   final TextEditingController _emailController = TextEditingController();
+//   final TextEditingController otpController = TextEditingController();
+//   final LoginController _loginController = Get.put(LoginController());
+//   final OtpController _otpController = Get.put(OtpController());
+//   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+//   bool _isOtpSent = false;
+//   bool _isLoading = false;
+
+//   @override
+//   void dispose() {
+//     _emailController.dispose();
+//     _otpController.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _handleOtpRequest() async {
+//     if (_formKey.currentState!.validate()) {
+//       setState(() => _isLoading = true);
+//       try {
+//         await _otpController.getOtp(_emailController.text);
+//         setState(() {
+//           _isOtpSent = true;
+//           _isLoading = false;
+//         });
+//       } finally {
+//         setState(() => _isLoading = false);
+//       }
+//     } else {
+//       toast('Please fill credentials correctly');
+//     }
+//   }
+
+//   Future<void> _handleLogin() async {
+//     if (_formKey.currentState!.validate()) {
+//       await _loginController.loginUser(
+//         empCode: _emailController.text,
+//         otp: otpController.text,
+//       );
+
+//       if (AppController.message != null) {
+//         Get.defaultDialog(
+//           title: "Unauthorized!",
+//           middleText: AppController.message ?? "",
+//           textConfirm: "OK",
+//           confirmTextColor: Colors.white,
+//           onConfirm: () {
+//             AppController.setmessage(null);
+//             Get.back();
+//           },
+//         );
+//       } else {
+//         await Get.offAll(
+//           const HiddenDrawer(),
+//           transition: Transition.rightToLeft,
+//         );
+//       }
+//     } else {
+//       toast('Please fill credentials correctly');
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: SingleChildScrollView(
+//         child: Form(
+//           key: _formKey,
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               const SizedBox(height: 55),
+//               Image.asset(
+//                 'assets/images/gegadyne_logo.png',
+//                 height: 50,
+//               ),
+//               Image.asset('assets/images/loginImage.png'),
+//               _buildEmailField(),
+//               if (_isOtpSent) _buildOtpField(),
+//               const SizedBox(height: 20),
+//               _buildOtpButton(),
+//               if (_isOtpSent) _buildLoginButton(),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildEmailField() {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 30),
+//       child: TextFormField(
+//         controller: _emailController,
+//         onChanged: (value) {
+//           AppController.setEmailID(value);
+//           _loginController.setUserName(value);
+//         },
+//         decoration: InputDecoration(
+//           border: OutlineInputBorder(
+//             borderRadius: BorderRadius.circular(12),
+//           ),
+//           labelText: 'Emp code',
+//           labelStyle: GoogleFonts.kameron(),
+//           hintText: 'username',
+//         ),
+//         validator: (value) {
+//           if (value == null || value.isEmpty) {
+//             return 'Please enter employee code';
+//           }
+//           return null;
+//         },
+//       ),
+//     );
+//   }
+
+//   Widget _buildOtpField() {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+//       child: TextFormField(
+//         controller: otpController,
+//         obscureText: true,
+//         decoration: InputDecoration(
+//           border: OutlineInputBorder(
+//             borderRadius: BorderRadius.circular(12),
+//           ),
+//           labelText: 'OTP',
+//           labelStyle: GoogleFonts.kameron(),
+//           hintText: 'Enter OTP',
+//         ),
+//         validator: (value) {
+//           if (value == null || value.isEmpty) {
+//             return 'Please enter OTP';
+//           }
+//           return null;
+//         },
+//       ),
+//     );
+//   }
+
+//   Widget _buildOtpButton() {
+//     return SizedBox(
+//       width: 140,
+//       child: ElevatedButton(
+//         style: ElevatedButton.styleFrom(
+//           backgroundColor: Colors.green,
+//           foregroundColor: Colors.white,
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(12),
+//           ),
+//         ),
+//         onPressed: _isLoading ? null : _handleOtpRequest,
+//         child: _isLoading
+//             ? const CircularProgressIndicator(
+//                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+//               )
+//             : Text(
+//                 'Get OTP',
+//                 style: GoogleFonts.kameron(fontSize: 18),
+//               ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildLoginButton() {
+//     return SizedBox(
+//       width: 140,
+//       child: ElevatedButton(
+//         style: ElevatedButton.styleFrom(
+//           backgroundColor: Colors.green,
+//           foregroundColor: Colors.white,
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(12),
+//           ),
+//         ),
+//         onPressed: _handleLogin,
+//         child: Text(
+//           'Login',
+//           style: GoogleFonts.kameron(fontSize: 18),
+//         ),
+//       ),
+//     );
+//   }
+// }

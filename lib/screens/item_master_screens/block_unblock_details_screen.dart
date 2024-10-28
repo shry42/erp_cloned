@@ -1,8 +1,11 @@
 import 'package:erp_copy/controllers/item_master_controller/get_items_controller.dart';
-import 'package:erp_copy/model/item_master/item_master_model.dart';
+import 'package:erp_copy/model/drawer_item.dart';
 import 'package:erp_copy/widget/item_master_cards/block_unblock_details_card.dart';
+import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
+import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:erp_copy/widgets/remark_dilaogs/block_item_remark_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BlockUnblockItemMasterDetailsScreen extends StatefulWidget {
   const BlockUnblockItemMasterDetailsScreen({
@@ -10,7 +13,7 @@ class BlockUnblockItemMasterDetailsScreen extends StatefulWidget {
     required this.selectedItem,
   });
 
-  final ItemModel selectedItem;
+  final dynamic selectedItem;
 
   @override
   State<BlockUnblockItemMasterDetailsScreen> createState() =>
@@ -19,6 +22,13 @@ class BlockUnblockItemMasterDetailsScreen extends StatefulWidget {
 
 class _BlockUnblockItemMasterDetailsScreenState
     extends State<BlockUnblockItemMasterDetailsScreen> {
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+
+  void navigateToScreen(DrawerItem screen) {
+    navigationController.directNavigateToScreen(screen);
+  }
+
   TextEditingController searchController = TextEditingController();
 
   final GetItemsMastercontroller gimc = GetItemsMastercontroller();
@@ -48,7 +58,11 @@ class _BlockUnblockItemMasterDetailsScreenState
               widget.selectedItem.isBlockUnblockStatus == 'Blocked')
             ElevatedButton(
               onPressed: () {
-                showBlockItemDialog(widget.selectedItem.itemID!.toInt());
+                // navigationController
+                //     .directNavigateToScreen(DrawerItems.grnList);
+
+                showBlockItemDialog(
+                    widget.selectedItem.itemID!.toInt(), 'Unblocked');
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -66,7 +80,8 @@ class _BlockUnblockItemMasterDetailsScreenState
               widget.selectedItem.isBlockUnblockStatus == 'Unblocked')
             ElevatedButton(
               onPressed: () {
-                showBlockItemDialog(widget.selectedItem.itemID!.toInt());
+                showBlockItemDialog(
+                    widget.selectedItem.itemID!.toInt(), 'Blocked');
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(

@@ -732,6 +732,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                       DrawerItems.blockUnblockVendor);
                                 },
                               ),
+                              ListTile(
+                                title: const Text('blocked vendors'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.blockedVendors);
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('revert vendor'),
+                                onTap: () {
+                                  widget
+                                      .onSelectedItem(DrawerItems.revertVendor);
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('allocate vendor'),
+                                onTap: () {
+                                  widget.onSelectedItem(
+                                      DrawerItems.allocateVendor);
+                                },
+                              ),
                             ],
                           ),
                         ),

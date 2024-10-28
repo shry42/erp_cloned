@@ -1,8 +1,11 @@
 import 'package:erp_copy/controllers/grn_controllers/get_all_grn_list_controller.dart';
+import 'package:erp_copy/model/drawer_item.dart';
 import 'package:erp_copy/model/grn_models/get_all_grn_list_model.dart';
 import 'package:erp_copy/screens/grn_screens/all_grn_list_inside.dart';
 import 'package:erp_copy/widget/grn_cards/all_grn_list_card.dart';
+import 'package:erp_copy/widget/menu_widget/drawer_items.dart';
 import 'package:erp_copy/widget/menu_widget/drawer_menu_widget.dart';
+import 'package:erp_copy/widget/menu_widget/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -29,7 +32,7 @@ class _GRNListScreenState extends State<GRNListScreen> {
   @override
   void initState() {
     super.initState();
-    // searchController.addListener(_filterItems);
+    searchController.addListener(_filterItems);
     _loadItemData();
   }
 
@@ -47,21 +50,28 @@ class _GRNListScreenState extends State<GRNListScreen> {
     });
   }
 
-  // void _filterItems() {
-  //   String query =
-  //       searchController.text.toLowerCase().trim(); // Trim whitespace
-  //   setState(() {
-  //     if (query.isEmpty) {
-  //       // If the search query is empty, show all items
-  //       filteredItemList = itemList;
-  //     } else {
-  //       filteredItemList = itemList.where((item) {
-  //         return (item.grnTxID?.toString().toLowerCase().contains(query) ??
-  //             false);
-  //       }).toList();
-  //     }
-  //   });
-  // }
+  void _filterItems() {
+    String query =
+        searchController.text.toLowerCase().trim(); // Trim whitespace
+    setState(() {
+      if (query.isEmpty) {
+        // If the search query is empty, show all items
+        filteredItemList = itemList;
+      } else {
+        filteredItemList = itemList.where((item) {
+          return (item.grnTxnID?.toString().toLowerCase().contains(query) ??
+              false);
+        }).toList();
+      }
+    });
+  }
+
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+
+  void navigateToScreen(DrawerItem screen) {
+    navigationController.directNavigateToScreen(screen);
+  }
 
   @override
   void dispose() {
@@ -87,6 +97,13 @@ class _GRNListScreenState extends State<GRNListScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               const SizedBox(width: 80),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     navigationController
+              //         .directNavigateToScreen(DrawerItems.addVendor);
+              //   },
+              //   child: const Text('add vendor'),
+              // ),
               DrawerMenuWidget(
                 onClicked: widget.openDrawer,
               ),
@@ -110,6 +127,7 @@ class _GRNListScreenState extends State<GRNListScreen> {
                     height: 35,
                     width: 390,
                     child: TextField(
+                      style: const TextStyle(color: Colors.black),
                       controller: searchController,
                       decoration: InputDecoration(
                         focusColor: Colors.black,
@@ -165,7 +183,7 @@ class _GRNListScreenState extends State<GRNListScreen> {
                               invoiceNo: item
                                   .invoiceNo, // Replace with the actual property for Invoice No.
                               invoiceDate: item.invoiceDate != null
-                                  ? item.invoiceDate!.toIso8601String()
+                                  ? item.invoiceDate!
                                   : null, // Replace with actual property
                               challanNo: item
                                   .challanNo, // Replace with the actual property for Challan No.
